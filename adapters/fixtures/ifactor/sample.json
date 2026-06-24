@@ -1,0 +1,122 @@
+{
+  "raw": {
+    "summary": {
+      "summaryFileData": {
+        "total_cust_a": {
+          "val": 6
+        },
+        "total_cust_s": 1000,
+        "total_outages": 2
+      }
+    },
+    "reports": [
+      {
+        "file_data": {
+          "areas": [
+            {
+              "area_name": null,
+              "cust_a": {
+                "val": 6
+              },
+              "cust_s": 1000,
+              "areas": [
+                {
+                  "area_name": "BRONX",
+                  "cust_a": {
+                    "val": 4
+                  },
+                  "cust_s": 600,
+                  "etr": "2026-06-24T15:00:00-0400",
+                  "areas": [
+                    {
+                      "area_name": "CENTRAL BRONX",
+                      "cust_a": {
+                        "val": 3
+                      },
+                      "cust_s": 300,
+                      "etr": "2026-06-24T15:00:00-0400"
+                    },
+                    {
+                      "area_name": "NORTH BRONX",
+                      "cust_a": {
+                        "val": 1
+                      },
+                      "cust_s": 300
+                    }
+                  ]
+                },
+                {
+                  "area_name": "QUEENS",
+                  "cust_a": {
+                    "val": 2
+                  },
+                  "cust_s": 400,
+                  "areas": [
+                    {
+                      "area_name": "ASTORIA",
+                      "cust_a": {
+                        "val": 2
+                      },
+                      "cust_s": 400
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "official": {
+      "out": 6,
+      "served": 1000,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "BRONX",
+        "out": 4,
+        "served": 600,
+        "etr": "2026-06-24T15:00:00-0400",
+        "loc": null,
+        "subs": [
+          {
+            "id": "BRONX|CENTRAL BRONX",
+            "name": "CENTRAL BRONX",
+            "out": 3,
+            "served": 300,
+            "etr": "2026-06-24T15:00:00-0400",
+            "loc": null
+          },
+          {
+            "id": "BRONX|NORTH BRONX",
+            "name": "NORTH BRONX",
+            "out": 1,
+            "served": 300,
+            "etr": null,
+            "loc": null
+          }
+        ]
+      },
+      {
+        "name": "QUEENS",
+        "out": 2,
+        "served": 400,
+        "etr": null,
+        "loc": null,
+        "subs": [
+          {
+            "id": "QUEENS|ASTORIA",
+            "name": "ASTORIA",
+            "out": 2,
+            "served": 400,
+            "etr": null,
+            "loc": null
+          }
+        ]
+      }
+    ]
+  }
+}

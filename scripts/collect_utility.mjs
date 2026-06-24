@@ -183,7 +183,34 @@ async function fetchArcgis(c) {
   return { features: all };
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis };
+// iFactor (legacy Kübra): metadata.json -> timestamped dir -> data.json (summary) + report_*.json (areas).
+// metadata.json can flip to a new interval before that interval's report_*.json finish uploading (S3
+// publish-lag: data.json present, reports 403). So step back in 15-min increments to the most recent
+// interval that has BOTH the summary AND the reports — keeping them from the same dir for reconciliation.
+async function fetchIfactor(c) {
+  const base = (c.base || "").replace(/\/$/, "");
+  if (!base) throw new Error("ifactor: config.base required");
+  const H = { Referer: c.referer || new URL(base).origin };
+  const meta = await jget(`${base}/metadata.json`, H);
+  if (!meta.directory) throw new Error("ifactor: no directory in metadata.json");
+  const p = meta.directory.split("_").map(Number); // Y_M_D_H_Mi_S (treated as UTC literals; arithmetic only)
+  const t0 = Date.UTC(p[0], p[1] - 1, p[2], p[3], p[4], p[5]);
+  const fmt = (d) => [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map((n, i) => i ? String(n).padStart(2, "0") : String(n)).join("_");
+  const wanted = c.reports || [];
+  const probe = async (u) => { const r = await fetch(u, { headers: { "User-Agent": UA, Accept: "*/*", ...H }, signal: AbortSignal.timeout(15000) }); return r.ok ? r.json() : null; };
+  for (let step = 0; step < 5; step++) {
+    const dir = step === 0 ? meta.directory : fmt(new Date(t0 - step * 15 * 60000));
+    const summary = await probe(`${base}/${dir}/data.json`);
+    const first = wanted.length ? await probe(`${base}/${dir}/${wanted[0]}`) : true;
+    if (!summary || !first) continue; // this interval's reports aren't ready — step back
+    const reports = wanted.length ? [first] : [];
+    for (const f of wanted.slice(1)) { const r = await probe(`${base}/${dir}/${f}`); if (r) reports.push(r); }
+    return { summary, reports };
+  }
+  throw new Error("ifactor: no recent interval has both summary and reports");
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until
