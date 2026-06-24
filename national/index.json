@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generatedAt": 1782304130850,
+  "generatedAt": 1782306107237,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782304130850,
-    "counties": 187,
-    "out": 35001,
+    "collectedAt": 1782306107237,
+    "counties": 216,
+    "out": 17535,
     "states": 32,
-    "utilities": 80
+    "utilities": 82
   },
   "deep": {
     "firstenergy-oh": {
@@ -18,8 +18,140 @@
         "CLEVELAND ELECTRIC ILLUM",
         "TOLEDO EDISON"
       ],
-      "out": 379,
-      "collectedAt": 1782304132003
+      "out": 1412,
+      "collectedAt": 1782306110246
+    },
+    "ameren": {
+      "name": "Ameren (MO/IL)",
+      "match": [
+        "AMEREN",
+        "UNION ELECTRIC",
+        "CENTRAL ILLINOIS"
+      ],
+      "out": 470,
+      "collectedAt": 1782306108122
+    },
+    "avista": {
+      "name": "Avista (WA/ID)",
+      "match": [
+        "AVISTA"
+      ],
+      "out": 20,
+      "collectedAt": 1782306108626
+    },
+    "bge": {
+      "name": "Baltimore Gas & Electric (MD)",
+      "match": [
+        "BALTIMORE GAS"
+      ],
+      "out": 327,
+      "collectedAt": 1782306109060
+    },
+    "central-hudson": {
+      "name": "Central Hudson (NY)",
+      "match": [
+        "CENTRAL HUDSON"
+      ],
+      "out": 89,
+      "collectedAt": 1782306109311
+    },
+    "dominion-va-nc": {
+      "name": "Dominion Energy (VA/NC)",
+      "match": [
+        "VIRGINIA ELECTRIC",
+        "DOMINION"
+      ],
+      "out": 976,
+      "collectedAt": 1782306109822
+    },
+    "firstenergy-nj": {
+      "name": "JCP&L (FirstEnergy NJ)",
+      "match": [
+        "JERSEY CENTRAL POWER"
+      ],
+      "out": 256,
+      "collectedAt": 1782306110070
+    },
+    "firstenergy-pa": {
+      "name": "FirstEnergy (Pennsylvania)",
+      "match": [
+        "METROPOLITAN EDISON",
+        "PENNSYLVANIA ELECTRIC",
+        "WEST PENN POWER",
+        "PENNSYLVANIA POWER",
+        "FIRSTENERGY"
+      ],
+      "out": 519,
+      "collectedAt": 1782306110454
+    },
+    "georgia-power": {
+      "name": "Georgia Power",
+      "match": [
+        "GEORGIA POWER"
+      ],
+      "out": 1281,
+      "collectedAt": 1782306110776
+    },
+    "national-grid-ma": {
+      "name": "National Grid (Massachusetts)",
+      "match": [
+        "MASSACHUSETTS ELECTRIC",
+        "NATIONAL GRID"
+      ],
+      "out": 272,
+      "collectedAt": 1782306110972
+    },
+    "national-grid-ny": {
+      "name": "National Grid (Upstate NY)",
+      "match": [
+        "NIAGARA MOHAWK",
+        "NATIONAL GRID"
+      ],
+      "out": 1090,
+      "collectedAt": 1782306111219
+    },
+    "oncor": {
+      "name": "Oncor (TX)",
+      "match": [
+        "ONCOR"
+      ],
+      "out": 1054,
+      "collectedAt": 1782306111720
+    },
+    "peco": {
+      "name": "PECO (PA)",
+      "match": [
+        "PECO"
+      ],
+      "out": 494,
+      "collectedAt": 1782306112089
+    },
+    "pepco": {
+      "name": "Pepco (DC/MD)",
+      "match": [
+        "POTOMAC ELECTRIC",
+        "PEPCO"
+      ],
+      "out": 35,
+      "collectedAt": 1782306112531
+    },
+    "pseg-long-island": {
+      "name": "PSEG Long Island (NY)",
+      "match": [
+        "LONG ISLAND POWER",
+        "PSEG"
+      ],
+      "out": 128,
+      "collectedAt": 1782306112788
+    },
+    "pseg-nj": {
+      "name": "PSE&G (New Jersey)",
+      "match": [
+        "PUBLIC SERVICE ELECTRIC",
+        "PSE&G"
+      ],
+      "out": 443,
+      "collectedAt": 1782306112981
     }
   }
 }
