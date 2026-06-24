@@ -1,1 +1,1 @@
-{"schema":1,"id":"gvea","name":"Golden Valley Electric (Fairbanks, AK)","adapter":"gvea","collectedAt":1782326504153,"official":{"out":4,"served":49843,"nOut":1},"areas":[{"name":"GHS R1 TRA_322418","out":4,"served":4,"etr":null,"loc":[64.89846336828873,-147.9567569035641],"subs":[]}]}
+{"schema":1,"id":"gvea","name":"Golden Valley Electric (Fairbanks, AK)","adapter":"gvea","collectedAt":1782328171873,"official":{"out":4,"served":49843,"nOut":1},"areas":[{"name":"GHS R1 TRA_322418","out":4,"served":4,"etr":null,"loc":[64.89846336828873,-147.9567569035641],"subs":[]}]}
