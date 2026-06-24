@@ -1,0 +1,94 @@
+{
+  "raw": {
+    "summary": {
+      "data": {
+        "activeOutages": 1,
+        "totalCustomersAffected": 1,
+        "customersAffectedPerState": {
+          "SC": 166,
+          "NC": 884
+        },
+        "stateDescription": "Carolinas"
+      },
+      "errorMessages": []
+    },
+    "counties": {
+      "data": [
+        {
+          "areaOfInterestId": 464,
+          "areaOfInterestName": "NC - Alamance",
+          "customersServed": 87319,
+          "etrOverride": null,
+          "causeCodeOverride": null,
+          "crewStatusOverride": null,
+          "customersAffectedOverride": null,
+          "customersServedOverride": null,
+          "lastUpdated": "2026-06-24T16:00:48.000+00:00",
+          "serviceAreaOverrideIsActive": false,
+          "jurisdiction": "DEC",
+          "serviceAreas": [],
+          "state": "NC",
+          "countyName": "Alamance",
+          "areaOfInterestSummary": {
+            "areaOfInterestId": 464,
+            "maxCustomersAffected": 1,
+            "activeEventsCount": 1,
+            "restoredEventsCount": 0,
+            "latestRestorationDate": "2026-06-24T17:45:00.000+00:00",
+            "firstReportedDate": "2026-06-24T13:49:40.000+00:00"
+          }
+        },
+        {
+          "areaOfInterestId": 465,
+          "areaOfInterestName": "NC - Anson",
+          "customersServed": 5573,
+          "etrOverride": null,
+          "causeCodeOverride": null,
+          "crewStatusOverride": null,
+          "customersAffectedOverride": null,
+          "customersServedOverride": null,
+          "lastUpdated": "2026-06-24T11:00:43.000+00:00",
+          "serviceAreaOverrideIsActive": false,
+          "jurisdiction": "DEC",
+          "serviceAreas": [],
+          "state": "NC",
+          "countyName": "Anson",
+          "areaOfInterestSummary": {
+            "areaOfInterestId": 465,
+            "maxCustomersAffected": null,
+            "activeEventsCount": null,
+            "restoredEventsCount": null,
+            "latestRestorationDate": null,
+            "firstReportedDate": null
+          }
+        }
+      ],
+      "errorMessages": []
+    }
+  },
+  "expected": {
+    "official": {
+      "out": 1,
+      "served": 92892,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Alamance",
+        "out": 1,
+        "served": 87319,
+        "etr": "2026-06-24T17:45:00.000+00:00",
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Anson",
+        "out": 0,
+        "served": 5573,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

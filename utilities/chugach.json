@@ -1,0 +1,8 @@
+{
+  "id": "chugach",
+  "name": "Chugach Electric (Anchorage, AK)",
+  "adapter": "chugach",
+  "match": ["CHUGACH ELEC"],
+  "config": { "base": "https://www.chugachelectric.com/outage" },
+  "reconciliation": { "tolerancePct": 15 }
+}

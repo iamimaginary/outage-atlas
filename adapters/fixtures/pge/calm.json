@@ -1,0 +1,87 @@
+{
+  "raw": {
+    "features": [
+      {
+        "attributes": {
+          "OUTAGE_ID": "288446",
+          "EST_CUSTOMERS": 11,
+          "CURRENT_ETOR_TEXT": "2026-06-24T19:00:00Z",
+          "OUTAGE_CAUSE": "REPLCE TXFMR",
+          "CREW_CURRENT_STATUS": "Awaiting Crew"
+        },
+        "geometry": {
+          "x": -122.29346719417978,
+          "y": 37.55471906255001
+        }
+      },
+      {
+        "attributes": {
+          "OUTAGE_ID": "288780",
+          "EST_CUSTOMERS": 3,
+          "CURRENT_ETOR_TEXT": "2026-06-24T16:00:00Z",
+          "OUTAGE_CAUSE": "POLE FIRE",
+          "CREW_CURRENT_STATUS": "Awaiting Crew"
+        },
+        "geometry": {
+          "x": -119.47666379375543,
+          "y": 35.15077557572829
+        }
+      },
+      {
+        "attributes": {
+          "OUTAGE_ID": "288842",
+          "EST_CUSTOMERS": 1,
+          "CURRENT_ETOR_TEXT": "2026-06-25T14:17:00Z",
+          "OUTAGE_CAUSE": "PATROLLING",
+          "CREW_CURRENT_STATUS": "Awaiting Crew"
+        },
+        "geometry": {
+          "x": -123.19310488643242,
+          "y": 39.181358717064406
+        }
+      }
+    ]
+  },
+  "expected": {
+    "official": {
+      "out": 15,
+      "served": 15,
+      "nOut": 3
+    },
+    "areas": [
+      {
+        "name": "PG&E outage #288446",
+        "out": 11,
+        "served": 11,
+        "etr": "2026-06-24T19:00:00Z",
+        "loc": [
+          37.55472,
+          -122.29347
+        ],
+        "subs": []
+      },
+      {
+        "name": "PG&E outage #288780",
+        "out": 3,
+        "served": 3,
+        "etr": "2026-06-24T16:00:00Z",
+        "loc": [
+          35.15078,
+          -119.47666
+        ],
+        "subs": []
+      },
+      {
+        "name": "PG&E outage #288842",
+        "out": 1,
+        "served": 1,
+        "etr": "2026-06-25T14:17:00Z",
+        "loc": [
+          39.18136,
+          -123.1931
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "id": "duke-ohio-ky",
+  "name": "Duke Energy Ohio & Kentucky",
+  "adapter": "duke",
+  "match": ["DUKE ENERGY OHIO", "DUKE ENERGY KENTUCKY"],
+  "config": { "jurisdiction": "DEM", "referer": "https://outagemap.duke-energy.com" },
+  "reconciliation": { "tolerancePct": 10 }
+}

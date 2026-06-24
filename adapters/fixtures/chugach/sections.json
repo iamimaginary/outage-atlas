@@ -1,0 +1,56 @@
+{
+  "raw": {
+    "grids": {
+      "Datetime": "06/24/2026 12:00",
+      "Items": [
+        {
+          "SECTIONMAP": "Anchorage - Hillside",
+          "CUST_OUT": 134,
+          "CUST_SERVED": 8200
+        },
+        {
+          "SECTIONMAP": "Eagle River",
+          "CUST_OUT": 0,
+          "CUST_SERVED": 11500
+        }
+      ]
+    },
+    "incidents": {
+      "Datetime": "06/24/2026 12:00",
+      "Items": [
+        {
+          "LATITUDE": 61.12,
+          "LONGITUDE": -149.74,
+          "CUSTOMERS_AFFECTED": 134,
+          "EST_RESTORATION": "06/24/2026 15:00",
+          "OUTAGE_STATUS": "Crew assigned"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "official": {
+      "out": 134,
+      "served": 19700,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Anchorage - Hillside",
+        "out": 134,
+        "served": 8200,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Eagle River",
+        "out": 0,
+        "served": 11500,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

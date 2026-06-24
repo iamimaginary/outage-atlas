@@ -36,6 +36,12 @@ async function jget(url, extra = {}) {
   throw lastErr;
 }
 
+async function tget(url, extra = {}) {
+  const r = await fetch(url, { headers: { "User-Agent": UA, ...extra }, signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error(`${url.split("/")[2]} ${r.status}`);
+  return r.text();
+}
+
 // Kübra: currentState -> configuration/{deploymentId} -> report.json -> parseKubraReport
 async function fetchKubra(c) {
   const H = { Referer: c.referer, Origin: new URL(c.referer).origin };
@@ -47,14 +53,124 @@ async function fetchKubra(c) {
   return jget(`${KB}/${dataPath}/${src}`, H);
 }
 
-const FETCH = { kubra: fetchKubra };
+// Duke: own Apigee API behind app-level Basic auth. The creds are embedded in the outage-map SPA bundle
+// and ROTATE, so we scrape them at runtime (never pinned in the repo). CORS-locked to the map origin ->
+// only works server-side. PII (employee emails in serviceAreas[].updatedBy) is stripped before parsing.
+async function fetchDuke(c) {
+  const origin = (c.referer || "https://outagemap.duke-energy.com").replace(/\/$/, "");
+  const base = c.base || "https://prod.apigee.duke-energy.app/outage-maps/v1";
+  const jur = c.jurisdiction;
+  if (!jur) throw new Error("duke: config.jurisdiction required (DEC/DEF/DEI/DEM)");
+  const html = await tget(origin + "/", { Referer: origin + "/" });
+  const jsFile = (html.match(/main\.[a-f0-9]+\.js/) || [])[0];
+  if (!jsFile) throw new Error("duke: could not locate main.<hash>.js in the outage-map page");
+  const js = await tget(`${origin}/${jsFile}`, { Referer: origin + "/" });
+  // The bundle can carry several consumer_key_*/secret_* tokens (env variants, rotated values); grab
+  // ALL candidates and use whichever pair actually authenticates — robust to rotation + regex ambiguity.
+  const uniq = (re) => [...new Set([...js.matchAll(re)].map((m) => m[1]))];
+  const keys = uniq(/consumer_key_[a-z0-9]+["']?\s*[:=]\s*["']([A-Za-z0-9_-]{24,})["']/gi);
+  const secrets = uniq(/consumer_secret_[a-z0-9]+["']?\s*[:=]\s*["']([A-Za-z0-9_-]{16,})["']/gi);
+  if (!keys.length || !secrets.length) throw new Error("duke: could not scrape API credentials from page JS (format may have changed)");
+  const HB = { Referer: origin + "/", Origin: origin };
+  let auth = null, summary = null;
+  for (const k of keys.slice(0, 4)) {
+    for (const s of secrets.slice(0, 4)) {
+      const a = "Basic " + Buffer.from(`${k}:${s}`).toString("base64");
+      try { summary = await jget(`${base}/jurisdictions/${jur}`, { ...HB, Authorization: a }); auth = a; break; } catch { /* try next pair */ }
+    }
+    if (auth) break;
+  }
+  if (!auth) throw new Error(`duke: no scraped credential pair authenticated (tried ${keys.length}x${secrets.length})`);
+  const H = { ...HB, Authorization: auth };
+  const counties = await jget(`${base}/counties?jurisdiction=${jur}`, H);
+  // sanity: don't accept the silent unknown-code -> Carolinas fallback for non-Carolinas jurisdictions
+  // PII strip: remove employee emails before this raw is parsed/persisted
+  for (const row of (counties.data || [])) {
+    if (Array.isArray(row.serviceAreas)) for (const sa of row.serviceAreas) { delete sa.updatedBy; }
+  }
+  return { summary, counties };
+}
+
+// PG&E: open Esri ArcGIS MapServer. Page through incident points (exceededTransferLimit on storm days);
+// request an explicit field list so the large encrypted blueSkyNotificationSubscription blob is excluded.
+async function fetchPge(c) {
+  const base = c.base || "https://ags.pge.esriemcs.com/arcgis/rest/services/43/outages/MapServer";
+  const layer = c.layer != null ? c.layer : 4; // 4 = "Outage Locations" (live point layer)
+  // layer 4 carries no CITY/lat-lon attrs — geometry holds the location, so request it in WGS84 (outSR);
+  // the explicit field list excludes the large encrypted blueSkyNotificationSubscription blob.
+  const fields = c.fields || "OUTAGE_ID,EST_CUSTOMERS,CURRENT_ETOR_TEXT,OUTAGE_CAUSE,CREW_CURRENT_STATUS";
+  const H = { Referer: c.referer || "https://pgealerts.alerts.pge.com" };
+  const all = [];
+  const pageSize = 2000;
+  for (let i = 0, offset = 0; i < 60; i++, offset += pageSize) {
+    const url = `${base}/${layer}/query?where=1%3D1&outFields=${encodeURIComponent(fields)}&returnGeometry=true&outSR=4326&f=json&resultOffset=${offset}&resultRecordCount=${pageSize}`;
+    const r = await jget(url, H);
+    const fs = r.features || [];
+    all.push(...fs);
+    if (!r.exceededTransferLimit || fs.length < pageSize) break;
+  }
+  return { features: all };
+}
+
+// FPL: plain county JSON, two regions (main peninsula + northwest panhandle). No CORS -> server-side.
+async function fetchFpl(c) {
+  const base = (c.base || "https://www.fplmaps.com").replace(/\/$/, "");
+  const H = { Referer: base + "/", "X-Requested-With": "XMLHttpRequest" };
+  const main = await jget(`${base}/customer/outage/CountyOutages.json`, H);
+  let nw = null;
+  try { nw = await jget(`${base}/northwest/customer/outage/CountyOutages.json`, H); } catch { /* panhandle optional */ }
+  return { main, nw };
+}
+
+// GVEA: NISC web-outage-viewer JSON (Fairbanks AK).
+async function fetchGvea(c) {
+  const base = (c.base || "https://outage.gvea.com").replace(/\/$/, "");
+  const H = { Referer: base + "/" };
+  const summary = await jget(`${base}/data/outageSummary`, H);
+  const outages = await jget(`${base}/data/outages`, H);
+  return { summary, outages };
+}
+
+// Chugach: custom JSON files (Anchorage AK). Served as .js with pure-JSON bodies.
+async function fetchChugach(c) {
+  const base = (c.base || "https://www.chugachelectric.com/outage").replace(/\/$/, "");
+  const H = { Referer: base + "/outage_map.html" };
+  const grids = await jget(`${base}/Grids.js`, H);
+  const incidents = await jget(`${base}/Incidents.js`, H);
+  return { grids, incidents };
+}
+
+// KIUC: NISC hosted-outage-map static summary.json (Kauai HI). Open, CORS:*.
+async function fetchKiuc(c) {
+  const base = (c.base || "https://outagemap-data.cloud.coop/kiuc/Hosted_Outage_Map").replace(/\/$/, "");
+  return jget(`${base}/summary.json`, { Referer: "https://kiuc.outagemap.coop/" });
+}
+
+// HECO: auth-gated + origin-locked (Hawaii). Goes through the operator-keyed serverless proxy (preferred)
+// or, server-side, the direct handshake helper. Requires HECO_ACCESS_KEY — the config ships disabled and
+// the IIFE below skips it cleanly until that secret is set.
+async function fetchHeco(c) {
+  const key = process.env[c.requiresSecret || "HECO_ACCESS_KEY"];
+  if (!key) throw new Error(`heco: ${c.requiresSecret || "HECO_ACCESS_KEY"} not set`);
+  if (c.proxyUrl) return jget(c.proxyUrl, { Authorization: `Bearer ${key}` });
+  const { fetchHecoRaw } = await import("../workers/heco-proxy.mjs");
+  return fetchHecoRaw(key, c.company || "HECO");
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco };
 
 (async () => {
+  // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until
+  // the required secret is present, so a not-yet-enabled feed never errors a collector cycle.
+  if (cfg.disabled) {
+    const sec = cfg.config && cfg.config.requiresSecret;
+    if (!sec || !process.env[sec]) { console.log(`deep [${id}]: SKIPPED — gated (set ${sec || "the required secret"} to enable)`); return; }
+  }
   const fetcher = FETCH[cfg.adapter];
   if (!fetcher) throw new Error(`no deep fetcher implemented for adapter "${cfg.adapter}"`);
   const raw = await fetcher(cfg.config);
   const parser = reg.mod[reg.defaultFn];
-  const { official, areas } = parser(raw);
+  const { official, areas } = parser(raw, cfg.config); // 2nd arg lets feeds w/o served (PG&E) inject a system total
   if (!areas.length) throw new Error("empty deep report (no areas) — refusing to publish");
   const collectedAt = Date.now();
 

@@ -1,0 +1,60 @@
+{
+  "raw": {
+    "summary": {
+      "customersOutNow": 2,
+      "customersServed": 49849,
+      "customersAffected": 2
+    },
+    "outages": [
+      {
+        "outageRecID": "2026-06-24-3411",
+        "customersOutNow": 1,
+        "estimatedTimeOfRestoral": null,
+        "outagePoint": {
+          "lat": 64.94041975356352,
+          "lng": -147.85915608309278
+        }
+      },
+      {
+        "outageRecID": "2026-06-24-3413",
+        "customersOutNow": 1,
+        "estimatedTimeOfRestoral": null,
+        "outagePoint": {
+          "lat": 64.93962849593328,
+          "lng": -147.86822418781802
+        }
+      }
+    ]
+  },
+  "expected": {
+    "official": {
+      "out": 2,
+      "served": 49849,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "2026-06-24-3411",
+        "out": 1,
+        "served": 1,
+        "etr": null,
+        "loc": [
+          64.94041975356352,
+          -147.85915608309278
+        ],
+        "subs": []
+      },
+      {
+        "name": "2026-06-24-3413",
+        "out": 1,
+        "served": 1,
+        "etr": null,
+        "loc": [
+          64.93962849593328,
+          -147.86822418781802
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "id": "gvea",
+  "name": "Golden Valley Electric (Fairbanks, AK)",
+  "adapter": "gvea",
+  "match": ["GOLDEN VALLEY ELEC", "GVEA"],
+  "config": { "base": "https://outage.gvea.com" },
+  "reconciliation": { "tolerancePct": 15 }
+}

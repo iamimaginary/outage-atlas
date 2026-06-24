@@ -1,0 +1,13 @@
+{
+  "id": "pge",
+  "name": "Pacific Gas & Electric (CA)",
+  "adapter": "pge",
+  "match": ["PACIFIC GAS", "PG&E"],
+  "config": {
+    "base": "https://ags.pge.esriemcs.com/arcgis/rest/services/43/outages/MapServer",
+    "layer": 4,
+    "referer": "https://pgealerts.alerts.pge.com",
+    "servedTotal": 5500000
+  },
+  "reconciliation": { "tolerancePct": 10 }
+}

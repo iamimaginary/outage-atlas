@@ -1,0 +1,8 @@
+{
+  "id": "duke-carolinas",
+  "name": "Duke Energy Carolinas (NC/SC)",
+  "adapter": "duke",
+  "match": ["DUKE ENERGY CAROLINAS", "DUKE ENERGY PROGRESS"],
+  "config": { "jurisdiction": "DEC", "referer": "https://outagemap.duke-energy.com" },
+  "reconciliation": { "tolerancePct": 10 }
+}

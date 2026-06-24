@@ -1,0 +1,8 @@
+{
+  "id": "duke-florida",
+  "name": "Duke Energy Florida",
+  "adapter": "duke",
+  "match": ["DUKE ENERGY FLORIDA"],
+  "config": { "jurisdiction": "DEF", "referer": "https://outagemap.duke-energy.com" },
+  "reconciliation": { "tolerancePct": 10 }
+}

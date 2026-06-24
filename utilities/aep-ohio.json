@@ -1,0 +1,12 @@
+{
+  "id": "aep-ohio",
+  "name": "AEP Ohio (Columbus)",
+  "adapter": "kubra",
+  "match": ["OHIO POWER", "AEP OHIO"],
+  "config": {
+    "instance": "9c0735d8-b721-4dce-b80b-558e98ce1083",
+    "view": "9b2feb80-69f8-4035-925e-f2acbcf1728e",
+    "referer": "https://outagemap.aepohio.com/"
+  },
+  "reconciliation": { "tolerancePct": 15 }
+}
