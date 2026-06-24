@@ -1,0 +1,45 @@
+{
+  "raw": {
+    "totals": {
+      "totalClientsWithoutService": 4412,
+      "totalClients": 1468223
+    },
+    "regions": [
+      {
+        "name": "Mayaguez",
+        "totalClientsWithoutService": 2748,
+        "totalClients": 200000
+      },
+      {
+        "name": "San Juan",
+        "totalClientsWithoutService": 1664,
+        "totalClients": 400000
+      }
+    ]
+  },
+  "expected": {
+    "official": {
+      "out": 4412,
+      "served": 1468223,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Mayaguez",
+        "out": 2748,
+        "served": 200000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "San Juan",
+        "out": 1664,
+        "served": 400000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

@@ -237,7 +237,78 @@ async function fetchAesOhio(c) {
   return tget(url, { Referer: c.referer || "https://myprofile.aes-ohio.com/Outages/Outages.html" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio };
+// POST helper (json body -> json) with the same retry policy as jget.
+async function jpost(url, body, extra = {}) {
+  const headers = { "User-Agent": UA, Accept: "application/json, text/plain, */*", "Content-Type": "application/json", ...extra };
+  let lastErr;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const r = await fetch(url, { method: "POST", headers, body: body == null ? undefined : (typeof body === "string" ? body : JSON.stringify(body)), signal: AbortSignal.timeout(15000) });
+      if (r.ok) return r.json();
+      lastErr = new Error(`${url.split("/")[2]} ${r.status}`);
+      if (!(r.status === 403 || r.status === 429 || r.status >= 500)) break;
+    } catch (e) { lastErr = e; }
+    await new Promise((res) => setTimeout(res, 700 * attempt + Math.random() * 400));
+  }
+  throw lastErr;
+}
+
+// OMAP (PPL Electric + Rhode Island Energy — multi-tenant by host): county/township tree.
+async function fetchOmap(c) {
+  const base = (c.base || "").replace(/\/$/, "");
+  if (!base) throw new Error("omap: config.base required");
+  return jget(`${base}/api/Omap/Outage/Tabular?opco=${c.opco || "PA"}`, { Referer: c.referer || base });
+}
+// DataCapable / UtiliSocial (Seattle City Light, Duquesne): flat events array.
+async function fetchDatacapable(c) {
+  if (!c.url) throw new Error("datacapable: config.url required");
+  return jget(c.url, { Referer: c.referer || new URL(c.url).origin });
+}
+// LUMA / PREPA (Puerto Rico): region totals.
+async function fetchLuma(c) {
+  const base = (c.base || "https://api.miluma.lumapr.com/miluma-outage-api").replace(/\/$/, "");
+  return jget(`${base}/outage/regionsWithoutService`, { Referer: c.referer || "https://miluma.lumapr.com/" });
+}
+// MidAmerican: POST county info (empty body).
+async function fetchMidamerican(c) {
+  const base = (c.base || "https://www.midamericanenergy.com").replace(/\/$/, "");
+  return jpost(`${base}/OutageWatch/api/County/CountyInfo/`, {}, { Referer: c.referer || base + "/OutageWatch/dsk.html" });
+}
+// Idaho Power: GET JSON.
+async function fetchIdahoPower(c) {
+  return jget(c.url || "https://apiedge.idahopower.com/api/Outage/GetCurrentOutageInformation", { Referer: c.referer || "https://www.idahopower.com/outages/" });
+}
+// AES Indiana (IPL): XML (Accept */* — application/xml -> 406).
+async function fetchAesIndiana(c) {
+  return tget(c.url || "https://myaccount.aesindiana.com/OMSDATA/OMSDATA_OSI.xml", { Referer: c.referer || "https://myaccount.aesindiana.com/", Accept: "*/*" });
+}
+// Tucson Electric Power: POST mapfeed (empty body; GET returns 403).
+async function fetchTep(c) {
+  return jpost(c.url || "https://apps.tep.com/OutageApp/mapfeed", "", { Referer: c.referer || "https://www.tep.com/outages/", "Content-Type": "application/x-www-form-urlencoded" });
+}
+// Tampa Electric (TECO): POST Elasticsearch tiles — the geo_bounding_box filter is mandatory.
+async function fetchTeco(c) {
+  const url = c.url || "https://outage-data-prod-hrcadje2h9aje9c9.a03.azurefd.net/api/v1/outage-tiles";
+  const body = c.body || { size: 10000, query: { bool: { must: { match_all: {} }, filter: { geo_bounding_box: { polygonCenter: { top_left: { lat: 31.1, lon: -87.7 }, bottom_right: { lat: 24.4, lon: -79.9 } } } } } }, sort: [{ updateTime: "asc" }, { incidentId: "asc" }], _source: "*" };
+  return jpost(url, body, { Referer: c.referer || "https://outage.tecoenergy.com/" });
+}
+// El Paso Electric: POST (x-api-key) -> AES-256-GCM envelope {data,iv} -> decrypt to JSON.
+async function fetchElPaso(c) {
+  const { createDecipheriv } = await import("node:crypto");
+  const env = await jpost(c.url || "https://starlit.epelectric.com/OmsApi/GetOutages", {}, { "x-api-key": c.apiKey || "f47ac10b-58cc-4372-a567-0e02b2c3d479", Referer: c.referer || "https://outagemap.epelectric.com/" });
+  if (!env || !env.data || !env.iv) throw new Error("el-paso: response not an {data,iv} envelope");
+  const key = Buffer.from((c.passphrase || "0u7@geM@p43ped0n3bYS7e3leC0n5u17").padEnd(32, "0").slice(0, 32), "utf8");
+  const ct = Buffer.from(env.data, "hex");
+  const d = createDecipheriv("aes-256-gcm", key, Buffer.from(env.iv, "hex"));
+  d.setAuthTag(ct.subarray(ct.length - 16));
+  return JSON.parse(d.update(ct.subarray(0, ct.length - 16), undefined, "utf8") + d.final("utf8"));
+}
+// Puget Sound Energy: in-house Sitecore JSON (the "Anonymouss" double-s is required).
+async function fetchPuget(c) {
+  return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

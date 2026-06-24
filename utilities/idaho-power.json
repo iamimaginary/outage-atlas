@@ -1,0 +1,16 @@
+{
+  "id": "idaho-power",
+  "name": "Idaho Power (ID)",
+  "adapter": "idaho-power",
+  "match": [
+    "IDAHO POWER"
+  ],
+  "config": {
+    "url": "https://apiedge.idahopower.com/api/Outage/GetCurrentOutageInformation",
+    "referer": "https://www.idahopower.com/outages/",
+    "servedTotal": 611598
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

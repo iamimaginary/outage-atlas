@@ -1,0 +1,16 @@
+{
+  "id": "duquesne",
+  "name": "Duquesne Light (PA)",
+  "adapter": "datacapable",
+  "match": [
+    "DUQUESNE LIGHT"
+  ],
+  "config": {
+    "url": "https://dlc.datacapable.com/datacapable/v2/p/dlc/map/events",
+    "referer": "https://dlc.datacapable.com/map/",
+    "servedTotal": 616608
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

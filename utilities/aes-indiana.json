@@ -1,0 +1,17 @@
+{
+  "id": "aes-indiana",
+  "name": "AES Indiana (Indianapolis P&L)",
+  "adapter": "aes-indiana",
+  "match": [
+    "INDIANAPOLIS POWER",
+    "AES INDIANA"
+  ],
+  "config": {
+    "url": "https://myaccount.aesindiana.com/OMSDATA/OMSDATA_OSI.xml",
+    "referer": "https://myaccount.aesindiana.com/",
+    "servedTotal": 519319
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

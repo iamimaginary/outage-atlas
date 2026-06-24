@@ -1,0 +1,15 @@
+{
+  "id": "puget",
+  "name": "Puget Sound Energy (WA)",
+  "adapter": "puget",
+  "match": [
+    "PUGET SOUND"
+  ],
+  "config": {
+    "referer": "https://www.pse.com/en/outage/outage-map",
+    "servedTotal": 1210394
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "el-paso",
+  "name": "El Paso Electric (TX/NM)",
+  "adapter": "el-paso",
+  "match": [
+    "EL PASO ELECTRIC"
+  ],
+  "config": {
+    "referer": "https://outagemap.epelectric.com/",
+    "servedTotal": 455303
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

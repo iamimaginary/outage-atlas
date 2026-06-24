@@ -19,6 +19,16 @@ import * as ifactor from "./ifactor.mjs";
 import * as pacificorp from "./pacificorp.mjs";
 import * as wec from "./wec.mjs";
 import * as aesOhio from "./aes-ohio.mjs";
+import * as omap from "./omap.mjs";
+import * as datacapable from "./datacapable.mjs";
+import * as luma from "./luma.mjs";
+import * as midamerican from "./midamerican.mjs";
+import * as idahoPower from "./idaho-power.mjs";
+import * as aesIndiana from "./aes-indiana.mjs";
+import * as tep from "./tep.mjs";
+import * as teco from "./teco.mjs";
+import * as elPaso from "./el-paso.mjs";
+import * as puget from "./puget.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -45,6 +55,16 @@ export const ADAPTERS = {
   pacificorp: { mod: pacificorp, defaultFn: "parsePacificorp", canonical: true }, // 6 state JSON files
   wec: { mod: wec, defaultFn: "parseWec", canonical: true },                       // We Energies + Wisconsin Public Service
   "aes-ohio": { mod: aesOhio, defaultFn: "parseAesOhio", canonical: true },        // Dayton P&L XML feed
+  omap: { mod: omap, defaultFn: "parseOmap", canonical: true },                    // PPL "OMAP" — PPL Electric + RI Energy
+  datacapable: { mod: datacapable, defaultFn: "parseDatacapable", canonical: true }, // Seattle City Light + Duquesne
+  luma: { mod: luma, defaultFn: "parseLuma", canonical: true },                    // LUMA/PREPA (Puerto Rico)
+  midamerican: { mod: midamerican, defaultFn: "parseMidamerican", canonical: true },
+  "idaho-power": { mod: idahoPower, defaultFn: "parseIdahoPower", canonical: true },
+  "aes-indiana": { mod: aesIndiana, defaultFn: "parseAesIndiana", canonical: true }, // IPL XML feed
+  tep: { mod: tep, defaultFn: "parseTep", canonical: true },                        // Tucson Electric Power
+  teco: { mod: teco, defaultFn: "parseTeco", canonical: true },                     // Tampa Electric (micustomer ES)
+  "el-paso": { mod: elPaso, defaultFn: "parseElPaso", canonical: true },            // El Paso Electric (AES-GCM)
+  puget: { mod: puget, defaultFn: "parsePuget", canonical: true },                  // Puget Sound Energy (Sitecore)
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

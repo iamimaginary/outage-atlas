@@ -1,0 +1,37 @@
+{
+  "raw": [
+    {
+      "id": 1,
+      "numPeople": 12,
+      "latitude": 47.6,
+      "longitude": -122.3,
+      "etrTime": 1782349200000,
+      "city": "South Seattle",
+      "state": "WA",
+      "identifier": "abc"
+    }
+  ],
+  "opts": {
+    "servedTotal": 493662
+  },
+  "expected": {
+    "official": {
+      "out": 12,
+      "served": 493662,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "South Seattle, WA",
+        "out": 12,
+        "served": 12,
+        "etr": "2026-06-25T01:00:00.000Z",
+        "loc": [
+          47.6,
+          -122.3
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

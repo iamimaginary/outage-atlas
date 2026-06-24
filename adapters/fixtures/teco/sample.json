@@ -1,0 +1,73 @@
+{
+  "raw": {
+    "aggregations": {
+      "customerCountSum": {
+        "value": 25
+      }
+    },
+    "hits": {
+      "total": {
+        "value": 2
+      },
+      "hits": [
+        {
+          "_source": {
+            "customerCount": 17,
+            "incidentId": "A1",
+            "estimatedTimeOfRestoration": "2026-06-24T20:30:00",
+            "polygonCenter": [
+              -82.21,
+              28.43
+            ],
+            "reason": "Tree"
+          }
+        },
+        {
+          "_source": {
+            "customerCount": 8,
+            "incidentId": "A2",
+            "polygonCenter": [
+              -82.51,
+              28.03
+            ],
+            "reason": "Damage"
+          }
+        }
+      ]
+    }
+  },
+  "opts": {
+    "servedTotal": 819767
+  },
+  "expected": {
+    "official": {
+      "out": 25,
+      "served": 819767,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Tree",
+        "out": 17,
+        "served": 17,
+        "etr": "2026-06-24T20:30:00",
+        "loc": [
+          28.43,
+          -82.21
+        ],
+        "subs": []
+      },
+      {
+        "name": "Damage",
+        "out": 8,
+        "served": 8,
+        "etr": null,
+        "loc": [
+          28.03,
+          -82.51
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "raw": [
+    {
+      "CountyNam": "POLK",
+      "NumOutages": 1836,
+      "PremiseCount": 300000
+    },
+    {
+      "CountyNam": "TAYLOR",
+      "NumOutages": 1645,
+      "PremiseCount": 5000
+    },
+    {
+      "CountyNam": "CALM",
+      "NumOutages": 0,
+      "PremiseCount": 9999
+    }
+  ],
+  "opts": {
+    "servedTotal": 810356
+  },
+  "expected": {
+    "official": {
+      "out": 3481,
+      "served": 810356,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "POLK",
+        "out": 1836,
+        "served": 300000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "TAYLOR",
+        "out": 1645,
+        "served": 5000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

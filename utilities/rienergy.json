@@ -1,0 +1,17 @@
+{
+  "id": "rienergy",
+  "name": "Rhode Island Energy (Narragansett)",
+  "adapter": "omap",
+  "match": [
+    "NARRAGANSETT",
+    "RHODE ISLAND ENERGY"
+  ],
+  "config": {
+    "base": "https://outagemap.rienergy.com/OMAP",
+    "opco": "PA",
+    "referer": "https://outagemap.rienergy.com/OMAP"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "raw": {
+    "UnplannedOutageSummary": {
+      "CustomerAfftectedCount": 30,
+      "OutageCount": 2
+    },
+    "PseMap": [
+      {
+        "DataProvider": {
+          "Attributes": [
+            {
+              "RefName": "Customers impacted",
+              "Value": "20"
+            },
+            {
+              "RefName": "Est. Restoration time",
+              "Value": "6/24 8:00 PM"
+            }
+          ],
+          "PointOfInterest": {
+            "Title": "Snoqualmie",
+            "Latitude": 47.5,
+            "Longitude": -121.8
+          }
+        }
+      },
+      {
+        "DataProvider": {
+          "Attributes": [
+            {
+              "RefName": "Customers impacted",
+              "Value": "10"
+            }
+          ],
+          "PointOfInterest": {
+            "Title": "Ferndale",
+            "Latitude": 48.8,
+            "Longitude": -122.6
+          }
+        }
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 1210394
+  },
+  "expected": {
+    "official": {
+      "out": 30,
+      "served": 1210394,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Snoqualmie",
+        "out": 20,
+        "served": 20,
+        "etr": "6/24 8:00 PM",
+        "loc": [
+          47.5,
+          -121.8
+        ],
+        "subs": []
+      },
+      {
+        "name": "Ferndale",
+        "out": 10,
+        "served": 10,
+        "etr": null,
+        "loc": [
+          48.8,
+          -122.6
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "tep",
+  "name": "Tucson Electric Power (AZ)",
+  "adapter": "tep",
+  "match": [
+    "TUCSON ELECTRIC"
+  ],
+  "config": {
+    "url": "https://apps.tep.com/OutageApp/mapfeed",
+    "referer": "https://www.tep.com/outages/",
+    "servedTotal": 445122
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}
