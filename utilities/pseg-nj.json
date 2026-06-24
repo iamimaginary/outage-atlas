@@ -3,7 +3,7 @@
   "name": "PSE&G (New Jersey)",
   "adapter": "kubra",
   "match": [
-    "PUBLIC SERVICE ELECTRIC",
+    "PUBLIC SERVICE ELEC",
     "PSE&G"
   ],
   "config": {

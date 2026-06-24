@@ -4,7 +4,7 @@
   "adapter": "kubra",
   "match": [
     "MASSACHUSETTS ELECTRIC",
-    "NATIONAL GRID"
+    "NANTUCKET ELECTRIC"
   ],
   "config": {
     "instance": "9cb2e5b7-d321-4575-a552-4ae7078cbc31",
