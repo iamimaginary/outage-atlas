@@ -15,6 +15,7 @@ import * as chugach from "./chugach.mjs";
 import * as kiuc from "./kiuc.mjs";
 import * as heco from "./heco.mjs";
 import * as arcgis from "./arcgis.mjs";
+import * as ifactor from "./ifactor.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -35,6 +36,8 @@ export const ADAPTERS = {
   heco: { mod: heco, defaultFn: "parseHeco", canonical: true },
   // Generic Esri ArcGIS (config-driven field mapping) — SCE, Entergy, and other Esri-backed utilities.
   arcgis: { mod: arcgis, defaultFn: "parseArcgis", canonical: true },
+  // Legacy Kübra "iFactor" Storm Center (static JSON: metadata -> data.json + report_*.json) — Con Ed, Eversource.
+  ifactor: { mod: ifactor, defaultFn: "parseIfactor", canonical: true },
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }
