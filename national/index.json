@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generatedAt": 1782306307687,
+  "generatedAt": 1782314333915,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782306307687,
-    "counties": 216,
-    "out": 17535,
-    "states": 32,
-    "utilities": 82
+    "collectedAt": 1782314333915,
+    "counties": 318,
+    "out": 23802,
+    "states": 37,
+    "utilities": 107
   },
   "deep": {
     "firstenergy-oh": {
@@ -18,8 +18,8 @@
         "CLEVELAND ELECTRIC ILLUM",
         "TOLEDO EDISON"
       ],
-      "out": 339,
-      "collectedAt": 1782306311901
+      "out": 598,
+      "collectedAt": 1782314336767
     },
     "ameren": {
       "name": "Ameren (MO/IL)",
@@ -28,32 +28,32 @@
         "UNION ELECTRIC",
         "CENTRAL ILLINOIS"
       ],
-      "out": 648,
-      "collectedAt": 1782306309561
+      "out": 643,
+      "collectedAt": 1782314334967
     },
     "avista": {
       "name": "Avista (WA/ID)",
       "match": [
         "AVISTA"
       ],
-      "out": 20,
-      "collectedAt": 1782306309911
+      "out": 79,
+      "collectedAt": 1782314335228
     },
     "bge": {
       "name": "Baltimore Gas & Electric (MD)",
       "match": [
         "BALTIMORE GAS"
       ],
-      "out": 254,
-      "collectedAt": 1782306310304
+      "out": 342,
+      "collectedAt": 1782314335574
     },
     "central-hudson": {
       "name": "Central Hudson (NY)",
       "match": [
         "CENTRAL HUDSON"
       ],
-      "out": 81,
-      "collectedAt": 1782306310683
+      "out": 332,
+      "collectedAt": 1782314335821
     },
     "dominion-va-nc": {
       "name": "Dominion Energy (VA/NC)",
@@ -61,16 +61,16 @@
         "VIRGINIA ELECTRIC",
         "DOMINION"
       ],
-      "out": 976,
-      "collectedAt": 1782306311026
+      "out": 998,
+      "collectedAt": 1782314335996
     },
     "firstenergy-nj": {
       "name": "JCP&L (FirstEnergy NJ)",
       "match": [
         "JERSEY CENTRAL POWER"
       ],
-      "out": 97,
-      "collectedAt": 1782306311514
+      "out": 110,
+      "collectedAt": 1782314336600
     },
     "firstenergy-pa": {
       "name": "FirstEnergy (Pennsylvania)",
@@ -81,16 +81,16 @@
         "PENNSYLVANIA POWER",
         "FIRSTENERGY"
       ],
-      "out": 741,
-      "collectedAt": 1782306312233
+      "out": 1702,
+      "collectedAt": 1782314337043
     },
     "georgia-power": {
       "name": "Georgia Power",
       "match": [
         "GEORGIA POWER"
       ],
-      "out": 1281,
-      "collectedAt": 1782306312570
+      "out": 1875,
+      "collectedAt": 1782314337208
     },
     "national-grid-ma": {
       "name": "National Grid (Massachusetts)",
@@ -98,32 +98,32 @@
         "MASSACHUSETTS ELECTRIC",
         "NANTUCKET ELECTRIC"
       ],
-      "out": 526,
-      "collectedAt": 1782306312841
+      "out": 395,
+      "collectedAt": 1782314337777
     },
     "national-grid-ny": {
       "name": "National Grid (Upstate NY)",
       "match": [
         "NIAGARA MOHAWK"
       ],
-      "out": 1090,
-      "collectedAt": 1782306313277
+      "out": 555,
+      "collectedAt": 1782314337945
     },
     "oncor": {
       "name": "Oncor (TX)",
       "match": [
         "ONCOR"
       ],
-      "out": 1054,
-      "collectedAt": 1782306313544
+      "out": 834,
+      "collectedAt": 1782314338220
     },
     "peco": {
       "name": "PECO (PA)",
       "match": [
         "PECO"
       ],
-      "out": 503,
-      "collectedAt": 1782306313836
+      "out": 946,
+      "collectedAt": 1782314338584
     },
     "pepco": {
       "name": "Pepco (DC/MD)",
@@ -131,8 +131,8 @@
         "POTOMAC ELECTRIC",
         "PEPCO"
       ],
-      "out": 35,
-      "collectedAt": 1782306314208
+      "out": 10,
+      "collectedAt": 1782314338941
     },
     "pseg-long-island": {
       "name": "PSEG Long Island (NY)",
@@ -140,8 +140,8 @@
         "LONG ISLAND POWER",
         "PSEG"
       ],
-      "out": 180,
-      "collectedAt": 1782306314770
+      "out": 147,
+      "collectedAt": 1782314339286
     },
     "pseg-nj": {
       "name": "PSE&G (New Jersey)",
@@ -149,8 +149,8 @@
         "PUBLIC SERVICE ELEC",
         "PSE&G"
       ],
-      "out": 446,
-      "collectedAt": 1782306315093
+      "out": 328,
+      "collectedAt": 1782314339536
     }
   }
 }
