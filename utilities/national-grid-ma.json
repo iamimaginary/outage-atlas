@@ -1,0 +1,17 @@
+{
+  "id": "national-grid-ma",
+  "name": "National Grid (Massachusetts)",
+  "adapter": "kubra",
+  "match": [
+    "MASSACHUSETTS ELECTRIC",
+    "NATIONAL GRID"
+  ],
+  "config": {
+    "instance": "9cb2e5b7-d321-4575-a552-4ae7078cbc31",
+    "view": "ec79df5b-2c54-4fb9-a86a-b20775678236",
+    "referer": "https://outagemap.ma.nationalgridus.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

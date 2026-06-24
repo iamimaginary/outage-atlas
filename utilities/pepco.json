@@ -1,0 +1,17 @@
+{
+  "id": "pepco",
+  "name": "Pepco (DC/MD)",
+  "adapter": "kubra",
+  "match": [
+    "POTOMAC ELECTRIC",
+    "PEPCO"
+  ],
+  "config": {
+    "instance": "bac68083-1c42-44ee-bb3c-6d1c1c026f52",
+    "view": "8300abbf-e4dc-4d99-8453-821fd49e2e32",
+    "referer": "https://outagemap.pepco.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

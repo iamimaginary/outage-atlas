@@ -1,0 +1,17 @@
+{
+  "id": "national-grid-ny",
+  "name": "National Grid (Upstate NY)",
+  "adapter": "kubra",
+  "match": [
+    "NIAGARA MOHAWK",
+    "NATIONAL GRID"
+  ],
+  "config": {
+    "instance": "9cb2e5b7-d321-4575-a552-4ae7078cbc31",
+    "view": "1b69b604-7588-4753-8591-9f135a962a2f",
+    "referer": "https://outagemap.ny.nationalgridus.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

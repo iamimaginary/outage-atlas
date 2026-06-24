@@ -1,0 +1,17 @@
+{
+  "id": "pseg-nj",
+  "name": "PSE&G (New Jersey)",
+  "adapter": "kubra",
+  "match": [
+    "PUBLIC SERVICE ELECTRIC",
+    "PSE&G"
+  ],
+  "config": {
+    "instance": "79d82478-c10a-4956-a045-89de3cda618c",
+    "view": "bdb7f5be-1c1a-46fa-862e-ebdf21851d2e",
+    "referer": "https://outagecenter.pseg.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

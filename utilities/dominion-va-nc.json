@@ -1,0 +1,17 @@
+{
+  "id": "dominion-va-nc",
+  "name": "Dominion Energy (VA/NC)",
+  "adapter": "kubra",
+  "match": [
+    "VIRGINIA ELECTRIC",
+    "DOMINION"
+  ],
+  "config": {
+    "instance": "9c691bb6-767e-4532-b00e-286ac9adc223",
+    "view": "38b5394c-8bca-4dfd-ac59-b321615446bd",
+    "referer": "https://outagemap.dominionenergy.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

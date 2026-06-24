@@ -1,0 +1,17 @@
+{
+  "id": "pseg-long-island",
+  "name": "PSEG Long Island (NY)",
+  "adapter": "kubra",
+  "match": [
+    "LONG ISLAND POWER",
+    "PSEG"
+  ],
+  "config": {
+    "instance": "48006d55-45bb-40a4-99a6-1289326f0d0d",
+    "view": "fb50e444-70e5-4b69-b868-28463b5dbd19",
+    "referer": "https://outagemap.psegliny.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "firstenergy-pa",
+  "name": "FirstEnergy (Pennsylvania)",
+  "adapter": "kubra",
+  "match": [
+    "METROPOLITAN EDISON",
+    "PENNSYLVANIA ELECTRIC",
+    "WEST PENN POWER",
+    "PENNSYLVANIA POWER",
+    "FIRSTENERGY"
+  ],
+  "config": {
+    "instance": "6c715f0e-bbec-465f-98cc-0b81623744be",
+    "view": "8587e451-e258-4692-b5e8-28010506d51a",
+    "referer": "https://outages-pa.firstenergycorp.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

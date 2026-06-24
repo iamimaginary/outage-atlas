@@ -1,0 +1,16 @@
+{
+  "id": "peco",
+  "name": "PECO (PA)",
+  "adapter": "kubra",
+  "match": [
+    "PECO"
+  ],
+  "config": {
+    "instance": "39e6d9f3-fdea-4539-848f-b8631945da6f",
+    "view": "74de8a50-3f45-4f6a-9483-fd618bb9165d",
+    "referer": "https://www.peco.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

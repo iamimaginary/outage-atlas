@@ -1,0 +1,18 @@
+{
+  "id": "ameren",
+  "name": "Ameren (MO/IL)",
+  "adapter": "kubra",
+  "match": [
+    "AMEREN",
+    "UNION ELECTRIC",
+    "CENTRAL ILLINOIS"
+  ],
+  "config": {
+    "instance": "92e209c0-35c3-4ec2-9ce9-30d87a55706f",
+    "view": "9b7c2416-cb0c-4845-99c7-7b31041038a2",
+    "referer": "https://outagemap.ameren.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
