@@ -6,10 +6,13 @@
 // `canonical: true` means the parser's output must also pass validateCanonical (the schema gate).
 // `defaultFn` is the parser the golden runner / collector call unless a fixture overrides it via "fn".
 import * as kubra from "./kubra.mjs";
+import * as odin from "./odin.mjs";
 
 export const ADAPTERS = {
-  kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true }
-  // odin:  added in Phase 1 (national baseline)
+  kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
+  // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
+  // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
+  odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }
   // arcgis: added in Phase 5 (other vendors)
 };
 

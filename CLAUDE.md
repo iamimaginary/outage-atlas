@@ -118,9 +118,11 @@ The analytics engine is **utility-agnostic**: it only needs the canonical model 
 node scripts/test_adapters.mjs        # adapter golden tests
 node scripts/validate_configs.mjs     # utility-config + registry validation
 npm test                              # both of the above
+node scripts/collect_baseline.mjs     # ODIN+NWS -> data/national/{baseline,index}.json
+node scripts/check_baseline.mjs data/national/baseline.json   # baseline integrity gate
+node scripts/audit_coverage.mjs data/national/baseline.json   # per-state coverage report
+node scripts/audit_drift.mjs          # live ODIN shape vs adapter's required fields
 # (added in later phases:)
-# node scripts/collect_baseline.mjs   # ODIN+NWS -> data/national/*.json
-# node scripts/check_baseline.mjs / audit_coverage.mjs / audit_drift.mjs
 # node scripts/collect_utility.mjs <id> ; node scripts/check_reconciliation.mjs
 ```
 
@@ -143,9 +145,9 @@ spikes/                        Phase-(-1) validated-assumption evidence (raw cap
 ## Build phases (see the approved plan)
 
 - [x] Phase −1 — validate riskiest assumptions (ODIN/HIFLD/Kübra/CORS)
-- [~] Phase 0 — scaffold + audit harness  ← here
-- [ ] Phase 1 — ODIN national baseline collector + baseline audits
-- [ ] Phase 2 — location resolution (find-my-location)
+- [x] Phase 0 — scaffold + audit harness
+- [x] Phase 1 — ODIN national baseline collector + baseline audits (live: ~184 counties / 32 states / 74 utilities, baseline.json ~123KB)
+- [~] Phase 2 — location resolution (find-my-location)  ← here
 - [ ] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP
 - [ ] Phase 4 — embedded maintenance / audit-agent system
 - [ ] Phase 5+ — expansion (more utilities, other vendors, serverless proxy, ToS-gated poweroutage)
