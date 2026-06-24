@@ -10,6 +10,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { loadJson } from "./lib/load.mjs";
+import { crossSourceAgree } from "./lib/audits.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -35,7 +36,6 @@ let ids;
 if (isUrl) { ids = readdirSync(join(ROOT, "utilities")).filter((f) => f.endsWith(".json")).map((f) => f.replace(/\.json$/, "")); }
 else { ids = existsSync(utilsBase) ? readdirSync(utilsBase).filter((f) => f.endsWith(".json")).map((f) => f.replace(/\.json$/, "")) : []; }
 
-const pct = (a, b) => (Math.abs(a - b) / Math.max(b, 1)) * 100;
 const fails = [], notes = [];
 
 for (const id of ids) {
@@ -43,9 +43,9 @@ for (const id of ids) {
   const snap = await loadJson(isUrl ? `${utilsBase.replace(/\/$/, "")}/${id}.json` : join(utilsBase, `${id}.json`));
   const deepOut = snap.official.out;
   const baseOut = matchesOut(ucfg.match || [ucfg.name]);
-  if (Math.max(deepOut, baseOut) < FLOOR) { notes.push(`${id}: deep ${deepOut} vs ODIN ${baseOut} — below floor, skipped`); continue; }
-  const d = pct(deepOut, baseOut);
-  (d > TOL_PCT ? fails : notes).push(`${id}: deep ${deepOut} vs ODIN-baseline ${baseOut} -> ${d.toFixed(0)}% (tol ${TOL_PCT}%)`);
+  const r = crossSourceAgree(deepOut, baseOut, TOL_PCT, FLOOR);
+  if (r.skipped) { notes.push(`${id}: deep ${deepOut} vs ODIN ${baseOut} — below floor, skipped`); continue; }
+  (r.ok ? notes : fails).push(`${id}: deep ${deepOut} vs ODIN-baseline ${baseOut} -> ${r.pct.toFixed(0)}% (tol ${TOL_PCT}%)`);
 }
 
 console.log("baseline<->deep agreement:");

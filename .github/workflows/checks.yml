@@ -41,3 +41,9 @@ jobs:
 
       - name: CSP / page-structure audit
         run: node scripts/audit_csp.mjs
+
+      - name: ToS guard (poweroutage off without a license key)
+        run: node scripts/audit_tos.mjs
+
+      - name: Audit the auditors
+        run: node scripts/test_audits.mjs

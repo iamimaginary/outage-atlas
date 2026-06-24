@@ -9,6 +9,7 @@
 //   node scripts/audit_coverage.mjs [path-or-url] --write-expected # snapshot current states as the baseline
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
 import { loadJson } from "./lib/load.mjs";
+import { coverageRegression } from "./lib/audits.mjs";
 
 const args = process.argv.slice(2);
 const src = args.find((a) => !a.startsWith("--")) || "data/national/baseline.json";
@@ -38,8 +39,7 @@ if (writeExpected) {
 if (strict) {
   if (!existsSync(EXPECTED)) { console.error(`\n--strict but ${EXPECTED} missing; run --write-expected first`); process.exit(1); }
   const expected = JSON.parse(readFileSync(EXPECTED, "utf8")).states || [];
-  const now = new Set(states);
-  const missing = expected.filter((s) => !now.has(s));
+  const { missing } = coverageRegression(states, expected);
   if (missing.length) { console.error(`\nCOVERAGE REGRESSION: previously-covered states now absent: ${missing.join(", ")}`); process.exit(1); }
   console.log(`\n  ✓ no coverage regression (${expected.length} expected states all present)`);
 }

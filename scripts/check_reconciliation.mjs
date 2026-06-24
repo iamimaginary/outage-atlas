@@ -10,6 +10,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { loadJson } from "./lib/load.mjs";
+import { reconcile } from "./lib/audits.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -23,7 +24,6 @@ const ids = which === "all"
   : [which];
 if (!ids) throw new Error("`all` needs a local --base dir; give a specific utilityId for a URL base");
 
-const pct = (a, b) => (Math.abs(a - b) / Math.max(b, 1)) * 100;
 const fails = [], notes = [];
 
 for (const id of ids) {
@@ -32,10 +32,10 @@ for (const id of ids) {
   const snap = await loadJson(isUrl ? `${base.replace(/\/$/, "")}/${id}.json` : join(base, `${id}.json`));
   const summed = (snap.areas || []).reduce((a, c) => a + (c.out || 0), 0);
   const official = snap.official ? snap.official.out : null;
-  if (official == null) { fails.push(`${id}: no official total in snapshot`); continue; }
-  if (Math.max(summed, official) < FLOOR) { notes.push(`${id}: below floor (summed ${summed} / official ${official}) — skipped`); continue; }
-  const d = pct(summed, official);
-  (d > tol ? fails : notes).push(`${id}: our sum ${summed} vs published ${official} -> ${d.toFixed(1)}% (tol ${tol}%)`);
+  const r = reconcile(summed, official, tol, FLOOR);
+  if (r.reason) { fails.push(`${id}: ${r.reason}`); continue; }
+  if (r.skipped) { notes.push(`${id}: below floor (summed ${summed} / official ${official}) — skipped`); continue; }
+  (r.ok ? notes : fails).push(`${id}: our sum ${summed} vs published ${official} -> ${r.pct.toFixed(1)}% (tol ${tol}%)`);
 }
 
 console.log("reconciliation:");

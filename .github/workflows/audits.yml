@@ -1,0 +1,81 @@
+name: Scheduled audits
+
+# The "detecting" loop of the embedded maintenance-agent system (the PR checks.yml is the "blocking"
+# gate). On a schedule, each audit runs against live upstreams / the deployed tracker-data snapshot;
+# on failure it auto-files (and dedupes) a labeled issue a maintenance agent picks up per CLAUDE.md.
+# Webhook events don't cover everything, so this cron is the heartbeat.
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"   # every 3h (offset so it doesn't collide with the collector)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - id: run
+        continue-on-error: true
+        run: set -o pipefail; node scripts/audit_drift.mjs 2>&1 | tee /tmp/o.txt
+      - if: steps.run.outcome == 'failure'
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: node scripts/file_issue.mjs --title "Audit: ODIN payload drift" --labels "drift,adapter-broken" --signature "drift:odin" < /tmp/o.txt
+
+  feeds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - id: run
+        continue-on-error: true
+        run: set -o pipefail; node scripts/audit_feeds.mjs 2>&1 | tee /tmp/o.txt
+      - if: steps.run.outcome == 'failure'
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: node scripts/file_issue.mjs --title "Audit: critical feed down" --labels "audit-failure" --signature "feeds:critical" < /tmp/o.txt
+
+  reconciliation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - name: Mount tracker-data at ./data
+        run: |
+          git fetch origin tracker-data --depth=1
+          git worktree add -B tracker-data data origin/tracker-data
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - id: run
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          { node scripts/check_reconciliation.mjs all --base data/utilities \
+            && node scripts/audit_baseline_deep.mjs --baseline data/national/baseline.json --utils data/utilities --strict; } 2>&1 | tee /tmp/o.txt
+      - if: steps.run.outcome == 'failure'
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: node scripts/file_issue.mjs --title "Audit: reconciliation breach" --labels "data-wrong,audit-failure" --signature "reconciliation" < /tmp/o.txt
+
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - name: Mount tracker-data at ./data
+        run: |
+          git fetch origin tracker-data --depth=1
+          git worktree add -B tracker-data data origin/tracker-data
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Per-state coverage report (roadmap signal)
+        run: node scripts/audit_coverage.mjs data/national/baseline.json

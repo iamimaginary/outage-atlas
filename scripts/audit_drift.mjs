@@ -6,6 +6,7 @@
 //
 //   node scripts/audit_drift.mjs
 import { writeFileSync, mkdirSync } from "node:fs";
+import { analyzeOdinShape } from "./lib/audits.mjs";
 
 const ODIN_BASE = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county";
 // Fields parseOdinRecords() depends on — losing any of these breaks the baseline:
@@ -19,14 +20,9 @@ const data = await r.json();
 const recs = data.results || [];
 if (!recs.length) { console.error("ODIN returned no records to shape-check"); process.exit(1); }
 
-const seen = new Set();
-for (const rec of recs) for (const k of Object.keys(rec)) seen.add(k);
+const { seen, missingRequired, newKeys, vanished } = analyzeOdinShape(recs, REQUIRED, KNOWN);
 
-const missingRequired = REQUIRED.filter((k) => !seen.has(k));
-const newKeys = [...seen].filter((k) => !KNOWN.has(k));
-const vanished = [...KNOWN].filter((k) => !seen.has(k));
-
-console.log(`drift audit: ${seen.size} fields seen across ${recs.length} sample records`);
+console.log(`drift audit: ${seen.length} fields seen across ${recs.length} sample records`);
 if (newKeys.length) console.log("  · NEW fields (not in known set):", newKeys.join(", "));
 if (vanished.length) console.log("  · known fields not present in sample:", vanished.join(", "));
 

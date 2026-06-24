@@ -76,12 +76,40 @@ The analytics engine is **utility-agnostic**: it only needs the canonical model 
 1. **Everything parses** (`node --check` on all `.mjs`).
 2. **Configs valid** (`scripts/validate_configs.mjs`).
 3. **Adapter golden tests** (`scripts/test_adapters.mjs`).
-4. **Reconciliation of deployed data** — added once `tracker-data` exists (Phase 1/3). Per-utility:
-   our summed `areas` vs the source's own `official` within tolerance. **This is the safety net against
-   a fix that passes its golden test but mis-parses live data — trust it over the golden test when they
-   disagree.** (It is what caught the Kübra multi-state bug in the spike.)
+4. **Geo-resolution golden tests** (`scripts/test_geo.mjs`).
+5. **CSP / page-structure audit** (`scripts/audit_csp.mjs`).
+6. **ToS guard** (`scripts/audit_tos.mjs`) — poweroutage stays off without an operator license key.
+7. **Audit the auditors** (`scripts/test_audits.mjs`).
 
-## Recurring jobs (skeleton — fully wired in Phase 4)
+The **reconciliation** safety net (per-utility summed `areas` vs the source's own `official`) and the
+**baseline↔deep**, **drift**, **coverage**, and **feeds** detectors run on a schedule against deployed
+data (`.github/workflows/audits.yml`) and auto-file issues — they can't run on a PR (no live data).
+**Reconciliation is the net against a fix that passes its golden test but mis-parses live data — trust
+it over the golden test when they disagree** (it caught the Kübra multi-state bug in the spike).
+
+## The embedded maintenance / audit-agent system
+
+The platform self-monitors so agents can maintain it safely. Two loops:
+- **Blocking gate** — `.github/workflows/checks.yml` runs on every PR: parse, configs, golden tests,
+  geo tests, CSP audit, ToS guard. Nothing merges red.
+- **Detecting loop** — `.github/workflows/audits.yml` runs on a schedule against live upstreams / the
+  deployed `tracker-data` snapshot and, on failure, **auto-files a labeled, de-duplicated issue**
+  (`scripts/file_issue.mjs` → `scripts/lib/file_issue.mjs`) that an agent picks up. The detectors share
+  one tested core (`scripts/lib/audits.mjs`), and `scripts/test_audits.mjs` audits the auditors (feeds
+  each detector broken input and asserts it fires) so they can't go silently blind.
+
+What each agent does (bounded by the Guardrails + STOP rules below):
+- **Drift agent** (`drift`/`adapter-broken`): reproduce offline (`node scripts/test_adapters.mjs` against
+  the captured fixture), edit ONLY the offending `adapters/<vendor>.mjs`, PR. Reconciliation guards a
+  wrong-but-passing fix.
+- **Reconciliation agent** (`data-wrong`/`audit-failure`): investigate; classify parse-bug (→ drift fix)
+  vs bad upstream (note / disable that utility's deep feed via config). NEVER change correct data; STOP
+  if numbers can only be made to "look right."
+- **Coverage agent** (`coverage-gap`/`utility-request`): prioritize and build the next `utilities/<id>.json`
+  (+ adapter + fixture if a new vendor) — the national-expansion loop.
+- **Feeds agent** (`audit-failure`): confirm an upstream outage vs our bug; if upstream, wait/note.
+
+## Recurring jobs
 
 - **A. Fix a broken adapter** — a failing snapshot auto-captures the raw payload into
   `adapters/fixtures/<vendor>/`. Reproduce offline with `node scripts/test_adapters.mjs`, edit ONLY
@@ -125,6 +153,10 @@ node scripts/audit_drift.mjs          # live ODIN shape vs adapter's required fi
 node scripts/collect_utility.mjs firstenergy-oh        # deep feed -> data/utilities/<id>.json + history
 node scripts/check_reconciliation.mjs all              # per-utility: summed areas vs official (strict)
 node scripts/audit_baseline_deep.mjs                   # ODIN baseline vs deep feed (cross-source)
+node scripts/audit_tos.mjs                             # ToS guard: poweroutage off without a license key
+node scripts/audit_feeds.mjs                           # upstream feed reachability
+node scripts/test_audits.mjs                           # audit the auditors (detectors fire on broken input)
+npm test                                               # full PR gate locally
 ```
 
 ## File map
@@ -145,8 +177,18 @@ scripts/collect_baseline.mjs   ODIN+NWS -> data/national/{baseline,index}.json
 scripts/check_baseline.mjs     baseline integrity gate
 scripts/audit_coverage.mjs     per-state coverage report / regression
 scripts/audit_drift.mjs        ODIN shape-drift detector
+scripts/audit_baseline_deep.mjs cross-source baseline<->deep agreement
+scripts/audit_tos.mjs          ToS guard (poweroutage off without a license key)
+scripts/audit_feeds.mjs        upstream feed-health reachability
+scripts/check_reconciliation.mjs per-utility reconciliation (the wrong-but-passing safety net)
+scripts/test_audits.mjs        audit the auditors (detectors fire on broken input)
+scripts/file_issue.mjs         CLI: file/dedupe a labeled audit issue (reads body from stdin)
 scripts/validate_configs.mjs   config + registry validator
-scripts/lib/                   shared helpers (load.mjs; issue-filing in Phase 4)
+scripts/lib/audits.mjs         pure, tested audit logic (shared by detectors + test_audits)
+scripts/lib/load.mjs           path-or-URL JSON loader
+scripts/lib/file_issue.mjs     GitHub issue create/dedupe + PII sanitize
+docs/FEEDBACK.md               feedback + audit-issue triage rules
+.github/workflows/             checks (PR gate), audits (scheduled detectors), collect-baseline, labels
 spikes/                        Phase-(-1) validated-assumption evidence (raw captures, not goldens)
 .github/labels.yml             label scheme (feedback + audit-agent signals)
 .github/workflows/             checks (PR gate), labels (sync); collectors + audits added later
@@ -159,5 +201,5 @@ spikes/                        Phase-(-1) validated-assumption evidence (raw cap
 - [x] Phase 1 — ODIN national baseline collector + baseline audits (live: ~184 counties / 32 states / 74 utilities, baseline.json ~123KB)
 - [x] Phase 2 — location resolution (find-my-location): web/geo.mjs + index.html (ZIP/geo → county → serving utility), geo golden tests, CSP audit
 - [x] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP: utilities/firstenergy-oh.json, collect_utility.mjs, per-utility check_reconciliation.mjs, audit_baseline_deep.mjs, page deep view (live: 43 counties / 749 townships, summed==official)
-- [~] Phase 4 — embedded maintenance / audit-agent system  ← here
+- [x] Phase 4 — embedded maintenance / audit-agent system: lib/audits.mjs (tested core), audits.yml (drift/reconciliation/feeds/coverage → auto-filed issues), ToS guard, test_audits, file_issue, docs/FEEDBACK.md
 - [ ] Phase 5+ — expansion (more utilities, other vendors, serverless proxy, ToS-gated poweroutage)
