@@ -1,0 +1,67 @@
+{
+  "raw": {
+    "object": {
+      "totalCustomersAffected": 143,
+      "outages": [
+        {
+          "omsCustomerCount": 119,
+          "outageCity": [
+            {
+              "outageCityName": "CROUCH"
+            }
+          ],
+          "omsFeederName": "HBND41",
+          "omsEstimatedOutageRestorationDate": "2026-06-24T17:30:00",
+          "latitude": 44.1,
+          "longitude": -115.9
+        },
+        {
+          "omsCustomerCount": 24,
+          "outageCity": [
+            {
+              "outageCityName": "MIDDLETON"
+            }
+          ],
+          "omsFeederName": "X",
+          "omsEstimatedOutageRestorationDate": null,
+          "latitude": 43.7,
+          "longitude": -116.6
+        }
+      ]
+    }
+  },
+  "opts": {
+    "servedTotal": 611598
+  },
+  "expected": {
+    "official": {
+      "out": 143,
+      "served": 611598,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "CROUCH",
+        "out": 119,
+        "served": 119,
+        "etr": "2026-06-24T17:30:00",
+        "loc": [
+          44.1,
+          -115.9
+        ],
+        "subs": []
+      },
+      {
+        "name": "MIDDLETON",
+        "out": 24,
+        "served": 24,
+        "etr": null,
+        "loc": [
+          43.7,
+          -116.6
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

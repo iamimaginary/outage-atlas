@@ -1,0 +1,69 @@
+{
+  "raw": {
+    "AffectedCustomersTEP": "120",
+    "CustomerBaseTEP": "458,000",
+    "OutagesCountTEP": "2",
+    "data": {
+      "outages": [
+        {
+          "division": "TEP",
+          "customersOut": "100",
+          "formattedEstimatedRestoration": "Jun 24, 8:17 PM",
+          "bounds": {
+            "coordLatCenter": "32.2",
+            "coordLngCenter": "-110.9"
+          },
+          "updatedCause": "Equipment"
+        },
+        {
+          "division": "USE",
+          "customersOut": "50",
+          "bounds": {}
+        },
+        {
+          "division": "TEP",
+          "customersOut": "20",
+          "bounds": {
+            "coordLatCenter": "32.3",
+            "coordLngCenter": "-111.0"
+          },
+          "event": "Unplanned"
+        }
+      ]
+    }
+  },
+  "opts": {
+    "servedTotal": 445122
+  },
+  "expected": {
+    "official": {
+      "out": 120,
+      "served": 458000,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Equipment",
+        "out": 100,
+        "served": 100,
+        "etr": "Jun 24, 8:17 PM",
+        "loc": [
+          32.2,
+          -110.9
+        ],
+        "subs": []
+      },
+      {
+        "name": "Unplanned",
+        "out": 20,
+        "served": 20,
+        "etr": null,
+        "loc": [
+          32.3,
+          -111
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

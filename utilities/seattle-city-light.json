@@ -1,0 +1,17 @@
+{
+  "id": "seattle-city-light",
+  "name": "Seattle City Light (WA)",
+  "adapter": "datacapable",
+  "match": [
+    "CITY OF SEATTLE",
+    "SEATTLE CITY LIGHT"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/scl/map/events",
+    "referer": "https://scl.datacapable.com/map/",
+    "servedTotal": 493662
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

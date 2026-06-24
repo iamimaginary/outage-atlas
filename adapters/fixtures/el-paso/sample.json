@@ -1,0 +1,57 @@
+{
+  "raw": {
+    "totalCustAffected": 80,
+    "totalActiveCustomers": 465269,
+    "totalOutageCount": 2,
+    "customersAffectedPerZipcode": [
+      {
+        "zipcode": "79905",
+        "customersAffected": 67
+      },
+      {
+        "zipcode": "79912",
+        "customersAffected": 13
+      }
+    ],
+    "outages": [
+      {
+        "outageNo": 1,
+        "zipcode": "79905",
+        "latitude": 31.8,
+        "longitude": -106.4,
+        "etr": "6/24/2026 7:00:00 PM"
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 455303
+  },
+  "expected": {
+    "official": {
+      "out": 80,
+      "served": 465269,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "79905",
+        "out": 67,
+        "served": 67,
+        "etr": "6/24/2026 7:00:00 PM",
+        "loc": [
+          31.8,
+          -106.4
+        ],
+        "subs": []
+      },
+      {
+        "name": "79912",
+        "out": 13,
+        "served": 13,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

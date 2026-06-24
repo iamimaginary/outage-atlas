@@ -1,0 +1,37 @@
+{
+  "raw": "<OutageData><TotalCustAffected>30</TotalCustAffected><Incidents><Marker><IncidentId>1</IncidentId><CustAffected>22</CustAffected><Lat>39.89</Lat><Long>-86.0</Long><Etr>06/24/2026 07:00 PM</Etr><outageType>OUTAGE</outageType></Marker><Marker><IncidentId>2</IncidentId><CustAffected>8</CustAffected><Lat>39.83</Lat><Long>-85.99</Long><Etr></Etr><outageType>OUTAGE</outageType></Marker></Incidents></OutageData>",
+  "opts": {
+    "servedTotal": 519319
+  },
+  "expected": {
+    "official": {
+      "out": 30,
+      "served": 519319,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Outage #1",
+        "out": 22,
+        "served": 22,
+        "etr": "06/24/2026 07:00 PM",
+        "loc": [
+          39.89,
+          -86
+        ],
+        "subs": []
+      },
+      {
+        "name": "Outage #2",
+        "out": 8,
+        "served": 8,
+        "etr": null,
+        "loc": [
+          39.83,
+          -85.99
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

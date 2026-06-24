@@ -1,0 +1,16 @@
+{
+  "id": "luma",
+  "name": "LUMA / PREPA (Puerto Rico)",
+  "adapter": "luma",
+  "match": [
+    "PUERTO RICO ELECTRIC",
+    "LUMA"
+  ],
+  "config": {
+    "base": "https://api.miluma.lumapr.com/miluma-outage-api",
+    "referer": "https://miluma.lumapr.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

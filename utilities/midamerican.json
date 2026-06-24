@@ -1,0 +1,16 @@
+{
+  "id": "midamerican",
+  "name": "MidAmerican Energy (IA)",
+  "adapter": "midamerican",
+  "match": [
+    "MIDAMERICAN"
+  ],
+  "config": {
+    "base": "https://www.midamericanenergy.com",
+    "referer": "https://www.midamericanenergy.com/OutageWatch/dsk.html",
+    "servedTotal": 810356
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

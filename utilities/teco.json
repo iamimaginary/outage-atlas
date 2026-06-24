@@ -1,0 +1,15 @@
+{
+  "id": "teco",
+  "name": "Tampa Electric (TECO)",
+  "adapter": "teco",
+  "match": [
+    "TAMPA ELECTRIC"
+  ],
+  "config": {
+    "referer": "https://outage.tecoenergy.com/",
+    "servedTotal": 819767
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

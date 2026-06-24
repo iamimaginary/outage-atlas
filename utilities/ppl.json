@@ -1,0 +1,17 @@
+{
+  "id": "ppl",
+  "name": "PPL Electric Utilities (PA)",
+  "adapter": "omap",
+  "match": [
+    "PPL ELECTRIC",
+    "PPL"
+  ],
+  "config": {
+    "base": "https://omap.prod.pplweb.com/OMAP",
+    "opco": "PA",
+    "referer": "https://omap.prod.pplweb.com/OMAP"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}
