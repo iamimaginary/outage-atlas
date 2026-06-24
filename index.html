@@ -89,6 +89,8 @@ import { parseOdinRecords } from "./adapters/odin.mjs";
 const REPO = "iamimaginary/outage-atlas";
 const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/baseline.json`;
 const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/index.json`;
+const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
+const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
 const $ = (id) => document.getElementById(id);
@@ -193,7 +195,31 @@ async function showLocation(lat, lon, label) {
   map.setView([lat, lon], 9);
 
   const dl = $("deeplink");
-  if (dl) dl.onclick = (e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent("oa:deep", { detail: { utilities, county, lat, lon } })); };
+  if (dl) { const m = deepMatch(utilities); dl.onclick = (e) => { e.preventDefault(); renderDeep(m.id, county); }; }
+}
+
+// ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
+async function renderDeep(id, county) {
+  let host = $("deepbox");
+  if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("result").after(host); }
+  host.innerHTML = `<div class="muted">Loading deep detail…</div>`;
+  let snap;
+  try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
+  catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
+  const want = county ? normCounty(county.county) : null;
+  const area = snap.areas.find((a) => normCounty(a.name) === want) || null;
+  const age = Math.round((Date.now() - snap.collectedAt) / 60000);
+  let html = `<div class="small muted">${snap.name} — deep detail · updated ${age} min ago</div>`;
+  html += `<div style="margin-top:4px"><span class="big">${fmt(snap.official.out)}</span> <span class="muted">out of ${fmt(snap.official.served)} served (utility-wide)</span></div>`;
+  if (area) {
+    html += `<div style="margin-top:10px" class="util">${area.name} county — ${fmt(area.out)} out</div>`;
+    const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
+    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
+    else html += `<div class="small muted" style="margin-top:4px">No active outages in this county right now.</div>`;
+  } else {
+    html += `<div class="small muted" style="margin-top:8px">This county isn't in ${snap.name}'s service area, or has no data.</div>`;
+  }
+  host.innerHTML = html;
 }
 
 // ---- events ----

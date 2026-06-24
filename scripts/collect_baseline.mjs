@@ -6,7 +6,7 @@
 //   node scripts/collect_baseline.mjs            # writes data/national/{baseline,index}.json
 //
 // Best-effort weather: if NWS fails, the baseline still publishes (alerts just absent).
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { parseOdinRecords } from "../adapters/odin.mjs";
 
 const ODIN_BASE = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county";
@@ -76,14 +76,16 @@ async function fetchAlerts() {
   for (const a of alerts) for (const fips of a.fips) (alertsByFips[fips] = alertsByFips[fips] || []).push(a.event);
 
   const baseline = { schema: 1, collectedAt, source: "odin", national, counties, alerts, alertsByFips };
-  const index = {
-    schema: 1,
-    generatedAt: collectedAt,
-    baseline: { source: "odin", collectedAt, counties: national.counties, out: national.out, states: national.states, utilities: national.utilities },
-    deep: {} // utilities with a pre-collected deep snapshot — populated in Phase 3+
-  };
 
+  // read-modify-write index.json so we preserve the `deep` manifest that collect_utility maintains
   mkdirSync(OUT_DIR, { recursive: true });
+  let index = { schema: 1, deep: {} };
+  if (existsSync(`${OUT_DIR}/index.json`)) { try { index = JSON.parse(readFileSync(`${OUT_DIR}/index.json`, "utf8")); } catch {} }
+  index.schema = 1;
+  index.generatedAt = collectedAt;
+  index.baseline = { source: "odin", collectedAt, counties: national.counties, out: national.out, states: national.states, utilities: national.utilities };
+  index.deep = index.deep || {};
+
   writeFileSync(`${OUT_DIR}/baseline.json`, JSON.stringify(baseline));
   writeFileSync(`${OUT_DIR}/index.json`, JSON.stringify(index, null, 2));
   console.log(`baseline written: ${national.out} out across ${national.counties} counties / ${national.states} states / ${national.utilities} utilities; ${alerts.length} active NWS alerts (${Object.keys(alertsByFips).length} counties under an alert)`);

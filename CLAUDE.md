@@ -122,8 +122,9 @@ node scripts/collect_baseline.mjs     # ODIN+NWS -> data/national/{baseline,inde
 node scripts/check_baseline.mjs data/national/baseline.json   # baseline integrity gate
 node scripts/audit_coverage.mjs data/national/baseline.json   # per-state coverage report
 node scripts/audit_drift.mjs          # live ODIN shape vs adapter's required fields
-# (added in later phases:)
-# node scripts/collect_utility.mjs <id> ; node scripts/check_reconciliation.mjs
+node scripts/collect_utility.mjs firstenergy-oh        # deep feed -> data/utilities/<id>.json + history
+node scripts/check_reconciliation.mjs all              # per-utility: summed areas vs official (strict)
+node scripts/audit_baseline_deep.mjs                   # ODIN baseline vs deep feed (cross-source)
 ```
 
 ## File map
@@ -157,6 +158,6 @@ spikes/                        Phase-(-1) validated-assumption evidence (raw cap
 - [x] Phase 0 — scaffold + audit harness
 - [x] Phase 1 — ODIN national baseline collector + baseline audits (live: ~184 counties / 32 states / 74 utilities, baseline.json ~123KB)
 - [x] Phase 2 — location resolution (find-my-location): web/geo.mjs + index.html (ZIP/geo → county → serving utility), geo golden tests, CSP audit
-- [~] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP  ← here
-- [ ] Phase 4 — embedded maintenance / audit-agent system
+- [x] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP: utilities/firstenergy-oh.json, collect_utility.mjs, per-utility check_reconciliation.mjs, audit_baseline_deep.mjs, page deep view (live: 43 counties / 749 townships, summed==official)
+- [~] Phase 4 — embedded maintenance / audit-agent system  ← here
 - [ ] Phase 5+ — expansion (more utilities, other vendors, serverless proxy, ToS-gated poweroutage)
