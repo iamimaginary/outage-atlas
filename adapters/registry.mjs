@@ -13,6 +13,7 @@ import * as fpl from "./fpl.mjs";
 import * as gvea from "./gvea.mjs";
 import * as chugach from "./chugach.mjs";
 import * as kiuc from "./kiuc.mjs";
+import * as heco from "./heco.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -28,6 +29,9 @@ export const ADAPTERS = {
   // Hawaii (ODIN has zero HI coverage too): KIUC = Kauai (open). HECO/MECO/HELCO (95% of HI) are
   // auth-gated + origin-locked -> need HECO-issued credentials + a serverless proxy (Phase 5 / escalate).
   kiuc: { mod: kiuc, defaultFn: "parseKiuc", canonical: true },
+  // HECO (Hawaiian Electric, ~95% of HI): SCAFFOLD — config ships disabled; auth-gated + origin-locked,
+  // enabled only once an operator supplies HECO_ACCESS_KEY (workers/heco-proxy.mjs does the handshake).
+  heco: { mod: heco, defaultFn: "parseHeco", canonical: true },
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

@@ -146,9 +146,26 @@ async function fetchKiuc(c) {
   return jget(`${base}/summary.json`, { Referer: "https://kiuc.outagemap.coop/" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc };
+// HECO: auth-gated + origin-locked (Hawaii). Goes through the operator-keyed serverless proxy (preferred)
+// or, server-side, the direct handshake helper. Requires HECO_ACCESS_KEY — the config ships disabled and
+// the IIFE below skips it cleanly until that secret is set.
+async function fetchHeco(c) {
+  const key = process.env[c.requiresSecret || "HECO_ACCESS_KEY"];
+  if (!key) throw new Error(`heco: ${c.requiresSecret || "HECO_ACCESS_KEY"} not set`);
+  if (c.proxyUrl) return jget(c.proxyUrl, { Authorization: `Bearer ${key}` });
+  const { fetchHecoRaw } = await import("../workers/heco-proxy.mjs");
+  return fetchHecoRaw(key, c.company || "HECO");
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco };
 
 (async () => {
+  // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until
+  // the required secret is present, so a not-yet-enabled feed never errors a collector cycle.
+  if (cfg.disabled) {
+    const sec = cfg.config && cfg.config.requiresSecret;
+    if (!sec || !process.env[sec]) { console.log(`deep [${id}]: SKIPPED — gated (set ${sec || "the required secret"} to enable)`); return; }
+  }
   const fetcher = FETCH[cfg.adapter];
   if (!fetcher) throw new Error(`no deep fetcher implemented for adapter "${cfg.adapter}"`);
   const raw = await fetcher(cfg.config);
