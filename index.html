@@ -98,22 +98,27 @@ const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
 let BASELINE = null, INDEX = { deep: {} }, map, locMarker;
 
-// ---- data load: prefer the published snapshot; fall back to live ODIN (CORS-open) ----
+// ---- data load: prefer the published snapshot; refresh from live ODIN if it's stale or unavailable ----
+const STALE_MIN = 30; // if the collector isn't running, don't show a frozen baseline — ODIN is CORS-open
+async function liveOdin(alertsByFips = {}, alerts = []) {
+  const recs = await (await fetch(ODIN_EXPORT)).json();
+  const { national, counties } = parseOdinRecords(recs);
+  setStatus(`National baseline (live ODIN): ${fmt(national.out)} out across ${fmt(national.counties)} counties.`);
+  return { schema: 1, collectedAt: Date.now(), source: "odin-live", national, counties, alerts, alertsByFips };
+}
 async function loadBaseline() {
   try {
     const r = await fetch(BASELINE_URL, { cache: "no-store" });
     if (!r.ok) throw new Error(String(r.status));
     const b = await r.json();
-    const age = Math.round((Date.now() - b.collectedAt) / 60000);
-    setStatus(`National baseline: ${fmt(b.national.out)} out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN+NWS).`);
     try { const ri = await fetch(INDEX_URL, { cache: "no-store" }); if (ri.ok) INDEX = await ri.json(); } catch {}
+    const age = Math.round((Date.now() - b.collectedAt) / 60000);
+    if (age > STALE_MIN) { setStatus(`Published snapshot ${age} min old — refreshing from live ODIN…`); return liveOdin(b.alertsByFips || {}, b.alerts || []); }
+    setStatus(`National baseline: ${fmt(b.national.out)} out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN+NWS).`);
     return b;
   } catch (e) {
     setStatus("Published snapshot unavailable — fetching live ODIN…");
-    const recs = await (await fetch(ODIN_EXPORT)).json();
-    const { national, counties } = parseOdinRecords(recs);
-    setStatus(`National baseline (live ODIN): ${fmt(national.out)} out across ${fmt(national.counties)} counties.`);
-    return { schema: 1, collectedAt: Date.now(), source: "odin-live", national, counties, alerts: [], alertsByFips: {} };
+    return liveOdin();
   }
 }
 
