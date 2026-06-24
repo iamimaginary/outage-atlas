@@ -1,0 +1,23 @@
+{
+  "id": "ladwp",
+  "name": "LADWP (Los Angeles)",
+  "adapter": "arcgis",
+  "match": [
+    "LOS ANGELES DEPARTMENT OF WATER"
+  ],
+  "config": {
+    "base": "https://services2.arcgis.com/v0bIBBLIiGigCimX/ArcGIS/rest/services/PowerOutages_Data/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "COUNT_IN_RANK",
+      "etr": "ETR_DATETIME",
+      "id": "OBJECTID",
+      "name": "CITY_NAM"
+    },
+    "referer": "https://experience.arcgis.com/",
+    "servedTotal": 1488920
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

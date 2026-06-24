@@ -1,0 +1,16 @@
+{
+  "id": "atlantic-city-electric",
+  "name": "Atlantic City Electric",
+  "adapter": "kubra",
+  "match": [
+    "ATLANTIC CITY ELECTRIC"
+  ],
+  "config": {
+    "instance": "4b4c1b8f-d2fe-4d2a-877d-a704f764db98",
+    "view": "f9accd4d-75d9-4e7a-ad5b-d81abd62b2ed",
+    "referer": "https://outagemap.atlanticcityelectric.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

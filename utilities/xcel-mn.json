@@ -1,0 +1,25 @@
+{
+  "id": "xcel-mn",
+  "name": "Xcel Energy (Minnesota)",
+  "adapter": "arcgis",
+  "match": [
+    "NORTHERN STATES POWER"
+  ],
+  "config": {
+    "base": "https://emcs-gis.esriemcs.com/arcgis/rest/services/Xcel/XcelOutage/MapServer",
+    "layer": 3,
+    "fields": {
+      "out": "customers",
+      "etr": "etr",
+      "id": "objectid",
+      "name": "city"
+    },
+    "referer": "https://www.outagemap-xcelenergy.com/outagemap/?state=MN",
+    "servedTotal": 1538707,
+    "groupBy": "county",
+    "where": "states='MN'"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -167,20 +167,26 @@ async function fetchArcgis(c) {
   const wanted = [...new Set(["OBJECTID", ...Object.values(F).filter((v) => typeof v === "string"), c.groupBy].filter(Boolean))];
   const fields = c.outFields || wanted.join(",");
   const where = c.where || "1=1";
+  const geom = c.returnGeometry !== false;
   const H = { Referer: c.referer || new URL(base).origin };
-  const all = [];
-  const pageSize = c.pageSize || 2000;
-  // advance by the actual returned count (servers cap below pageSize, e.g. Entergy's 1000) and stop only
-  // when the server says there's no more (exceededTransferLimit false) or a page is empty.
-  for (let i = 0, offset = 0; i < 100; i++) {
-    const url = `${base}/${layer}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(fields)}&returnGeometry=true&outSR=4326&f=json&resultOffset=${offset}&resultRecordCount=${pageSize}`;
-    const r = await jget(url, H);
-    const fs = r.features || [];
-    all.push(...fs);
-    offset += fs.length;
-    if (!r.exceededTransferLimit || fs.length === 0) break;
-  }
-  return { features: all };
+  const Q = (p) => jget(`${base}/${layer}/query?${p}`, H);
+  // primary: paginated + WGS84 geometry. Advance by actual returned count (servers cap below pageSize,
+  // e.g. Entergy's 1000). ArcGIS reports query errors as a 200 body {error:{code}} — detect that and
+  // fall back rather than silently yielding zero features.
+  try {
+    const all = [];
+    for (let i = 0, offset = 0; i < 100; i++) {
+      const r = await Q(`where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(fields)}${geom ? "&returnGeometry=true&outSR=4326" : "&returnGeometry=false"}&f=json&resultOffset=${offset}&resultRecordCount=${c.pageSize || 2000}`);
+      if (r && r.error) throw new Error(`arcgis query ${r.error.code || ""}`);
+      const fs = r.features || [];
+      all.push(...fs); offset += fs.length;
+      if (!r.exceededTransferLimit || fs.length === 0) break;
+    }
+    if (all.length) return { features: all };
+  } catch { /* finicky custom host (rejects outSR/pagination) — minimal fallback below */ }
+  const r = await Q(`where=${encodeURIComponent(where)}&outFields=*&f=json`);
+  if (r && r.error) throw new Error(`arcgis: query failed (code ${r.error.code})`);
+  return { features: r.features || [] };
 }
 
 // iFactor (legacy Kübra): metadata.json -> timestamped dir -> data.json (summary) + report_*.json (areas).

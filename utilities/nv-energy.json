@@ -1,0 +1,26 @@
+{
+  "id": "nv-energy",
+  "name": "NV Energy (Nevada)",
+  "adapter": "arcgis",
+  "match": [
+    "NEVADA POWER",
+    "NV ENERGY",
+    "SIERRA PACIFIC POWER"
+  ],
+  "config": {
+    "base": "https://services.nvenergy.com/GISSvc/1.0/retrieveMapInfo/arcgis/rest/services/Outage/CURRENTOUTAGES_2024/MapServer",
+    "layer": 0,
+    "fields": {
+      "out": "NUMCUSTSTILLOUT",
+      "etr": "ERTDATETIME",
+      "id": "EVENTID",
+      "name": "EVENTLOCATION"
+    },
+    "referer": "https://maps.nvenergy.com/outagemap/index.html",
+    "servedTotal": 1000998,
+    "groupBy": "REGION"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

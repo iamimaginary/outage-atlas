@@ -1,0 +1,17 @@
+{
+  "id": "pnm",
+  "name": "Public Service Co of NM (PNM)",
+  "adapter": "kubra",
+  "match": [
+    "PUBLIC SERVICE CO OF NM",
+    "PUBLIC SERVICE COMPANY OF NEW MEXICO"
+  ],
+  "config": {
+    "instance": "b6fe87bc-3c82-4afe-b7f0-7eee93a32dfa",
+    "view": "92a8c818-17ed-401d-89be-73e5ae60ee5b",
+    "referer": "https://outagemap.pnm.com"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
