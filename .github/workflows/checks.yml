@@ -35,3 +35,9 @@ jobs:
 
       - name: Adapter golden tests
         run: node scripts/test_adapters.mjs
+
+      - name: Geo-resolution golden tests
+        run: node scripts/test_geo.mjs
+
+      - name: CSP / page-structure audit
+        run: node scripts/audit_csp.mjs

@@ -134,9 +134,18 @@ adapters/registry.mjs          adapterId -> module map (source of truth)
 adapters/<vendor>.mjs          pure raw->canonical parser (golden-tested)
 adapters/fixtures/<vendor>/    golden ({raw,expected}) + auto-captured payloads
 utilities/<id>.json            per-utility config (adapter + source config + fips + tolerance)
+index.html                     the location-first page (imports web/geo.mjs + adapters/odin.mjs)
+web/geo.mjs                    location pipeline (geocode / lat,lon->county / lat,lon->utility) — browser+Node
+web/fixtures/geo/              captured responses for the offline geo golden tests
 scripts/test_adapters.mjs      golden-test runner (registry-driven)
+scripts/test_geo.mjs           geo-resolution golden tests (offline, fixture-backed)
+scripts/audit_csp.mjs          CSP / page-structure audit (fetch origins allowed; ids exist; SRI)
+scripts/collect_baseline.mjs   ODIN+NWS -> data/national/{baseline,index}.json
+scripts/check_baseline.mjs     baseline integrity gate
+scripts/audit_coverage.mjs     per-state coverage report / regression
+scripts/audit_drift.mjs        ODIN shape-drift detector
 scripts/validate_configs.mjs   config + registry validator
-scripts/lib/                   shared helpers (issue-filing, etc. — Phase 4)
+scripts/lib/                   shared helpers (load.mjs; issue-filing in Phase 4)
 spikes/                        Phase-(-1) validated-assumption evidence (raw captures, not goldens)
 .github/labels.yml             label scheme (feedback + audit-agent signals)
 .github/workflows/             checks (PR gate), labels (sync); collectors + audits added later
@@ -147,7 +156,7 @@ spikes/                        Phase-(-1) validated-assumption evidence (raw cap
 - [x] Phase −1 — validate riskiest assumptions (ODIN/HIFLD/Kübra/CORS)
 - [x] Phase 0 — scaffold + audit harness
 - [x] Phase 1 — ODIN national baseline collector + baseline audits (live: ~184 counties / 32 states / 74 utilities, baseline.json ~123KB)
-- [~] Phase 2 — location resolution (find-my-location)  ← here
-- [ ] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP
+- [x] Phase 2 — location resolution (find-my-location): web/geo.mjs + index.html (ZIP/geo → county → serving utility), geo golden tests, CSP audit
+- [~] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP  ← here
 - [ ] Phase 4 — embedded maintenance / audit-agent system
 - [ ] Phase 5+ — expansion (more utilities, other vendors, serverless proxy, ToS-gated poweroutage)

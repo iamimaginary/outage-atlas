@@ -10,7 +10,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { parseOdinRecords } from "../adapters/odin.mjs";
 
 const ODIN_BASE = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county";
-const ODIN_FIELDS = "communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime";
+const ODIN_FIELDS = "communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 const NWS_ALERTS = "https://api.weather.gov/alerts/active";
 const UA = "outage-atlas/0.1 (+https://github.com/iamimaginary/outage-atlas)";
 const OUT_DIR = "data/national";

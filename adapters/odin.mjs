@@ -16,6 +16,8 @@
 
 const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
 const cleanName = (s) => String(s || "").replace(/,\s*\d+\s*$/, "").trim(); // drop trailing ",<id>"
+// ODIN geo_point_2d / centroid is {lon,lat} -> canonical [lat,lon] (for the map); null if absent
+const locOf = (r) => { const g = (r && (r.geo_point_2d || r.centroid)) || null; return g && typeof g.lat === "number" && typeof g.lon === "number" ? [g.lat, g.lon] : null; };
 
 // earliest ERT among incident records ('{"ert":"ISO"}' or null) -> ISO string | null
 function earliestEtr(records) {
@@ -73,6 +75,7 @@ export function parseOdinRecords(raw) {
       out: cOut,
       incidents: group.length,
       etr: earliestEtr(group),
+      loc: locOf(group[0]),
       utilities: Object.values(utilMap).sort((a, b) => b.out - a.out)
     };
   }
