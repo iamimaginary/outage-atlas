@@ -1,0 +1,12 @@
+{
+  "id": "firstenergy-oh",
+  "name": "FirstEnergy (Ohio)",
+  "adapter": "kubra",
+  "match": ["FIRSTENERGY", "OHIO EDISON", "CLEVELAND ELECTRIC ILLUM", "TOLEDO EDISON"],
+  "config": {
+    "instance": "6c715f0e-bbec-465f-98cc-0b81623744be",
+    "view": "db9c3f02-0a06-4672-a357-0f676eb75bfa",
+    "referer": "https://outages-oh.firstenergycorp.com/"
+  },
+  "reconciliation": { "tolerancePct": 15 }
+}

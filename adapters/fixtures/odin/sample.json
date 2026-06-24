@@ -1,0 +1,29 @@
+{
+  "_note": "Golden fixture for the ODIN baseline adapter. `raw` mimics the OpenDataSoft records response ({results:[…]}); `expected` is the FIPS-keyed aggregate. Exercises: per-utility rollup within a county, out-desc sort, earliest-ERT, multi-state national rollup, and skipping a record with no clean 5-digit FIPS. canonical:false (out-count product, not the per-utility schema).",
+  "raw": {
+    "total_count": 5,
+    "results": [
+      { "communitydescriptor": "39035", "county": "Cuyahoga", "state": "Ohio", "utility_id": "100", "name": "ACME POWER,100", "metersaffected": 50, "estimatedrestorationtime": "{\"ert\": \"2026-06-24T05:00:00Z\"}", "geo_point_2d": { "lon": -81.68, "lat": 41.48 } },
+      { "communitydescriptor": "39035", "county": "Cuyahoga", "state": "Ohio", "utility_id": "100", "name": "ACME POWER,100", "metersaffected": 30, "estimatedrestorationtime": null },
+      { "communitydescriptor": "39035", "county": "Cuyahoga", "state": "Ohio", "utility_id": "200", "name": "BETA ELECTRIC,200", "metersaffected": 20, "estimatedrestorationtime": "{\"ert\": \"2026-06-24T04:00:00Z\"}" },
+      { "communitydescriptor": "06037", "county": "Los Angeles", "state": "California", "utility_id": "300", "name": "GAMMA UTIL,300", "metersaffected": 5, "estimatedrestorationtime": null, "geo_point_2d": { "lon": -118.24, "lat": 34.05 } },
+      { "communitydescriptor": "BADFIPS", "county": "Nowhere", "state": "Confusion", "utility_id": "9", "name": "GHOST CO,9", "metersaffected": 999, "estimatedrestorationtime": null }
+    ]
+  },
+  "expected": {
+    "national": { "out": 105, "incidents": 4, "skipped": 1, "counties": 2, "utilities": 3, "states": 2 },
+    "counties": {
+      "06037": {
+        "fips": "06037", "county": "Los Angeles", "state": "California", "out": 5, "incidents": 1, "etr": null, "loc": [34.05, -118.24],
+        "utilities": [ { "id": "300", "name": "GAMMA UTIL", "out": 5, "incidents": 1 } ]
+      },
+      "39035": {
+        "fips": "39035", "county": "Cuyahoga", "state": "Ohio", "out": 100, "incidents": 3, "etr": "2026-06-24T04:00:00Z", "loc": [41.48, -81.68],
+        "utilities": [
+          { "id": "100", "name": "ACME POWER", "out": 80, "incidents": 2 },
+          { "id": "200", "name": "BETA ELECTRIC", "out": 20, "incidents": 1 }
+        ]
+      }
+    }
+  }
+}

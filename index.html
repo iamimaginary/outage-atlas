@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://unpkg.com 'unsafe-inline';
+  style-src 'self' https://unpkg.com 'unsafe-inline';
+  img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
+  connect-src 'self' https://api.zippopotam.us https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com;
+" />
+<title>outage-atlas — find outages near you</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="" />
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --fg:#e6edf3; --mut:#9da7b3; --acc:#58a6ff;
+          --ok:#3fb950; --warn:#d29922; --bad:#f85149; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  header { padding:16px; border-bottom:1px solid var(--line); }
+  h1 { margin:0; font-size:20px; } h1 span { color:var(--acc); }
+  .tag { color:var(--mut); font-size:13px; margin-top:2px; }
+  main { max-width:920px; margin:0 auto; padding:16px; }
+  .search { display:flex; gap:8px; flex-wrap:wrap; }
+  .search input { flex:1 1 200px; min-width:0; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:16px; }
+  button { padding:10px 14px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:14px; cursor:pointer; }
+  button.primary { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:600; }
+  button:active { transform:translateY(1px); }
+  .status { color:var(--mut); font-size:12px; margin:8px 2px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; margin-top:14px; }
+  .hide { display:none; }
+  .big { font-size:30px; font-weight:700; }
+  .muted { color:var(--mut); } .small { font-size:13px; }
+  .chip { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--line); margin:2px 4px 2px 0; }
+  .chip.alert { border-color:var(--warn); color:var(--warn); }
+  .chip.deep { border-color:var(--ok); color:var(--ok); }
+  .row { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
+  .row:first-child { border-top:0; }
+  .util { font-weight:600; } .acc { color:var(--acc); }
+  #map { height:46vh; min-height:300px; border:1px solid var(--line); border-radius:12px; margin-top:14px; }
+  .stats { display:flex; gap:18px; flex-wrap:wrap; }
+  .stat .big { line-height:1.1; } .stat .small { color:var(--mut); }
+  .states { columns:2; font-size:13px; } .states div { padding:1px 0; }
+  a { color:var(--acc); }
+  footer { color:var(--mut); font-size:12px; padding:18px 16px; border-top:1px solid var(--line); margin-top:20px; }
+  .leaflet-popup-content { font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>outage<span>·</span>atlas</h1>
+  <div class="tag">Find power outages near you — a free national baseline, plus deep utility detail where available.</div>
+</header>
+
+<main>
+  <div class="search">
+    <input id="q" inputmode="numeric" placeholder="ZIP code (e.g. 44113) or lat,lon" autocomplete="postal-code" />
+    <button class="primary" id="go">Check</button>
+    <button id="geo">📍 My location</button>
+  </div>
+  <div class="status" id="status">Loading national baseline…</div>
+
+  <div class="panel hide" id="result"></div>
+
+  <div id="map"></div>
+
+  <div class="panel" id="national">
+    <div class="stats" id="nat-stats"><span class="muted">Loading…</span></div>
+    <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
+    <div class="states" id="nat-states"></div>
+  </div>
+</main>
+
+<footer>
+  <b>Data:</b> outage baseline from <a href="https://odin.ornl.gov/" target="_blank" rel="noopener">ODIN</a> (DOE/ORNL),
+  weather from <a href="https://www.weather.gov/" target="_blank" rel="noopener">NWS</a>, serving-utility lookup from
+  <a href="https://hifld-geoplatform.hub.arcgis.com/" target="_blank" rel="noopener">HIFLD</a>, geocoding from
+  US Census / Zippopotam. Outage counts are customers reported out; coverage varies by utility participation.
+  Not affiliated with any utility. <a href="https://github.com/iamimaginary/outage-atlas" target="_blank" rel="noopener">Source</a>.
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin=""></script>
+<script type="module">
+import { geocode, resolvePoint } from "./web/geo.mjs";
+import { parseOdinRecords } from "./adapters/odin.mjs";
+
+const REPO = "iamimaginary/outage-atlas";
+const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/baseline.json`;
+const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/index.json`;
+const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
+const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
+const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
+
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n ?? 0).toLocaleString();
+const setStatus = (s) => { $("status").textContent = s; };
+let BASELINE = null, INDEX = { deep: {} }, map, locMarker;
+
+// ---- data load: prefer the published snapshot; refresh from live ODIN if it's stale or unavailable ----
+const STALE_MIN = 30; // if the collector isn't running, don't show a frozen baseline — ODIN is CORS-open
+async function liveOdin(alertsByFips = {}, alerts = []) {
+  const recs = await (await fetch(ODIN_EXPORT)).json();
+  const { national, counties } = parseOdinRecords(recs);
+  setStatus(`National baseline (live ODIN): ${fmt(national.out)} out across ${fmt(national.counties)} counties.`);
+  return { schema: 1, collectedAt: Date.now(), source: "odin-live", national, counties, alerts, alertsByFips };
+}
+async function loadBaseline() {
+  try {
+    const r = await fetch(BASELINE_URL, { cache: "no-store" });
+    if (!r.ok) throw new Error(String(r.status));
+    const b = await r.json();
+    try { const ri = await fetch(INDEX_URL, { cache: "no-store" }); if (ri.ok) INDEX = await ri.json(); } catch {}
+    const age = Math.round((Date.now() - b.collectedAt) / 60000);
+    if (age > STALE_MIN) { setStatus(`Published snapshot ${age} min old — refreshing from live ODIN…`); return liveOdin(b.alertsByFips || {}, b.alerts || []); }
+    setStatus(`National baseline: ${fmt(b.national.out)} out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN+NWS).`);
+    return b;
+  } catch (e) {
+    setStatus("Published snapshot unavailable — fetching live ODIN…");
+    return liveOdin();
+  }
+}
+
+// ---- national overview ----
+function renderNational(b) {
+  $("nat-stats").innerHTML = `
+    <div class="stat"><div class="big">${fmt(b.national.out)}</div><div class="small">customers out (US)</div></div>
+    <div class="stat"><div class="big">${fmt(b.national.counties)}</div><div class="small">counties affected</div></div>
+    <div class="stat"><div class="big">${fmt(b.national.states)}</div><div class="small">states</div></div>
+    <div class="stat"><div class="big">${fmt(b.national.utilities)}</div><div class="small">utilities reporting</div></div>`;
+  const byState = {};
+  for (const k in b.counties) { const c = b.counties[k]; byState[c.state] = (byState[c.state] || 0) + c.out; }
+  $("nat-states").innerHTML = Object.entries(byState).sort((a, z) => z[1] - a[1])
+    .map(([s, o]) => `<div>${s} <span class="muted">${fmt(o)}</span></div>`).join("");
+}
+
+// ---- map ----
+function initMap(b) {
+  map = L.map("map", { worldCopyJump: true }).setView([39.5, -98.35], 4);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© OpenStreetMap, © CARTO", maxZoom: 18 }).addTo(map);
+  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
+  const pts = Object.values(b.counties).filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
+  for (const c of pts) {
+    L.circleMarker(c.loc, { radius: Math.min(22, 3 + Math.sqrt(c.out)), color: sev(c.out), weight: 1, fillOpacity: 0.35 })
+      .bindPopup(`<b>${c.county}, ${c.state}</b><br>${fmt(c.out)} out · ${c.incidents} incident(s)` +
+        (c.utilities[0] ? `<br>${c.utilities[0].name}` : ""))
+      .addTo(map);
+  }
+}
+
+// ---- which serving utility (HIFLD) has a deep feed in our index? ----
+function deepMatch(utilities) {
+  const deep = INDEX.deep || {};
+  for (const id in deep) {
+    const d = deep[id];
+    const names = [d.name, ...(d.match || [])].filter(Boolean).map((s) => s.toUpperCase());
+    if (utilities.some((u) => names.some((n) => (u.name || "").toUpperCase().includes(n) || (u.holdingCo || "").toUpperCase().includes(n))))
+      return { id, ...d };
+  }
+  return null;
+}
+
+// ---- resolve + render a location ----
+async function showLocation(lat, lon, label) {
+  $("result").classList.remove("hide");
+  $("result").innerHTML = `<div class="muted">Resolving ${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}…</div>`;
+  const { county, utilities } = await resolvePoint(lat, lon);
+  const c = county && BASELINE.counties[county.fips];
+  const out = c ? c.out : 0;
+  const alerts = (county && BASELINE.alertsByFips && BASELINE.alertsByFips[county.fips]) || [];
+
+  let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
+  if (county) {
+    html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
+    if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + new Date(c.etr).toLocaleString() : ""}</div>`;
+    else html += `<div class="small muted">No active outages reported in this county.</div>`;
+    if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
+    if (c && c.utilities.length) {
+      html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
+      for (const u of c.utilities) html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(u.out)} out</span></div>`;
+    }
+  } else {
+    html += `<div class="muted" style="margin-top:6px">Couldn't resolve a US county for that point.</div>`;
+  }
+
+  if (utilities.length) {
+    const dm = deepMatch(utilities);
+    html += `<div style="margin-top:12px" class="small muted">Serving utility (territory):</div>`;
+    for (const u of utilities) html += `<div class="row"><span class="util">${u.name}</span><span class="small muted">${u.type || ""}</span></div>`;
+    html += dm
+      ? `<div style="margin-top:8px"><span class="chip deep">✓ deep detail available — ${dm.name}</span> <a href="#" id="deeplink" class="small">view ›</a></div>`
+      : `<div style="margin-top:8px" class="small muted">Deep per-utility detail not yet available here — showing the national baseline.</div>`;
+  }
+  $("result").innerHTML = html;
+
+  if (locMarker) map.removeLayer(locMarker);
+  locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out`).openPopup();
+  map.setView([lat, lon], 9);
+
+  const dl = $("deeplink");
+  if (dl) { const m = deepMatch(utilities); dl.onclick = (e) => { e.preventDefault(); renderDeep(m.id, county); }; }
+}
+
+// ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
+async function renderDeep(id, county) {
+  let host = $("deepbox");
+  if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("result").after(host); }
+  host.innerHTML = `<div class="muted">Loading deep detail…</div>`;
+  let snap;
+  try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
+  catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
+  if (!snap || !Array.isArray(snap.areas) || !snap.official) { host.innerHTML = `<div class="small muted">Deep snapshot for ${id} is unavailable right now.</div>`; return; }
+  const want = county ? normCounty(county.county) : null;
+  const area = snap.areas.find((a) => normCounty(a.name) === want) || null;
+  const age = Math.round((Date.now() - snap.collectedAt) / 60000);
+  let html = `<div class="small muted">${snap.name} — deep detail · updated ${age} min ago</div>`;
+  html += `<div style="margin-top:4px"><span class="big">${fmt(snap.official.out)}</span> <span class="muted">out of ${fmt(snap.official.served)} served (utility-wide)</span></div>`;
+  if (area) {
+    html += `<div style="margin-top:10px" class="util">${area.name} county — ${fmt(area.out)} out</div>`;
+    const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
+    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
+    else html += `<div class="small muted" style="margin-top:4px">No active outages in this county right now.</div>`;
+  } else {
+    html += `<div class="small muted" style="margin-top:8px">This county isn't in ${snap.name}'s service area, or has no data.</div>`;
+  }
+  host.innerHTML = html;
+}
+
+// ---- events ----
+async function onGo() {
+  const q = $("q").value.trim(); if (!q) return;
+  try { const g = await geocode(q); await showLocation(g.lat, g.lon, g.label); }
+  catch (e) { $("result").classList.remove("hide"); $("result").innerHTML = `<div style="color:var(--bad)">${e.message}</div>`; }
+}
+function onGeo() {
+  if (!navigator.geolocation) return setStatus("Geolocation not supported.");
+  navigator.geolocation.getCurrentPosition(
+    (p) => showLocation(p.coords.latitude, p.coords.longitude, "My location"),
+    () => setStatus("Couldn't get your location — enter a ZIP instead."));
+}
+$("go").onclick = onGo;
+$("geo").onclick = onGeo;
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter") onGo(); });
+
+// ---- boot ----
+(async () => {
+  BASELINE = await loadBaseline();
+  renderNational(BASELINE);
+  initMap(BASELINE);
+})();
+</script>
+</body>
+</html>

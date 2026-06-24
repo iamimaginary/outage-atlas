@@ -1,0 +1,84 @@
+name: Collect national baseline
+
+# Fetches ODIN (county outages) + NWS (alerts) and publishes the small baseline snapshot to the
+# tracker-data branch (kept separate so frequent data commits don't churn the page branch).
+#
+# NOTE: GitHub's scheduled cron only runs from the repository's DEFAULT branch, so for the schedule to
+# fire this workflow must exist on the default branch (operational setup). workflow_dispatch /
+# repository_dispatch work from any branch the file lives on. A cron-job.org pinger (repository_dispatch
+# type: collect) is the reliable 15-min heartbeat; the schedule below is a backstop.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [collect]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect-baseline
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - name: Mount tracker-data branch at ./data (bootstrap on first run)
+        run: |
+          if git fetch origin tracker-data --depth=1 2>/dev/null && git show-ref --verify --quiet refs/remotes/origin/tracker-data; then
+            git worktree add -B tracker-data data origin/tracker-data
+          else
+            echo "tracker-data branch not found — bootstrapping an orphan."
+            git worktree add --detach data HEAD
+            git -C data checkout --orphan tracker-data
+            git -C data rm -rf . >/dev/null 2>&1 || true
+          fi
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Collect baseline (ODIN + NWS)
+        run: node scripts/collect_baseline.mjs
+
+      - name: Collect deep utilities (per utilities/*.json)
+        run: |
+          for f in utilities/*.json; do
+            id=$(basename "$f" .json)
+            node scripts/collect_utility.mjs "$id" || echo "::warning::deep collect failed for $id (non-fatal)"
+          done
+
+      # --- audits run every cycle (build -> audit, in-pipeline) ---
+      # Baseline integrity is FATAL: never publish a structurally broken national snapshot.
+      - name: Audit — baseline integrity
+        run: node scripts/check_baseline.mjs data/national/baseline.json --max-age-min 60
+      # The rest are DETECTORS, not availability gates: one bad deep feed must not freeze the national
+      # baseline for everyone. They report here and the scheduled audits.yml files issues on failure.
+      - name: Audit — coverage report
+        continue-on-error: true
+        run: node scripts/audit_coverage.mjs data/national/baseline.json
+      - name: Audit — per-utility reconciliation
+        continue-on-error: true
+        run: node scripts/check_reconciliation.mjs all
+      - name: Audit — baseline<->deep agreement
+        continue-on-error: true
+        run: node scripts/audit_baseline_deep.mjs
+
+      - name: Publish to tracker-data
+        working-directory: data
+        run: |
+          git config user.name "outage-atlas-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "No data change this cycle."; exit 0; fi
+          git commit -m "baseline: national snapshot $(date -u +%FT%TZ)"
+          for i in 1 2 3; do
+            { git pull --rebase origin tracker-data 2>/dev/null || true; } && git push origin HEAD:tracker-data && break
+            echo "push attempt $i failed, retrying…"; sleep 5
+          done
