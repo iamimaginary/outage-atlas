@@ -1,0 +1,111 @@
+{
+  "raw": {
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 185901852,
+          "NoOfAffectedCust_Inci": 254,
+          "ERT": "06/25/2026 02:00:00 PM",
+          "IncidentId": 136132097,
+          "CountyName": "SAN BERNARDINO"
+        },
+        "geometry": {
+          "x": -117.43154165758305,
+          "y": 34.52466084052314
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 185901853,
+          "NoOfAffectedCust_Inci": 54,
+          "ERT": "06/24/2026 03:00:00 PM",
+          "IncidentId": 136131612,
+          "CountyName": "SAN BERNARDINO"
+        },
+        "geometry": {
+          "x": -117.63191510179261,
+          "y": 34.116084364583195
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 185901854,
+          "NoOfAffectedCust_Inci": 8,
+          "ERT": "07/07/2026 03:00:00 PM",
+          "IncidentId": 136168767,
+          "CountyName": "SAN BERNARDINO"
+        },
+        "geometry": {
+          "x": -117.33036152158377,
+          "y": 34.12681731658415
+        }
+      }
+    ]
+  },
+  "opts": {
+    "base": "https://services5.arcgis.com/z6hI6KRjKHvhNO0r/arcgis/rest/services/Outages_P_VwLayer/FeatureServer",
+    "layer": 0,
+    "groupBy": "CountyName",
+    "fields": {
+      "out": "NoOfAffectedCust_Inci",
+      "etr": "ERT",
+      "id": "IncidentId"
+    },
+    "referer": "https://www.sce.com/",
+    "servedTotal": 5000000
+  },
+  "expected": {
+    "official": {
+      "out": 316,
+      "served": 5000000,
+      "nOut": 3
+    },
+    "areas": [
+      {
+        "name": "SAN BERNARDINO",
+        "out": 316,
+        "served": 316,
+        "etr": "07/07/2026 03:00:00 PM",
+        "loc": [
+          34.25585,
+          -117.46461
+        ],
+        "subs": [
+          {
+            "id": "136132097",
+            "name": "SAN BERNARDINO #136132097",
+            "out": 254,
+            "served": 254,
+            "etr": "06/25/2026 02:00:00 PM",
+            "loc": [
+              34.52466,
+              -117.43154
+            ]
+          },
+          {
+            "id": "136131612",
+            "name": "SAN BERNARDINO #136131612",
+            "out": 54,
+            "served": 54,
+            "etr": "06/24/2026 03:00:00 PM",
+            "loc": [
+              34.11608,
+              -117.63192
+            ]
+          },
+          {
+            "id": "136168767",
+            "name": "SAN BERNARDINO #136168767",
+            "out": 8,
+            "served": 8,
+            "etr": "07/07/2026 03:00:00 PM",
+            "loc": [
+              34.12682,
+              -117.33036
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

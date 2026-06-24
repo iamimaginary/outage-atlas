@@ -26,6 +26,12 @@ function pointLoc(a, g, F) {
   return null;
 }
 const avg = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+// ETR may be a formatted string (SCE "ERT") or epoch-ms (Entergy "etrdate") -> normalize to a string.
+const etrVal = (v) => {
+  if (typeof v === "string" && v.trim()) return v;
+  if (typeof v === "number" && isFinite(v) && v > 0) { try { return new Date(v).toISOString(); } catch { return null; } }
+  return null;
+};
 
 // raw = ArcGIS query response { features:[{attributes,geometry}] }; opts = cfg.config
 export function parseArcgis(raw, opts = {}) {
@@ -37,7 +43,7 @@ export function parseArcgis(raw, opts = {}) {
     const a = f.attributes || {};
     return {
       out: Math.max(0, num(a[outF])),
-      etr: F.etr && typeof a[F.etr] === "string" ? a[F.etr] : null,
+      etr: F.etr ? etrVal(a[F.etr]) : null,
       id: String((F.id && a[F.id] != null ? a[F.id] : a.OBJECTID) ?? i),
       loc: pointLoc(a, f.geometry, F),
       name: F.name && a[F.name] != null ? String(a[F.name]).trim() : null,

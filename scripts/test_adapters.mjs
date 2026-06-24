@@ -37,10 +37,11 @@ for (const adapter of readdirSync(FIX)) {
     const label = `${adapter}/${f}`;
     if (!cfg) { failed++; console.error(`✗ ${label}: no adapter registered for "${adapter}" (add it to adapters/registry.mjs)`); continue; }
     try {
-      const { raw, expected, fn } = JSON.parse(readFileSync(join(dir, f), "utf8"));
+      const { raw, expected, fn, opts } = JSON.parse(readFileSync(join(dir, f), "utf8"));
       const parser = cfg.mod[fn || cfg.defaultFn];
       if (typeof parser !== "function") { failed++; console.error(`✗ ${label}: no exported fn "${fn || cfg.defaultFn}"`); continue; }
-      const got = parser(raw);
+      // opts (when present) mirrors a utility's config.config — needed by config-driven adapters (arcgis).
+      const got = parser(raw, opts);
       if (cfg.canonical) { const v = validateCanonical(got); if (!v.ok) { failed++; console.error(`✗ ${label}: schema invalid →\n   ${v.errors.join("\n   ")}`); continue; } }
       if (expected) { const d = deepEqual(got, expected); if (d) { failed++; console.error(`✗ ${label}: output mismatch at ${d}`); continue; } }
       console.log(`✓ ${label}`);

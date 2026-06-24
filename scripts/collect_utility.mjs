@@ -170,12 +170,15 @@ async function fetchArcgis(c) {
   const H = { Referer: c.referer || new URL(base).origin };
   const all = [];
   const pageSize = c.pageSize || 2000;
-  for (let i = 0, offset = 0; i < 60; i++, offset += pageSize) {
+  // advance by the actual returned count (servers cap below pageSize, e.g. Entergy's 1000) and stop only
+  // when the server says there's no more (exceededTransferLimit false) or a page is empty.
+  for (let i = 0, offset = 0; i < 100; i++) {
     const url = `${base}/${layer}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(fields)}&returnGeometry=true&outSR=4326&f=json&resultOffset=${offset}&resultRecordCount=${pageSize}`;
     const r = await jget(url, H);
     const fs = r.features || [];
     all.push(...fs);
-    if (!r.exceededTransferLimit || fs.length < pageSize) break;
+    offset += fs.length;
+    if (!r.exceededTransferLimit || fs.length === 0) break;
   }
   return { features: all };
 }
