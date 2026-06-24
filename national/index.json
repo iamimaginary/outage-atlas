@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "generatedAt": 1782267856919,
+  "baseline": {
+    "source": "odin",
+    "collectedAt": 1782267856919,
+    "counties": 184,
+    "out": 9839,
+    "states": 31,
+    "utilities": 73
+  },
+  "deep": {
+    "firstenergy-oh": {
+      "name": "FirstEnergy (Ohio)",
+      "match": [
+        "FIRSTENERGY",
+        "OHIO EDISON",
+        "CLEVELAND ELECTRIC ILLUM",
+        "TOLEDO EDISON"
+      ],
+      "out": 135,
+      "collectedAt": 1782267859427
+    }
+  }
+}
