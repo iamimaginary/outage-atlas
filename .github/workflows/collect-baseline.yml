@@ -55,13 +55,19 @@ jobs:
           done
 
       # --- audits run every cycle (build -> audit, in-pipeline) ---
+      # Baseline integrity is FATAL: never publish a structurally broken national snapshot.
       - name: Audit — baseline integrity
         run: node scripts/check_baseline.mjs data/national/baseline.json --max-age-min 60
+      # The rest are DETECTORS, not availability gates: one bad deep feed must not freeze the national
+      # baseline for everyone. They report here and the scheduled audits.yml files issues on failure.
       - name: Audit — coverage report
+        continue-on-error: true
         run: node scripts/audit_coverage.mjs data/national/baseline.json
       - name: Audit — per-utility reconciliation
+        continue-on-error: true
         run: node scripts/check_reconciliation.mjs all
       - name: Audit — baseline<->deep agreement
+        continue-on-error: true
         run: node scripts/audit_baseline_deep.mjs
 
       - name: Publish to tracker-data

@@ -27,7 +27,9 @@ if (!ids) throw new Error("`all` needs a local --base dir; give a specific utili
 const fails = [], notes = [];
 
 for (const id of ids) {
-  const ucfg = JSON.parse(readFileSync(join(ROOT, "utilities", `${id}.json`), "utf8"));
+  const cfgPath = join(ROOT, "utilities", `${id}.json`);
+  if (!existsSync(cfgPath)) { notes.push(`${id}: snapshot has no matching utilities/${id}.json — skipped`); continue; }
+  const ucfg = JSON.parse(readFileSync(cfgPath, "utf8"));
   const tol = (ucfg.reconciliation && ucfg.reconciliation.tolerancePct) || 15;
   const snap = await loadJson(isUrl ? `${base.replace(/\/$/, "")}/${id}.json` : join(base, `${id}.json`));
   const summed = (snap.areas || []).reduce((a, c) => a + (c.out || 0), 0);

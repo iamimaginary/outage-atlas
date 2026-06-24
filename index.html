@@ -206,6 +206,7 @@ async function renderDeep(id, county) {
   let snap;
   try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
   catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
+  if (!snap || !Array.isArray(snap.areas) || !snap.official) { host.innerHTML = `<div class="small muted">Deep snapshot for ${id} is unavailable right now.</div>`; return; }
   const want = county ? normCounty(county.county) : null;
   const area = snap.areas.find((a) => normCounty(a.name) === want) || null;
   const age = Math.round((Date.now() - snap.collectedAt) / 60000);

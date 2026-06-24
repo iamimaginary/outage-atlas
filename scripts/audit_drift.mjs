@@ -9,8 +9,9 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { analyzeOdinShape } from "./lib/audits.mjs";
 
 const ODIN_BASE = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county";
-// Fields parseOdinRecords() depends on — losing any of these breaks the baseline:
-const REQUIRED = ["communitydescriptor", "metersaffected", "utility_id", "name", "county", "state", "estimatedrestorationtime"];
+// Fields whose ABSENCE actually breaks parseOdinRecords (county/state/etr/name have fallbacks, so they
+// belong on the WARN path via `vanished`, not here — over-declaring REQUIRED files false adapter-broken issues):
+const REQUIRED = ["communitydescriptor", "metersaffected"];
 // Full field set observed in the Phase -1 spike — anything outside this is NEW (potential drift):
 const KNOWN = new Set(["cause", "causekind", "centroid", "communitydescriptor", "county", "customersrestored", "estimatedrestorationtime", "geo_point_2d", "geom", "incident", "incident_cause", "incident_location", "incident_location_kind", "metersaffected", "name", "reportedstarttime", "state", "statuskind", "utility_id", "utilitydisclaimer"]);
 

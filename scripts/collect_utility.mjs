@@ -79,7 +79,8 @@ const FETCH = { kubra: fetchKubra };
   const udir = join(ROOT, "data", "utilities");
   for (const f of readdirSync(udir).filter((x) => x.endsWith(".json"))) {
     const s = JSON.parse(readFileSync(join(udir, f), "utf8"));
-    const ucfg = JSON.parse(readFileSync(join(ROOT, "utilities", f), "utf8"));
+    const cfgPath = join(ROOT, "utilities", f);
+    const ucfg = existsSync(cfgPath) ? JSON.parse(readFileSync(cfgPath, "utf8")) : {};
     idx.deep[s.id] = { name: s.name, match: ucfg.match || [], out: s.official.out, collectedAt: s.collectedAt };
   }
   mkdirSync(join(ROOT, "data", "national"), { recursive: true });
