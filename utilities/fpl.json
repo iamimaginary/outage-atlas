@@ -1,0 +1,8 @@
+{
+  "id": "fpl",
+  "name": "Florida Power & Light (FL)",
+  "adapter": "fpl",
+  "match": ["FLORIDA POWER & LIGHT", "FPL"],
+  "config": { "base": "https://www.fplmaps.com", "referer": "https://www.fplmaps.com" },
+  "reconciliation": { "tolerancePct": 10 }
+}

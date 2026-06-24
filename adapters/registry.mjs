@@ -9,6 +9,10 @@ import * as kubra from "./kubra.mjs";
 import * as odin from "./odin.mjs";
 import * as duke from "./duke.mjs";
 import * as pge from "./pge.mjs";
+import * as fpl from "./fpl.mjs";
+import * as gvea from "./gvea.mjs";
+import * as chugach from "./chugach.mjs";
+import * as kiuc from "./kiuc.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -16,6 +20,14 @@ export const ADAPTERS = {
   duke: { mod: duke, defaultFn: "parseDuke", canonical: true },
   // PG&E: open Esri ArcGIS incident points grouped by city (feed omits served -> floored / config total).
   pge: { mod: pge, defaultFn: "parsePge", canonical: true },
+  // FPL (Florida): plain county-total JSON, two regions merged (peninsula + panhandle); has served.
+  fpl: { mod: fpl, defaultFn: "parseFpl", canonical: true },
+  // Alaska (ODIN has zero AK coverage -> deep feeds are the ONLY source there):
+  gvea: { mod: gvea, defaultFn: "parseGvea", canonical: true },     // Golden Valley Electric (Fairbanks)
+  chugach: { mod: chugach, defaultFn: "parseChugach", canonical: true }, // Chugach Electric (Anchorage)
+  // Hawaii (ODIN has zero HI coverage too): KIUC = Kauai (open). HECO/MECO/HELCO (95% of HI) are
+  // auth-gated + origin-locked -> need HECO-issued credentials + a serverless proxy (Phase 5 / escalate).
+  kiuc: { mod: kiuc, defaultFn: "parseKiuc", canonical: true },
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

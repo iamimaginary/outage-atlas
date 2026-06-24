@@ -1,0 +1,66 @@
+{
+  "raw": {
+    "totalServed": 36323,
+    "outages": [
+      {
+        "id": "439619",
+        "nbrOut": 1,
+        "estimateTime": 1781977793000
+      },
+      {
+        "id": "438170",
+        "nbrOut": 1,
+        "estimateTime": 1778709764000
+      }
+    ],
+    "regionDataSets": [
+      {
+        "id": "omscounty",
+        "description": "Counties",
+        "regions": [
+          {
+            "id": "Kauai",
+            "description": "Counties",
+            "numberOut": 5,
+            "numberServed": 35631
+          }
+        ]
+      },
+      {
+        "id": "omszip",
+        "description": "Zip Codes",
+        "regions": [
+          {
+            "id": "96703",
+            "description": "Zip Codes",
+            "numberOut": 1,
+            "numberServed": 749
+          },
+          {
+            "id": "96766",
+            "description": "Zip Codes",
+            "numberOut": 3,
+            "numberServed": 7555
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "official": {
+      "out": 5,
+      "served": 36323,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Kauai",
+        "out": 5,
+        "served": 35631,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

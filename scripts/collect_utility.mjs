@@ -112,7 +112,41 @@ async function fetchPge(c) {
   return { features: all };
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge };
+// FPL: plain county JSON, two regions (main peninsula + northwest panhandle). No CORS -> server-side.
+async function fetchFpl(c) {
+  const base = (c.base || "https://www.fplmaps.com").replace(/\/$/, "");
+  const H = { Referer: base + "/", "X-Requested-With": "XMLHttpRequest" };
+  const main = await jget(`${base}/customer/outage/CountyOutages.json`, H);
+  let nw = null;
+  try { nw = await jget(`${base}/northwest/customer/outage/CountyOutages.json`, H); } catch { /* panhandle optional */ }
+  return { main, nw };
+}
+
+// GVEA: NISC web-outage-viewer JSON (Fairbanks AK).
+async function fetchGvea(c) {
+  const base = (c.base || "https://outage.gvea.com").replace(/\/$/, "");
+  const H = { Referer: base + "/" };
+  const summary = await jget(`${base}/data/outageSummary`, H);
+  const outages = await jget(`${base}/data/outages`, H);
+  return { summary, outages };
+}
+
+// Chugach: custom JSON files (Anchorage AK). Served as .js with pure-JSON bodies.
+async function fetchChugach(c) {
+  const base = (c.base || "https://www.chugachelectric.com/outage").replace(/\/$/, "");
+  const H = { Referer: base + "/outage_map.html" };
+  const grids = await jget(`${base}/Grids.js`, H);
+  const incidents = await jget(`${base}/Incidents.js`, H);
+  return { grids, incidents };
+}
+
+// KIUC: NISC hosted-outage-map static summary.json (Kauai HI). Open, CORS:*.
+async function fetchKiuc(c) {
+  const base = (c.base || "https://outagemap-data.cloud.coop/kiuc/Hosted_Outage_Map").replace(/\/$/, "");
+  return jget(`${base}/summary.json`, { Referer: "https://kiuc.outagemap.coop/" });
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc };
 
 (async () => {
   const fetcher = FETCH[cfg.adapter];

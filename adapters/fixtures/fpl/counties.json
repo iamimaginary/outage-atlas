@@ -1,0 +1,73 @@
+{
+  "raw": {
+    "main": {
+      "outages": [
+        {
+          "County Name": "Miami-Dade",
+          "Customers Out": "393",
+          "Customers Served": "1,271,505"
+        },
+        {
+          "County Name": "Broward",
+          "Customers Out": "76",
+          "Customers Served": "853,648"
+        },
+        {
+          "County Name": "Hardee",
+          "Customers Out": "0",
+          "Customers Served": "11"
+        }
+      ]
+    },
+    "nw": {
+      "outages": [
+        {
+          "County Name": "Bay",
+          "Customers Out": "21",
+          "Customers Served": "103,200"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "official": {
+      "out": 490,
+      "served": 2228364,
+      "nOut": 3
+    },
+    "areas": [
+      {
+        "name": "Miami-Dade",
+        "out": 393,
+        "served": 1271505,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Broward",
+        "out": 76,
+        "served": 853648,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Hardee",
+        "out": 0,
+        "served": 11,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Bay",
+        "out": 21,
+        "served": 103200,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}
