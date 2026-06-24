@@ -194,6 +194,25 @@ spikes/                        Phase-(-1) validated-assumption evidence (raw cap
 .github/workflows/             checks (PR gate), labels (sync); collectors + audits added later
 ```
 
+## Operational setup (one-time — to go live)
+
+The build is complete; these are repo **Settings** an agent can't toggle via API — a human flips them once:
+1. **Make the repo public.** Settings → General → Danger Zone → Change visibility → Public. (Free Pages +
+   the page's client-side `raw.githubusercontent.com` data fetches both require this.)
+2. **Enable GitHub Pages.** Settings → Pages → Source: *Deploy from a branch* → Branch: the served
+   branch, `/ (root)` → Save. Serve from whichever branch holds `index.html` (the dev branch, or `main`
+   after a merge). Live at `https://iamimaginary.github.io/outage-atlas/`.
+3. **Actions write permission.** Settings → Actions → General → Workflow permissions → *Read and write*
+   (so `collect-baseline.yml` can push to `tracker-data` and `audits.yml` can file issues).
+4. **Make the collector/audits run on a cadence.** GitHub `schedule` + `repository_dispatch` only fire
+   from the **default branch**, so either merge the code to `main` *or* set the dev branch as default.
+   For a reliable 15-min heartbeat, add an external pinger (e.g. cron-job.org) POSTing
+   `repository_dispatch {"event_type":"collect"}` with a fine-grained PAT (Contents: read/write), like
+   the NE Ohio app. The bootstrapped `tracker-data` branch already holds a first snapshot.
+
+Until step 1, the page still works via its **live-ODIN fallback** (baseline only); the deep view needs
+the public `tracker-data` raw data.
+
 ## Build phases (see the approved plan)
 
 - [x] Phase −1 — validate riskiest assumptions (ODIN/HIFLD/Kübra/CORS)
