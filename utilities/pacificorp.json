@@ -1,0 +1,8 @@
+{
+  "id": "pacificorp",
+  "name": "PacifiCorp (Pacific Power / Rocky Mountain Power)",
+  "adapter": "pacificorp",
+  "match": ["PACIFICORP", "PACIFIC POWER", "ROCKY MOUNTAIN POWER"],
+  "config": { "base": "https://www.pacificpower.net", "states": ["OR", "WA", "CA", "UT", "WY", "ID"], "referer": "https://www.pacificpower.net/outages-safety.html", "servedTotal": 2037121 },
+  "reconciliation": { "tolerancePct": 10 }
+}

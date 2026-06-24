@@ -216,7 +216,28 @@ async function fetchIfactor(c) {
   throw new Error("ifactor: no recent interval has both summary and reports");
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor };
+// PacifiCorp: 6 self-hosted state JSON files (Pacific Power OR/WA/CA + Rocky Mountain Power UT/WY/ID).
+async function fetchPacificorp(c) {
+  const base = (c.base || "https://www.pacificpower.net").replace(/\/$/, "");
+  const states = c.states || ["OR", "WA", "CA", "UT", "WY", "ID"];
+  const H = { Referer: c.referer || base + "/outages-safety.html" };
+  const out = [];
+  for (const st of states) { try { out.push(await jget(`${base}/etc/pcorp/datafiles/outagemap/map${st}.json`, H)); } catch { /* a state file may be absent */ } }
+  return { states: out };
+}
+// WEC (We Energies / Wisconsin Public Service): one JSON array of outage events.
+async function fetchWec(c) {
+  const base = (c.base || "").replace(/\/$/, "");
+  if (!base) throw new Error("wec: config.base required");
+  return jget(`${base}/outagesummary/view/OutageEventJSON`, { Referer: c.referer || base + "/outagemapext/" });
+}
+// AES Ohio (Dayton P&L): bespoke XML feed.
+async function fetchAesOhio(c) {
+  const url = c.url || "https://myprofile.aes-ohio.com/DATA/DPLOMSDATA.xml";
+  return tget(url, { Referer: c.referer || "https://myprofile.aes-ohio.com/Outages/Outages.html" });
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

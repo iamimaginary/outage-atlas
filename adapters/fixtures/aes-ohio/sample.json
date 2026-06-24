@@ -1,0 +1,61 @@
+{
+  "raw": "<?xml version=\"1.0\"?><Incidents><Markers><LAT>39.82</LAT><LNG>-84.0</LNG><TOTALCUSTS>6</TOTALCUSTS><INCIDENTID>1787154</INCIDENTID><COUNTY>MONTGOMERY</COUNTY><OutageTime>06/24/2026 03:23 PM</OutageTime><EstimateTime>06/24/2026 06:00 PM</EstimateTime></Markers><Markers><LAT>39.7</LAT><LNG>-83.9</LNG><TOTALCUSTS>1</TOTALCUSTS><INCIDENTID>1787160</INCIDENTID><COUNTY>GREENE</COUNTY><OutageTime>06/24/2026 04:00 PM</OutageTime><EstimateTime>06/24/2026 07:00 PM</EstimateTime></Markers></Incidents>",
+  "opts": {
+    "servedTotal": 534482
+  },
+  "expected": {
+    "official": {
+      "out": 7,
+      "served": 534482,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "MONTGOMERY",
+        "out": 6,
+        "served": 6,
+        "etr": "06/24/2026 06:00 PM",
+        "loc": [
+          39.82,
+          -84
+        ],
+        "subs": [
+          {
+            "id": "1787154",
+            "name": "MONTGOMERY #1787154",
+            "out": 6,
+            "served": 6,
+            "etr": "06/24/2026 06:00 PM",
+            "loc": [
+              39.82,
+              -84
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GREENE",
+        "out": 1,
+        "served": 1,
+        "etr": "06/24/2026 07:00 PM",
+        "loc": [
+          39.7,
+          -83.9
+        ],
+        "subs": [
+          {
+            "id": "1787160",
+            "name": "GREENE #1787160",
+            "out": 1,
+            "served": 1,
+            "etr": "06/24/2026 07:00 PM",
+            "loc": [
+              39.7,
+              -83.9
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

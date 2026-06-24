@@ -1,0 +1,8 @@
+{
+  "id": "evergy",
+  "name": "Evergy (KS/MO)",
+  "adapter": "kubra",
+  "match": ["EVERGY", "KANSAS CITY POWER", "WESTAR", "KCP&L", "KANSAS GAS & ELECTRIC"],
+  "config": { "instance": "b1493825-4ee3-4706-a986-99a763a733db", "view": "c1062d22-2919-487c-9000-e21b72b62278", "referer": "https://outagemap.evergy.com/" },
+  "reconciliation": { "tolerancePct": 15 }
+}
