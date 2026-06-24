@@ -3,8 +3,7 @@
   "name": "National Grid (Upstate NY)",
   "adapter": "kubra",
   "match": [
-    "NIAGARA MOHAWK",
-    "NATIONAL GRID"
+    "NIAGARA MOHAWK"
   ],
   "config": {
     "instance": "9cb2e5b7-d321-4575-a552-4ae7078cbc31",
