@@ -8,6 +8,7 @@
 // Best-effort weather: if NWS fails, the baseline still publishes (alerts just absent).
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 import { parseOdinRecords } from "../adapters/odin.mjs";
+import { countyEta } from "./lib/eta.mjs";
 
 const ODIN_BASE = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county";
 const ODIN_FIELDS = "communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
@@ -67,6 +68,25 @@ async function fetchAlerts() {
   const { national, counties } = parseOdinRecords(records);
   if (!national.counties) throw new Error("ODIN returned no usable counties — refusing to publish a blank baseline");
 
+  // --- per-county history -> algorithmic recovery ETA (the universal "every ZIP gets a recovery time") ---
+  // Accumulate a bounded out-over-time series per FIPS across runs, track a running peak, and derive an
+  // ETA for each active county. A county no longer reporting an outage has recovered, so it drops from
+  // history (keeps history.json ~= currently-active counties). ETA quality improves as runs accumulate.
+  const HIST_PATH = `${OUT_DIR}/history.json`;
+  const SERIES_CAP = 48; // ~12h at the 15-min cadence
+  let prevHist = {};
+  if (existsSync(HIST_PATH)) { try { prevHist = JSON.parse(readFileSync(HIST_PATH, "utf8")); } catch {} }
+  const history = {};
+  for (const fips of Object.keys(counties)) {
+    const out = counties[fips].out;
+    const prev = prevHist[fips] || { peak: 0, series: [] };
+    const series = (prev.series || []).concat([{ t: collectedAt, out }]);
+    while (series.length > SERIES_CAP) series.shift();
+    const peak = Math.max(prev.peak || 0, out);
+    history[fips] = { peak, series };
+    counties[fips].eta = countyEta(series, out, peak);
+  }
+
   let alerts = [];
   try { alerts = await fetchAlerts(); }
   catch (e) { console.error("NWS alerts unavailable (non-fatal):", e.message); }
@@ -88,5 +108,10 @@ async function fetchAlerts() {
 
   writeFileSync(`${OUT_DIR}/baseline.json`, JSON.stringify(baseline));
   writeFileSync(`${OUT_DIR}/index.json`, JSON.stringify(index, null, 2));
+  writeFileSync(HIST_PATH, JSON.stringify(history));
+
+  const trend = { improving: 0, holding: 0, rising: 0, collecting: 0 };
+  for (const fips of Object.keys(counties)) trend[counties[fips].eta.kind] = (trend[counties[fips].eta.kind] || 0) + 1;
   console.log(`baseline written: ${national.out} out across ${national.counties} counties / ${national.states} states / ${national.utilities} utilities; ${alerts.length} active NWS alerts (${Object.keys(alertsByFips).length} counties under an alert)`);
+  console.log(`recovery ETA: ${trend.improving} improving, ${trend.holding} holding, ${trend.rising} rising, ${trend.collecting} collecting`);
 })().catch((e) => { console.error("collect_baseline FAILED:", e.message); process.exit(1); });

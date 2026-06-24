@@ -1,0 +1,43 @@
+{
+  "_note": "Golden fixture for a MULTI-REGION Kübra utility (e.g. Dominion: many top-level regions, 2-level region->leaf). Exercises iterating all fd.areas, area out/served falling back to sum-of-subs when a region lacks its own cust_a/cust_s (REGION_A) vs using its own when present (REGION_B), and the parentName|name id fallback. Summed area.out (15+15) == official.out (30).",
+  "raw": {
+    "file_data": {
+      "totals": { "cust_a": { "val": 30 }, "cust_s": 1000, "n_out": 3 },
+      "areas": [
+        {
+          "name": "REGION_A",
+          "areas": [
+            { "name": "LEAF_A1", "cust_s": 100, "cust_a": { "val": 10 }, "etr": null },
+            { "name": "LEAF_A2", "cust_s": 200, "cust_a": { "val": 5 }, "etr": null }
+          ]
+        },
+        {
+          "name": "REGION_B",
+          "cust_s": 700,
+          "cust_a": { "val": 15 },
+          "areas": [
+            { "areaId": "B1", "name": "LEAF_B1", "cust_s": 700, "cust_a": { "val": 15 }, "etr": null }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": {
+    "official": { "out": 30, "served": 1000, "nOut": 3 },
+    "areas": [
+      {
+        "name": "REGION_A", "out": 15, "served": 300, "etr": null, "loc": null,
+        "subs": [
+          { "id": "REGION_A|LEAF_A1", "name": "LEAF_A1", "out": 10, "served": 100, "etr": null, "loc": null },
+          { "id": "REGION_A|LEAF_A2", "name": "LEAF_A2", "out": 5, "served": 200, "etr": null, "loc": null }
+        ]
+      },
+      {
+        "name": "REGION_B", "out": 15, "served": 700, "etr": null, "loc": null,
+        "subs": [
+          { "id": "B1", "name": "LEAF_B1", "out": 15, "served": 700, "etr": null, "loc": null }
+        ]
+      }
+    ]
+  }
+}
