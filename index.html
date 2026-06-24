@@ -38,6 +38,8 @@
   .row { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
   .row:first-child { border-top:0; }
   .util { font-weight:600; } .acc { color:var(--acc); }
+  .eta { margin-top:8px; font-size:15px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:#0b1f17; }
+  .eta.bad { background:#1f0f0b; } .eta b { color:var(--ok); } .eta.bad b { color:var(--bad); }
   #map { height:46vh; min-height:300px; border:1px solid var(--line); border-radius:12px; margin-top:14px; }
   .stats { display:flex; gap:18px; flex-wrap:wrap; }
   .stat .big { line-height:1.1; } .stat .small { color:var(--mut); }
@@ -176,6 +178,7 @@ async function showLocation(lat, lon, label) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
     if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + new Date(c.etr).toLocaleString() : ""}</div>`;
     else html += `<div class="small muted">No active outages reported in this county.</div>`;
+    if (c && c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
     if (c && c.utilities.length) {
       html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
@@ -196,7 +199,7 @@ async function showLocation(lat, lon, label) {
   $("result").innerHTML = html;
 
   if (locMarker) map.removeLayer(locMarker);
-  locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out`).openPopup();
+  locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out${c && c.eta && c.eta.label ? "<br>⏱ " + c.eta.label : ""}`).openPopup();
   map.setView([lat, lon], 9);
 
   const dl = $("deeplink");

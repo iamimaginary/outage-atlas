@@ -20,6 +20,12 @@ Two data planes:
 - **Deep per-utility (on demand):** the location's serving utility (resolved via HIFLD territory
   polygons) → that utility's vendor feed (Kübra et al.) via the existing utility-agnostic adapters.
 
+**Universal recovery ETA (the north star):** the collector accumulates a per-county out-over-time series
+(`data/national/history.json`) and derives an **algorithmic recovery estimate for every county** —
+`scripts/lib/eta.mjs` (restoration rate over ~2.5h + bounded deceleration, ported from NEO), stored as
+`counties[fips].eta`. Every ZIP inherits its county's ETA via the resolver, so **every ZIP gets a
+recovery time** from the free baseline — deep feeds only sharpen it with the utility's own ETR where available.
+
 The analytics engine is **utility-agnostic**: it only needs the canonical model below.
 
 ## The contracts every agent depends on (do NOT break these)
@@ -185,6 +191,8 @@ scripts/test_audits.mjs        audit the auditors (detectors fire on broken inpu
 scripts/file_issue.mjs         CLI: file/dedupe a labeled audit issue (reads body from stdin)
 scripts/validate_configs.mjs   config + registry validator
 scripts/lib/audits.mjs         pure, tested audit logic (shared by detectors + test_audits)
+scripts/lib/eta.mjs            algorithmic recovery-ETA estimator (per-county; powers every ZIP)
+scripts/test_eta.mjs           recovery-ETA unit tests
 scripts/lib/load.mjs           path-or-URL JSON loader
 scripts/lib/file_issue.mjs     GitHub issue create/dedupe + PII sanitize
 docs/FEEDBACK.md               feedback + audit-issue triage rules
