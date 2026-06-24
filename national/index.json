@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generatedAt": 1782269580557,
+  "generatedAt": 1782283112838,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782269580557,
-    "counties": 175,
-    "out": 7574,
-    "states": 31,
-    "utilities": 68
+    "collectedAt": 1782283112838,
+    "counties": 130,
+    "out": 13700,
+    "states": 32,
+    "utilities": 61
   },
   "deep": {
     "firstenergy-oh": {
@@ -18,8 +18,8 @@
         "CLEVELAND ELECTRIC ILLUM",
         "TOLEDO EDISON"
       ],
-      "out": 118,
-      "collectedAt": 1782269581892
+      "out": 674,
+      "collectedAt": 1782283114128
     }
   }
 }
