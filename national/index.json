@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "generatedAt": 1782314333915,
+  "generatedAt": 1782321940996,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782314333915,
-    "counties": 318,
-    "out": 23802,
-    "states": 37,
+    "collectedAt": 1782321940996,
+    "counties": 320,
+    "out": 27831,
+    "states": 40,
     "utilities": 107
   },
   "deep": {
@@ -18,8 +18,8 @@
         "CLEVELAND ELECTRIC ILLUM",
         "TOLEDO EDISON"
       ],
-      "out": 598,
-      "collectedAt": 1782314336767
+      "out": 5897,
+      "collectedAt": 1782321944174
     },
     "ameren": {
       "name": "Ameren (MO/IL)",
@@ -28,32 +28,32 @@
         "UNION ELECTRIC",
         "CENTRAL ILLINOIS"
       ],
-      "out": 643,
-      "collectedAt": 1782314334967
+      "out": 694,
+      "collectedAt": 1782321942453
     },
     "avista": {
       "name": "Avista (WA/ID)",
       "match": [
         "AVISTA"
       ],
-      "out": 79,
-      "collectedAt": 1782314335228
+      "out": 133,
+      "collectedAt": 1782321942770
     },
     "bge": {
       "name": "Baltimore Gas & Electric (MD)",
       "match": [
         "BALTIMORE GAS"
       ],
-      "out": 342,
-      "collectedAt": 1782314335574
+      "out": 159,
+      "collectedAt": 1782321943133
     },
     "central-hudson": {
       "name": "Central Hudson (NY)",
       "match": [
         "CENTRAL HUDSON"
       ],
-      "out": 332,
-      "collectedAt": 1782314335821
+      "out": 217,
+      "collectedAt": 1782321943440
     },
     "dominion-va-nc": {
       "name": "Dominion Energy (VA/NC)",
@@ -61,16 +61,16 @@
         "VIRGINIA ELECTRIC",
         "DOMINION"
       ],
-      "out": 998,
-      "collectedAt": 1782314335996
+      "out": 632,
+      "collectedAt": 1782321943669
     },
     "firstenergy-nj": {
       "name": "JCP&L (FirstEnergy NJ)",
       "match": [
         "JERSEY CENTRAL POWER"
       ],
-      "out": 110,
-      "collectedAt": 1782314336600
+      "out": 117,
+      "collectedAt": 1782321943962
     },
     "firstenergy-pa": {
       "name": "FirstEnergy (Pennsylvania)",
@@ -81,16 +81,16 @@
         "PENNSYLVANIA POWER",
         "FIRSTENERGY"
       ],
-      "out": 1702,
-      "collectedAt": 1782314337043
+      "out": 522,
+      "collectedAt": 1782321944377
     },
     "georgia-power": {
       "name": "Georgia Power",
       "match": [
         "GEORGIA POWER"
       ],
-      "out": 1875,
-      "collectedAt": 1782314337208
+      "out": 1132,
+      "collectedAt": 1782321944607
     },
     "national-grid-ma": {
       "name": "National Grid (Massachusetts)",
@@ -98,32 +98,32 @@
         "MASSACHUSETTS ELECTRIC",
         "NANTUCKET ELECTRIC"
       ],
-      "out": 395,
-      "collectedAt": 1782314337777
+      "out": 382,
+      "collectedAt": 1782321945111
     },
     "national-grid-ny": {
       "name": "National Grid (Upstate NY)",
       "match": [
         "NIAGARA MOHAWK"
       ],
-      "out": 555,
-      "collectedAt": 1782314337945
+      "out": 159,
+      "collectedAt": 1782321945733
     },
     "oncor": {
       "name": "Oncor (TX)",
       "match": [
         "ONCOR"
       ],
-      "out": 834,
-      "collectedAt": 1782314338220
+      "out": 2174,
+      "collectedAt": 1782321945971
     },
     "peco": {
       "name": "PECO (PA)",
       "match": [
         "PECO"
       ],
-      "out": 946,
-      "collectedAt": 1782314338584
+      "out": 512,
+      "collectedAt": 1782321946351
     },
     "pepco": {
       "name": "Pepco (DC/MD)",
@@ -131,8 +131,8 @@
         "POTOMAC ELECTRIC",
         "PEPCO"
       ],
-      "out": 10,
-      "collectedAt": 1782314338941
+      "out": 12,
+      "collectedAt": 1782321946909
     },
     "pseg-long-island": {
       "name": "PSEG Long Island (NY)",
@@ -140,8 +140,8 @@
         "LONG ISLAND POWER",
         "PSEG"
       ],
-      "out": 147,
-      "collectedAt": 1782314339286
+      "out": 517,
+      "collectedAt": 1782321947224
     },
     "pseg-nj": {
       "name": "PSE&G (New Jersey)",
@@ -150,7 +150,7 @@
         "PSE&G"
       ],
       "out": 328,
-      "collectedAt": 1782314339536
+      "collectedAt": 1782321947473
     }
   }
 }
