@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "generatedAt": 1782300946058,
+  "generatedAt": 1782300979560,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782300946058,
+    "collectedAt": 1782300979560,
     "counties": 144,
     "out": 14222,
     "states": 34,
@@ -19,7 +19,7 @@
         "TOLEDO EDISON"
       ],
       "out": 461,
-      "collectedAt": 1782300947259
+      "collectedAt": 1782300980862
     }
   }
 }
