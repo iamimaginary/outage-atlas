@@ -1,0 +1,17 @@
+{
+  "id": "cps-energy",
+  "name": "CPS Energy (San Antonio)",
+  "adapter": "kubra",
+  "match": [
+    "CPS ENERGY",
+    "CITY OF SAN ANTONIO"
+  ],
+  "config": {
+    "instance": "912c6202-c3f4-491c-a8c1-726157725e92",
+    "view": "812092c0-153f-4a7f-8c58-e1af1cb740b7",
+    "referer": "https://outagemap.cpsenergy.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "jea",
+  "name": "JEA (Jacksonville)",
+  "adapter": "kubra",
+  "match": [
+    "JEA"
+  ],
+  "config": {
+    "instance": "2bb4315d-ff9d-4937-a231-57b8a9df189c",
+    "view": "40a074f2-b303-42b7-b717-ed7d9d2ad9e2",
+    "referer": "https://outagemap.jea.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

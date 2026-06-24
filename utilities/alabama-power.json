@@ -1,0 +1,16 @@
+{
+  "id": "alabama-power",
+  "name": "Alabama Power",
+  "adapter": "kubra",
+  "match": [
+    "ALABAMA POWER"
+  ],
+  "config": {
+    "instance": "7636a60f-7b81-4fb0-a30d-ed79a8e271e7",
+    "view": "c3471c92-6e1b-494b-a884-391139a2cc18",
+    "referer": "https://outagemap.alabamapower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

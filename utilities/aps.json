@@ -1,0 +1,24 @@
+{
+  "id": "aps",
+  "name": "Arizona Public Service (APS)",
+  "adapter": "arcgis",
+  "match": [
+    "ARIZONA PUBLIC SERVICE"
+  ],
+  "config": {
+    "base": "https://aps-ags.esriemcs.com/arcgis/rest/services/APSOutageMap/MapServer",
+    "layer": 0,
+    "fields": {
+      "out": "customers",
+      "etr": "etr",
+      "id": "Ticket",
+      "name": "City"
+    },
+    "referer": "https://outagemap.aps.com/outageviewer/",
+    "servedTotal": 1344359,
+    "groupBy": "APSArea"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

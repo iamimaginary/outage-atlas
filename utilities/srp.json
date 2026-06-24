@@ -1,0 +1,22 @@
+{
+  "id": "srp",
+  "name": "Salt River Project (AZ)",
+  "adapter": "arcgis",
+  "match": [
+    "SALT RIVER PROJECT"
+  ],
+  "config": {
+    "base": "https://services6.arcgis.com/l7uujk4hHifqabRB/arcgis/rest/services/SRPOutages/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "numberCust",
+      "etr": "estimatedR",
+      "id": "outageId"
+    },
+    "referer": "https://www.arcgis.com/",
+    "servedTotal": 1118823
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

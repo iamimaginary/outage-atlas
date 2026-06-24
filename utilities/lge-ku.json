@@ -1,0 +1,17 @@
+{
+  "id": "lge-ku",
+  "name": "LG&E and KU (Kentucky)",
+  "adapter": "kubra",
+  "match": [
+    "KENTUCKY UTILITIES",
+    "LOUISVILLE GAS"
+  ],
+  "config": {
+    "instance": "877fd1e9-4162-473f-b782-d8a53a85326b",
+    "view": "a6cee9e4-312b-4b77-9913-2ae371eb860d",
+    "referer": "https://stormcenter.lge-ku.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

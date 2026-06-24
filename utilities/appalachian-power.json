@@ -1,0 +1,16 @@
+{
+  "id": "appalachian-power",
+  "name": "Appalachian Power (AEP)",
+  "adapter": "kubra",
+  "match": [
+    "APPALACHIAN POWER"
+  ],
+  "config": {
+    "instance": "6674f49e-0236-4ed8-a40a-b31747557ab7",
+    "view": "8cfe790f-59f3-4ce3-a73f-a9642227411f",
+    "referer": "https://outagemap.appalachianpower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

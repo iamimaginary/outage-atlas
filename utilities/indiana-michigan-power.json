@@ -1,0 +1,16 @@
+{
+  "id": "indiana-michigan-power",
+  "name": "Indiana Michigan Power (AEP)",
+  "adapter": "kubra",
+  "match": [
+    "INDIANA MICHIGAN POWER"
+  ],
+  "config": {
+    "instance": "e07a4ffb-83dd-4251-8dad-3fe5a26979b6",
+    "view": "1b319a36-d1cf-443d-9ecf-6267acae0c3a",
+    "referer": "https://outagemap.indianamichiganpower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

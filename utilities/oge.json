@@ -1,0 +1,16 @@
+{
+  "id": "oge",
+  "name": "Oklahoma Gas & Electric (OG&E)",
+  "adapter": "kubra",
+  "match": [
+    "OKLAHOMA GAS"
+  ],
+  "config": {
+    "instance": "dc85f79f-59f9-4e9e-9557-b3a9bee7e0ce",
+    "view": "8fe9d356-96bc-41f1-b353-6720eb408936",
+    "referer": "https://outagemap.oge.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

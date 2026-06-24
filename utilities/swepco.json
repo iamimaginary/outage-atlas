@@ -1,0 +1,16 @@
+{
+  "id": "swepco",
+  "name": "SWEPCO (AEP)",
+  "adapter": "kubra",
+  "match": [
+    "SOUTHWESTERN ELECTRIC POWER"
+  ],
+  "config": {
+    "instance": "9632df6e-a385-400a-b822-b68d268e8e7c",
+    "view": "e51304d0-7052-458d-a5ac-0e1980cca976",
+    "referer": "https://outagemap.swepco.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

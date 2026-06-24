@@ -1,0 +1,17 @@
+{
+  "id": "pso",
+  "name": "Public Service Co of Oklahoma (AEP)",
+  "adapter": "kubra",
+  "match": [
+    "PUBLIC SERVICE CO OF OKLAHOMA",
+    "PUBLIC SERVICE COMPANY OF OKLAHOMA"
+  ],
+  "config": {
+    "instance": "4bb3b3bc-e1c4-448b-b806-e4fc85c3b640",
+    "view": "e2356e43-c76f-4772-bf85-31240a2cc504",
+    "referer": "https://outagemap.psoklahoma.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
