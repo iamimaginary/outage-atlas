@@ -1,0 +1,16 @@
+{
+  "id": "avista",
+  "name": "Avista (WA/ID)",
+  "adapter": "kubra",
+  "match": [
+    "AVISTA"
+  ],
+  "config": {
+    "instance": "b9478e86-d9d9-45b2-9579-b2639f77f3fe",
+    "view": "00763684-dd19-4651-b33f-51aa17a491a6",
+    "referer": "https://outagemap.myavista.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

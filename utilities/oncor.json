@@ -1,0 +1,16 @@
+{
+  "id": "oncor",
+  "name": "Oncor (TX)",
+  "adapter": "kubra",
+  "match": [
+    "ONCOR"
+  ],
+  "config": {
+    "instance": "560abba3-7881-4741-b538-ca416b58ba1e",
+    "view": "ca124b24-9a06-4b19-aeb3-1841a9c962e1",
+    "referer": "https://stormcenter.oncor.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

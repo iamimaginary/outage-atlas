@@ -1,0 +1,16 @@
+{
+  "id": "georgia-power",
+  "name": "Georgia Power",
+  "adapter": "kubra",
+  "match": [
+    "GEORGIA POWER"
+  ],
+  "config": {
+    "instance": "7b38c047-7950-444b-a25c-9b3e5ab986eb",
+    "view": "67b44af5-3847-4ca3-9f4e-9190aac343d6",
+    "referer": "https://outagemap.georgiapower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

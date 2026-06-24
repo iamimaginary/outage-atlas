@@ -1,0 +1,16 @@
+{
+  "id": "firstenergy-nj",
+  "name": "JCP&L (FirstEnergy NJ)",
+  "adapter": "kubra",
+  "match": [
+    "JERSEY CENTRAL POWER"
+  ],
+  "config": {
+    "instance": "6c715f0e-bbec-465f-98cc-0b81623744be",
+    "view": "fcd7c23d-de37-4471-8ca3-37c3260f94fa",
+    "referer": "https://outages-nj.firstenergycorp.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

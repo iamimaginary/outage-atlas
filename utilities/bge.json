@@ -1,0 +1,16 @@
+{
+  "id": "bge",
+  "name": "Baltimore Gas & Electric (MD)",
+  "adapter": "kubra",
+  "match": [
+    "BALTIMORE GAS"
+  ],
+  "config": {
+    "instance": "3db5fd35-4a88-465f-8985-8db3eb760b61",
+    "view": "e7b67c05-848e-404f-aeb0-08d96c45d0bd",
+    "referer": "https://outagemap.bge.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

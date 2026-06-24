@@ -1,0 +1,16 @@
+{
+  "id": "central-hudson",
+  "name": "Central Hudson (NY)",
+  "adapter": "kubra",
+  "match": [
+    "CENTRAL HUDSON"
+  ],
+  "config": {
+    "instance": "d19170d4-3357-4f67-bc30-e88f85fc85c8",
+    "view": "7e22d4b2-8c3d-4625-adc1-ffcdd2944de0",
+    "referer": "https://stormcentral.cenhud.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
