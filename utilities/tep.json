@@ -1,0 +1,1 @@
+{"schema":1,"id":"tep","name":"Tucson Electric Power (AZ)","adapter":"tep","collectedAt":1782343300813,"official":{"out":207,"served":458000,"nOut":1},"areas":[{"name":"Unplanned","out":207,"served":207,"etr":"","loc":[32.248146,-110.9312],"subs":[]}]}
