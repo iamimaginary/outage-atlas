@@ -1,0 +1,14 @@
+{
+  "id": "entergy",
+  "name": "Entergy (LA/MS/AR/TX)",
+  "adapter": "arcgis",
+  "match": ["ENTERGY"],
+  "config": {
+    "base": "https://arcgis.entergy.datacapable.com/arcgis/rest/services/Public/FeatureServer",
+    "layer": 1,
+    "fields": { "out": "numpeople", "etr": "etrdate", "id": "identifier", "name": "city" },
+    "referer": "https://www.etrviewoutage.com/",
+    "servedTotal": 3000000
+  },
+  "reconciliation": { "tolerancePct": 10 }
+}

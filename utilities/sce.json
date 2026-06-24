@@ -1,0 +1,15 @@
+{
+  "id": "sce",
+  "name": "Southern California Edison",
+  "adapter": "arcgis",
+  "match": ["SOUTHERN CALIFORNIA EDISON", "SCE"],
+  "config": {
+    "base": "https://services5.arcgis.com/z6hI6KRjKHvhNO0r/arcgis/rest/services/Outages_P_VwLayer/FeatureServer",
+    "layer": 0,
+    "groupBy": "CountyName",
+    "fields": { "out": "NoOfAffectedCust_Inci", "etr": "ERT", "id": "IncidentId" },
+    "referer": "https://www.sce.com/",
+    "servedTotal": 5000000
+  },
+  "reconciliation": { "tolerancePct": 10 }
+}

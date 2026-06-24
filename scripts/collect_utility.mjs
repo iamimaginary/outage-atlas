@@ -157,7 +157,33 @@ async function fetchHeco(c) {
   return fetchHecoRaw(key, c.company || "HECO");
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco };
+// Generic Esri ArcGIS fetch (config-driven): pages an outage layer, asks for the configured fields +
+// geometry in WGS84. Field MEANINGS live in config.fields; parseArcgis interprets them.
+async function fetchArcgis(c) {
+  const base = c.base;
+  if (!base) throw new Error("arcgis: config.base (service root) required");
+  const layer = c.layer != null ? c.layer : 0;
+  const F = c.fields || {};
+  const wanted = [...new Set(["OBJECTID", ...Object.values(F).filter((v) => typeof v === "string"), c.groupBy].filter(Boolean))];
+  const fields = c.outFields || wanted.join(",");
+  const where = c.where || "1=1";
+  const H = { Referer: c.referer || new URL(base).origin };
+  const all = [];
+  const pageSize = c.pageSize || 2000;
+  // advance by the actual returned count (servers cap below pageSize, e.g. Entergy's 1000) and stop only
+  // when the server says there's no more (exceededTransferLimit false) or a page is empty.
+  for (let i = 0, offset = 0; i < 100; i++) {
+    const url = `${base}/${layer}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(fields)}&returnGeometry=true&outSR=4326&f=json&resultOffset=${offset}&resultRecordCount=${pageSize}`;
+    const r = await jget(url, H);
+    const fs = r.features || [];
+    all.push(...fs);
+    offset += fs.length;
+    if (!r.exceededTransferLimit || fs.length === 0) break;
+  }
+  return { features: all };
+}
+
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

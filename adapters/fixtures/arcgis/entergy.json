@@ -1,0 +1,99 @@
+{
+  "raw": {
+    "features": [
+      {
+        "attributes": {
+          "objectid": 7022596,
+          "numpeople": 1,
+          "etrdate": 1782397800000,
+          "identifier": "2140940684",
+          "city": null
+        },
+        "geometry": {
+          "x": -91.17184823481695,
+          "y": 30.24776273802459
+        }
+      },
+      {
+        "attributes": {
+          "objectid": 7087266,
+          "numpeople": 1,
+          "etrdate": 1783013400000,
+          "identifier": "2161123795",
+          "city": null
+        },
+        "geometry": {
+          "x": -95.5108748138369,
+          "y": 30.198094438777943
+        }
+      },
+      {
+        "attributes": {
+          "objectid": 7087341,
+          "numpeople": 1,
+          "etrdate": 1782999060000,
+          "identifier": "2161123962",
+          "city": null
+        },
+        "geometry": {
+          "x": -95.51733501199412,
+          "y": 30.21073062669892
+        }
+      }
+    ]
+  },
+  "opts": {
+    "base": "https://arcgis.entergy.datacapable.com/arcgis/rest/services/Public/FeatureServer",
+    "layer": 1,
+    "fields": {
+      "out": "numpeople",
+      "etr": "etrdate",
+      "id": "identifier",
+      "name": "city"
+    },
+    "referer": "https://www.etrviewoutage.com/",
+    "servedTotal": 3000000
+  },
+  "expected": {
+    "official": {
+      "out": 3,
+      "served": 3000000,
+      "nOut": 3
+    },
+    "areas": [
+      {
+        "name": "outage #2140940684",
+        "out": 1,
+        "served": 1,
+        "etr": "2026-06-25T14:30:00.000Z",
+        "loc": [
+          30.24776,
+          -91.17185
+        ],
+        "subs": []
+      },
+      {
+        "name": "outage #2161123795",
+        "out": 1,
+        "served": 1,
+        "etr": "2026-07-02T17:30:00.000Z",
+        "loc": [
+          30.19809,
+          -95.51087
+        ],
+        "subs": []
+      },
+      {
+        "name": "outage #2161123962",
+        "out": 1,
+        "served": 1,
+        "etr": "2026-07-02T13:31:00.000Z",
+        "loc": [
+          30.21073,
+          -95.51734
+        ],
+        "subs": []
+      }
+    ]
+  }
+}
