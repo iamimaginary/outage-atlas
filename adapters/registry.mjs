@@ -16,6 +16,9 @@ import * as kiuc from "./kiuc.mjs";
 import * as heco from "./heco.mjs";
 import * as arcgis from "./arcgis.mjs";
 import * as ifactor from "./ifactor.mjs";
+import * as pacificorp from "./pacificorp.mjs";
+import * as wec from "./wec.mjs";
+import * as aesOhio from "./aes-ohio.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -38,6 +41,10 @@ export const ADAPTERS = {
   arcgis: { mod: arcgis, defaultFn: "parseArcgis", canonical: true },
   // Legacy Kübra "iFactor" Storm Center (static JSON: metadata -> data.json + report_*.json) — Con Ed, Eversource.
   ifactor: { mod: ifactor, defaultFn: "parseIfactor", canonical: true },
+  // Bespoke self-hosted vendor feeds:
+  pacificorp: { mod: pacificorp, defaultFn: "parsePacificorp", canonical: true }, // 6 state JSON files
+  wec: { mod: wec, defaultFn: "parseWec", canonical: true },                       // We Energies + Wisconsin Public Service
+  "aes-ohio": { mod: aesOhio, defaultFn: "parseAesOhio", canonical: true },        // Dayton P&L XML feed
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

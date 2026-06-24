@@ -1,0 +1,8 @@
+{
+  "id": "wisconsin-public-service",
+  "name": "Wisconsin Public Service (WPS)",
+  "adapter": "wec",
+  "match": ["WISCONSIN PUBLIC SERVICE"],
+  "config": { "base": "https://www.wisconsinpublicservice.com", "referer": "https://www.wisconsinpublicservice.com/", "servedTotal": 458948 },
+  "reconciliation": { "tolerancePct": 10 }
+}

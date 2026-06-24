@@ -1,0 +1,8 @@
+{
+  "id": "we-energies",
+  "name": "We Energies (Wisconsin Electric)",
+  "adapter": "wec",
+  "match": ["WISCONSIN ELECTRIC"],
+  "config": { "base": "https://www.we-energies.com", "referer": "https://www.we-energies.com/outagemapext/", "servedTotal": 1148141 },
+  "reconciliation": { "tolerancePct": 10 }
+}

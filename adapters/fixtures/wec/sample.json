@@ -1,0 +1,96 @@
+{
+  "raw": [
+    {
+      "Latitude": 46.02,
+      "Longitude": -89.33,
+      "OffTime": "Jun 24, 1:00 p.m.",
+      "ETR": "Jun 24, 6:30 p.m.",
+      "Cause": "Third-party damage",
+      "Slices": [
+        {
+          "AffectedCusts": 145,
+          "City": "conover",
+          "CityCusts": 2086,
+          "County": "vilas",
+          "CountyCusts": 6260,
+          "Zip": "54519"
+        }
+      ]
+    },
+    {
+      "Latitude": 43,
+      "Longitude": -88,
+      "OffTime": "Jun 24, 2:00 p.m.",
+      "ETR": "Jun 24, 5:00 p.m.",
+      "Cause": "Equipment",
+      "Slices": [
+        {
+          "AffectedCusts": 30,
+          "City": "waukesha",
+          "CityCusts": 40000,
+          "County": "waukesha",
+          "CountyCusts": 180000,
+          "Zip": "53186"
+        }
+      ]
+    }
+  ],
+  "opts": {
+    "servedTotal": 1148141
+  },
+  "expected": {
+    "official": {
+      "out": 175,
+      "served": 1148141,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "vilas",
+        "out": 145,
+        "served": 6260,
+        "etr": "Jun 24, 6:30 p.m.",
+        "loc": [
+          46.02,
+          -89.33
+        ],
+        "subs": [
+          {
+            "id": "vilas|0",
+            "name": "conover",
+            "out": 145,
+            "served": 2086,
+            "etr": "Jun 24, 6:30 p.m.",
+            "loc": [
+              46.02,
+              -89.33
+            ]
+          }
+        ]
+      },
+      {
+        "name": "waukesha",
+        "out": 30,
+        "served": 180000,
+        "etr": "Jun 24, 5:00 p.m.",
+        "loc": [
+          43,
+          -88
+        ],
+        "subs": [
+          {
+            "id": "waukesha|0",
+            "name": "waukesha",
+            "out": 30,
+            "served": 40000,
+            "etr": "Jun 24, 5:00 p.m.",
+            "loc": [
+              43,
+              -88
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

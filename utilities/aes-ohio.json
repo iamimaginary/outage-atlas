@@ -1,0 +1,8 @@
+{
+  "id": "aes-ohio",
+  "name": "AES Ohio (Dayton Power & Light)",
+  "adapter": "aes-ohio",
+  "match": ["DAYTON POWER", "AES OHIO", "DAYTON POWER & LIGHT"],
+  "config": { "url": "https://myprofile.aes-ohio.com/DATA/DPLOMSDATA.xml", "referer": "https://myprofile.aes-ohio.com/Outages/Outages.html", "servedTotal": 534482 },
+  "reconciliation": { "tolerancePct": 10 }
+}
