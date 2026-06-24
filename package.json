@@ -1,0 +1,12 @@
+{
+  "name": "outage-atlas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "National, location-first US power-outage atlas: a free ODIN+NWS baseline for every location plus on-demand deep per-utility detail. Self-maintained by embedded agents behind copious audit gates.",
+  "scripts": {
+    "test": "node scripts/test_adapters.mjs && node scripts/validate_configs.mjs",
+    "test:adapters": "node scripts/test_adapters.mjs",
+    "validate:configs": "node scripts/validate_configs.mjs"
+  }
+}

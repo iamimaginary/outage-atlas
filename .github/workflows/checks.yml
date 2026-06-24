@@ -1,0 +1,37 @@
+# Agent-maintenance gate. Every PR (adapter fixes, new utilities, feedback-driven changes) must pass
+# these before merge — the deterministic guardrails that let a Claude agent ship a change safely:
+#   1. every .mjs still parses,
+#   2. every utilities/<id>.json config is valid and references a real adapter,
+#   3. all adapter golden tests pass (the fix actually produces the canonical shape).
+# (Reconciliation-of-deployed-data is added once the data branch exists — Phase 1/3.)
+name: checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: All scripts/adapters parse
+        run: |
+          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs; do
+            [ -e "$f" ] || continue
+            node --check "$f" && echo "ok $f"
+          done
+
+      - name: Utility configs are valid
+        run: node scripts/validate_configs.mjs
+
+      - name: Adapter golden tests
+        run: node scripts/test_adapters.mjs
