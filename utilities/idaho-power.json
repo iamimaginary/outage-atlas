@@ -1,1 +1,1 @@
-{"schema":1,"id":"idaho-power","name":"Idaho Power (ID)","adapter":"idaho-power","collectedAt":1782419722062,"official":{"out":19,"served":611598,"nOut":1},"areas":[{"name":"DIXI31","out":19,"served":19,"etr":"2026-06-25T15:46:00","loc":[43.30969487600004,-115.45730976599998],"subs":[]}]}
+{"schema":1,"id":"idaho-power","name":"Idaho Power (ID)","adapter":"idaho-power","collectedAt":1782425427939,"official":{"out":10,"served":611598,"nOut":1},"areas":[{"name":"BOISE","out":10,"served":10,"etr":null,"loc":[43.55775951000004,-116.181400108],"subs":[]}]}
