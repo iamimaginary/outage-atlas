@@ -1,1 +1,1 @@
-{"schema":1,"id":"tep","name":"Tucson Electric Power (AZ)","adapter":"tep","collectedAt":1782412278211,"official":{"out":1,"served":458000,"nOut":1},"areas":[{"name":"Planned maintenance","out":1,"served":1,"etr":"Jun 25, 10:46 AM","loc":[32.16617,-110.94325],"subs":[]}]}
+{"schema":1,"id":"tep","name":"Tucson Electric Power (AZ)","adapter":"tep","collectedAt":1782419740480,"official":{"out":1,"served":458000,"nOut":1},"areas":[{"name":"Planned maintenance","out":1,"served":1,"etr":"Jun 25, 10:46 AM","loc":[32.16617,-110.94325],"subs":[]}]}

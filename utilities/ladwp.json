@@ -1,1 +1,1 @@
-{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782351081773,"official":{"out":2,"served":1488920,"nOut":1},"areas":[{"name":"HARBOR CITY","out":2,"served":2,"etr":"2026-06-24T18:00:00.000Z","loc":[33.78507,-118.28648],"subs":[]}]}
+{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782419724128,"official":{"out":33,"served":1488920,"nOut":1},"areas":[{"name":"PACIFIC PALISADES","out":33,"served":33,"etr":"2026-06-25T16:00:00.000Z","loc":[34.04806,-118.53856],"subs":[]}]}
