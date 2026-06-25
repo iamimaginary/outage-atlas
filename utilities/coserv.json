@@ -1,0 +1,15 @@
+{
+  "id": "coserv",
+  "name": "CoServ / Denton County EC (TX)",
+  "adapter": "kiuc",
+  "match": [
+    "DENTON COUNTY ELEC",
+    "COSERV"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/coserv/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

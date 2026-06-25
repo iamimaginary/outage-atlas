@@ -1,0 +1,14 @@
+{
+  "id": "lcec",
+  "name": "Lee County Electric Coop (FL)",
+  "adapter": "kiuc",
+  "match": [
+    "LEE COUNTY ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/lcecswfl/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

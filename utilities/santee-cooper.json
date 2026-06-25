@@ -1,0 +1,17 @@
+{
+  "id": "santee-cooper",
+  "name": "Santee Cooper (SC Public Service Authority)",
+  "adapter": "kubra",
+  "match": [
+    "SOUTH CAROLINA PUBLIC SERVICE",
+    "SANTEE COOPER"
+  ],
+  "config": {
+    "instance": "3787ae29-c9dd-4ac6-89df-c8b9f93209f0",
+    "view": "06395508-a927-49d0-82a9-4eae2c201c06",
+    "referer": "https://stormcenter.santeecooper.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

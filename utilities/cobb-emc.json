@@ -1,0 +1,16 @@
+{
+  "id": "cobb-emc",
+  "name": "Cobb EMC (GA)",
+  "adapter": "kubra",
+  "match": [
+    "COBB ELECTRIC"
+  ],
+  "config": {
+    "instance": "57251972-7d71-4039-8075-c9c30a735174",
+    "view": "27d19b00-dc59-445d-acac-480c1d674258",
+    "referer": "https://outage.cobbemc.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

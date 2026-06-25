@@ -1,0 +1,16 @@
+{
+  "id": "pedernales",
+  "name": "Pedernales Electric Coop (TX)",
+  "adapter": "kubra",
+  "match": [
+    "PEDERNALES"
+  ],
+  "config": {
+    "instance": "bac8eaf4-d343-4760-9a76-9c7beb6456a0",
+    "view": "a6e670a6-58f1-40e9-9e67-64f7ac846cef",
+    "referer": "https://map.pec.coop/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

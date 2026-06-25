@@ -1,0 +1,17 @@
+{
+  "id": "orlando-ouc",
+  "name": "Orlando Utilities Commission (OUC)",
+  "adapter": "kubra",
+  "match": [
+    "ORLANDO UTILITIES",
+    "OUC"
+  ],
+  "config": {
+    "instance": "b26c1223-ffac-4e60-b9de-402fbc33f9e4",
+    "view": "535dc59f-6e00-445d-a855-73c700c6c451",
+    "referer": "https://www.ouc.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

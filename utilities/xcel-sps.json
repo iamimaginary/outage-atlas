@@ -1,0 +1,25 @@
+{
+  "id": "xcel-sps",
+  "name": "Xcel Energy \u2014 Southwestern Public Service (TX/NM)",
+  "adapter": "arcgis",
+  "match": [
+    "SOUTHWESTERN PUBLIC SERVICE"
+  ],
+  "config": {
+    "base": "https://emcs-gis.esriemcs.com/arcgis/rest/services/Xcel/XcelOutage/MapServer",
+    "layer": 3,
+    "groupBy": "county",
+    "fields": {
+      "out": "customers",
+      "etr": "etr",
+      "id": "globalid"
+    },
+    "where": "states IN ('TX','NM')",
+    "referer": "https://www.outagemap-xcelenergy.com/",
+    "servedTotal": 403678
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

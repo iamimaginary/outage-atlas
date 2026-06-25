@@ -1,0 +1,16 @@
+{
+  "id": "mississippi-power",
+  "name": "Mississippi Power (Southern Co)",
+  "adapter": "kubra",
+  "match": [
+    "MISSISSIPPI POWER"
+  ],
+  "config": {
+    "instance": "32c5f878-d103-49e1-8a8a-ad0e2bdb4507",
+    "view": "1521bb54-d36b-4d36-a64d-48a454ee39a0",
+    "referer": "https://outagemap.mississippipower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
