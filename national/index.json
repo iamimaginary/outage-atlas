@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generatedAt": 1782425403891,
+  "generatedAt": 1782431014863,
   "baseline": {
     "source": "odin",
-    "collectedAt": 1782425403891,
-    "counties": 217,
-    "out": 16339,
-    "states": 32,
-    "utilities": 75
+    "collectedAt": 1782431014863,
+    "counties": 203,
+    "out": 16035,
+    "states": 33,
+    "utilities": 68
   },
   "deep": {
     "firstenergy-oh": {
@@ -18,8 +18,8 @@
         "CLEVELAND ELECTRIC ILLUM",
         "TOLEDO EDISON"
       ],
-      "out": 1293,
-      "collectedAt": 1782425424905
+      "out": 1037,
+      "collectedAt": 1782431035352
     },
     "ameren": {
       "name": "Ameren (MO/IL)",
@@ -28,8 +28,8 @@
         "UNION ELECTRIC",
         "CENTRAL ILLINOIS"
       ],
-      "out": 1585,
-      "collectedAt": 1782425405825
+      "out": 1883,
+      "collectedAt": 1782431017773
     },
     "avista": {
       "name": "Avista (WA/ID)",
@@ -37,23 +37,23 @@
         "AVISTA"
       ],
       "out": 4,
-      "collectedAt": 1782425408414
+      "collectedAt": 1782431020603
     },
     "bge": {
       "name": "Baltimore Gas & Electric (MD)",
       "match": [
         "BALTIMORE GAS"
       ],
-      "out": 226,
-      "collectedAt": 1782425408819
+      "out": 127,
+      "collectedAt": 1782431021004
     },
     "central-hudson": {
       "name": "Central Hudson (NY)",
       "match": [
         "CENTRAL HUDSON"
       ],
-      "out": 13,
-      "collectedAt": 1782425409131
+      "out": 15,
+      "collectedAt": 1782431021677
     },
     "dominion-va-nc": {
       "name": "Dominion Energy (VA/NC)",
@@ -61,16 +61,16 @@
         "VIRGINIA ELECTRIC",
         "DOMINION"
       ],
-      "out": 163,
-      "collectedAt": 1782425414716
+      "out": 193,
+      "collectedAt": 1782431027799
     },
     "firstenergy-nj": {
       "name": "JCP&L (FirstEnergy NJ)",
       "match": [
         "JERSEY CENTRAL POWER"
       ],
-      "out": 1560,
-      "collectedAt": 1782425424600
+      "out": 106,
+      "collectedAt": 1782431035133
     },
     "firstenergy-pa": {
       "name": "FirstEnergy (Pennsylvania)",
@@ -81,16 +81,16 @@
         "PENNSYLVANIA POWER",
         "FIRSTENERGY"
       ],
-      "out": 1453,
-      "collectedAt": 1782425425138
+      "out": 1344,
+      "collectedAt": 1782431035584
     },
     "georgia-power": {
       "name": "Georgia Power",
       "match": [
         "GEORGIA POWER"
       ],
-      "out": 1458,
-      "collectedAt": 1782425425916
+      "out": 259,
+      "collectedAt": 1782431036263
     },
     "national-grid-ma": {
       "name": "National Grid (Massachusetts)",
@@ -98,32 +98,32 @@
         "MASSACHUSETTS ELECTRIC",
         "NANTUCKET ELECTRIC"
       ],
-      "out": 19,
-      "collectedAt": 1782425434172
+      "out": 81,
+      "collectedAt": 1782431043855
     },
     "national-grid-ny": {
       "name": "National Grid (Upstate NY)",
       "match": [
         "NIAGARA MOHAWK"
       ],
-      "out": 991,
-      "collectedAt": 1782425434418
+      "out": 63,
+      "collectedAt": 1782431044518
     },
     "oncor": {
       "name": "Oncor (TX)",
       "match": [
         "ONCOR"
       ],
-      "out": 813,
-      "collectedAt": 1782425437419
+      "out": 524,
+      "collectedAt": 1782431047159
     },
     "peco": {
       "name": "PECO (PA)",
       "match": [
         "PECO"
       ],
-      "out": 177,
-      "collectedAt": 1782425439515
+      "out": 165,
+      "collectedAt": 1782431049057
     },
     "pepco": {
       "name": "Pepco (DC/MD)",
@@ -131,8 +131,8 @@
         "POTOMAC ELECTRIC",
         "PEPCO"
       ],
-      "out": 6,
-      "collectedAt": 1782425440185
+      "out": 4,
+      "collectedAt": 1782431049743
     },
     "pseg-long-island": {
       "name": "PSEG Long Island (NY)",
@@ -140,8 +140,8 @@
         "LONG ISLAND POWER",
         "PSEG"
       ],
-      "out": 8,
-      "collectedAt": 1782425441689
+      "out": 153,
+      "collectedAt": 1782431051836
     },
     "pseg-nj": {
       "name": "PSE&G (New Jersey)",
@@ -149,8 +149,8 @@
         "PUBLIC SERVICE ELEC",
         "PSE&G"
       ],
-      "out": 85,
-      "collectedAt": 1782425442028
+      "out": 771,
+      "collectedAt": 1782431052145
     },
     "aep-ohio": {
       "name": "AEP Ohio (Columbus)",
@@ -158,8 +158,8 @@
         "OHIO POWER",
         "AEP OHIO"
       ],
-      "out": 618,
-      "collectedAt": 1782425404813
+      "out": 495,
+      "collectedAt": 1782431016153
     },
     "chugach": {
       "name": "Chugach Electric (Anchorage, AK)",
@@ -175,24 +175,24 @@
         "DUKE ENERGY CAROLINAS",
         "DUKE ENERGY PROGRESS"
       ],
-      "out": 549,
-      "collectedAt": 1782425417547
+      "out": 341,
+      "collectedAt": 1782431029249
     },
     "duke-florida": {
       "name": "Duke Energy Florida",
       "match": [
         "DUKE ENERGY FLORIDA"
       ],
-      "out": 262,
-      "collectedAt": 1782425418932
+      "out": 160,
+      "collectedAt": 1782431030191
     },
     "duke-indiana": {
       "name": "Duke Energy Indiana",
       "match": [
         "DUKE ENERGY INDIANA"
       ],
-      "out": 5218,
-      "collectedAt": 1782425419564
+      "out": 578,
+      "collectedAt": 1782431031028
     },
     "duke-ohio-ky": {
       "name": "Duke Energy Ohio & Kentucky",
@@ -200,8 +200,8 @@
         "DUKE ENERGY OHIO",
         "DUKE ENERGY KENTUCKY"
       ],
-      "out": 28,
-      "collectedAt": 1782425420520
+      "out": 39,
+      "collectedAt": 1782431032040
     },
     "fpl": {
       "name": "Florida Power & Light (FL)",
@@ -209,8 +209,8 @@
         "FLORIDA POWER & LIGHT",
         "FPL"
       ],
-      "out": 1893,
-      "collectedAt": 1782425425615
+      "out": 827,
+      "collectedAt": 1782431035956
     },
     "kiuc": {
       "name": "Kauai Island Utility Coop (HI)",
@@ -218,8 +218,8 @@
         "KAUAI ISLAND",
         "KIUC"
       ],
-      "out": 25,
-      "collectedAt": 1782425429547
+      "out": 8,
+      "collectedAt": 1782431039751
     },
     "pge": {
       "name": "Pacific Gas & Electric (CA)",
@@ -227,16 +227,16 @@
         "PACIFIC GAS",
         "PG&E"
       ],
-      "out": 13249,
-      "collectedAt": 1782425440442
+      "out": 2091,
+      "collectedAt": 1782431050126
     },
     "entergy": {
       "name": "Entergy (LA/MS/AR/TX)",
       "match": [
         "ENTERGY"
       ],
-      "out": 4465,
-      "collectedAt": 1782425422963
+      "out": 5241,
+      "collectedAt": 1782431034196
     },
     "sce": {
       "name": "Southern California Edison",
@@ -244,8 +244,8 @@
         "SOUTHERN CALIFORNIA EDISON",
         "SCE"
       ],
-      "out": 49729,
-      "collectedAt": 1782425444325
+      "out": 50250,
+      "collectedAt": 1782431054929
     },
     "coned": {
       "name": "Con Edison (NYC)",
@@ -253,8 +253,8 @@
         "CONSOLIDATED EDISON",
         "CON EDISON"
       ],
-      "out": 38,
-      "collectedAt": 1782425412825
+      "out": 34,
+      "collectedAt": 1782431025672
     },
     "eversource": {
       "name": "Eversource (CT/MA/NH)",
@@ -265,8 +265,8 @@
         "PUBLIC SERVICE CO OF NH",
         "WESTERN MASSACHUSETTS ELECTRIC"
       ],
-      "out": 170,
-      "collectedAt": 1782425423980
+      "out": 314,
+      "collectedAt": 1782431034869
     },
     "gvea": {
       "name": "Golden Valley Electric (Fairbanks, AK)",
@@ -282,40 +282,40 @@
       "match": [
         "ALABAMA POWER"
       ],
-      "out": 385,
-      "collectedAt": 1782425405579
+      "out": 611,
+      "collectedAt": 1782431017482
     },
     "appalachian-power": {
       "name": "Appalachian Power (AEP)",
       "match": [
         "APPALACHIAN POWER"
       ],
-      "out": 133,
-      "collectedAt": 1782425406363
+      "out": 113,
+      "collectedAt": 1782431018295
     },
     "aps": {
       "name": "Arizona Public Service (APS)",
       "match": [
         "ARIZONA PUBLIC SERVICE"
       ],
-      "out": 172,
-      "collectedAt": 1782412226404
+      "out": 48,
+      "collectedAt": 1782431018904
     },
     "atlantic-city-electric": {
       "name": "Atlantic City Electric",
       "match": [
         "ATLANTIC CITY ELECTRIC"
       ],
-      "out": 12,
-      "collectedAt": 1782425407652
+      "out": 58,
+      "collectedAt": 1782431019677
     },
     "austin-energy": {
       "name": "Austin Energy",
       "match": [
         "AUSTIN ENERGY"
       ],
-      "out": 1,
-      "collectedAt": 1782425407983
+      "out": 8,
+      "collectedAt": 1782431020003
     },
     "cps-energy": {
       "name": "CPS Energy (San Antonio)",
@@ -323,24 +323,24 @@
         "CPS ENERGY",
         "CITY OF SAN ANTONIO"
       ],
-      "out": 1757,
-      "collectedAt": 1782425414440
+      "out": 1762,
+      "collectedAt": 1782431027338
     },
     "indiana-michigan-power": {
       "name": "Indiana Michigan Power (AEP)",
       "match": [
         "INDIANA MICHIGAN POWER"
       ],
-      "out": 48,
-      "collectedAt": 1782425428521
+      "out": 51,
+      "collectedAt": 1782431038936
     },
     "jea": {
       "name": "JEA (Jacksonville)",
       "match": [
         "JEA"
       ],
-      "out": 28,
-      "collectedAt": 1782425429262
+      "out": 4,
+      "collectedAt": 1782431039438
     },
     "lge-ku": {
       "name": "LG&E and KU (Kentucky)",
@@ -348,8 +348,8 @@
         "KENTUCKY UTILITIES",
         "LOUISVILLE GAS"
       ],
-      "out": 43,
-      "collectedAt": 1782425431796
+      "out": 638,
+      "collectedAt": 1782431041594
     },
     "nv-energy": {
       "name": "NV Energy (Nevada)",
@@ -358,16 +358,16 @@
         "NV ENERGY",
         "SIERRA PACIFIC POWER"
       ],
-      "out": 2258,
-      "collectedAt": 1782425436126
+      "out": 226,
+      "collectedAt": 1782431046226
     },
     "oge": {
       "name": "Oklahoma Gas & Electric (OG&E)",
       "match": [
         "OKLAHOMA GAS"
       ],
-      "out": 68,
-      "collectedAt": 1782425436787
+      "out": 488,
+      "collectedAt": 1782431046864
     },
     "pnm": {
       "name": "Public Service Co of NM (PNM)",
@@ -375,8 +375,8 @@
         "PUBLIC SERVICE CO OF NM",
         "PUBLIC SERVICE COMPANY OF NEW MEXICO"
       ],
-      "out": 103,
-      "collectedAt": 1782425440723
+      "out": 4190,
+      "collectedAt": 1782431050512
     },
     "pso": {
       "name": "Public Service Co of Oklahoma (AEP)",
@@ -384,40 +384,40 @@
         "PUBLIC SERVICE CO OF OKLAHOMA",
         "PUBLIC SERVICE COMPANY OF OKLAHOMA"
       ],
-      "out": 1360,
-      "collectedAt": 1782425442329
+      "out": 1314,
+      "collectedAt": 1782431052440
     },
     "srp": {
       "name": "Salt River Project (AZ)",
       "match": [
         "SALT RIVER PROJECT"
       ],
-      "out": 44,
-      "collectedAt": 1782425446611
+      "out": 48,
+      "collectedAt": 1782431057164
     },
     "swepco": {
       "name": "SWEPCO (AEP)",
       "match": [
         "SOUTHWESTERN ELECTRIC POWER"
       ],
-      "out": 122,
-      "collectedAt": 1782425446955
+      "out": 688,
+      "collectedAt": 1782431057426
     },
     "xcel-co": {
       "name": "Xcel Energy (Colorado)",
       "match": [
         "PUBLIC SERVICE CO OF COLORADO"
       ],
-      "out": 449,
-      "collectedAt": 1782425450369
+      "out": 513,
+      "collectedAt": 1782431060698
     },
     "xcel-mn": {
       "name": "Xcel Energy (Minnesota)",
       "match": [
         "NORTHERN STATES POWER"
       ],
-      "out": 100,
-      "collectedAt": 1782425450998
+      "out": 333,
+      "collectedAt": 1782431061271
     },
     "aes-ohio": {
       "name": "AES Ohio (Dayton Power & Light)",
@@ -426,8 +426,8 @@
         "AES OHIO",
         "DAYTON POWER & LIGHT"
       ],
-      "out": 85,
-      "collectedAt": 1782425405295
+      "out": 35,
+      "collectedAt": 1782431016689
     },
     "evergy": {
       "name": "Evergy (KS/MO)",
@@ -438,8 +438,8 @@
         "KCP&L",
         "KANSAS GAS & ELECTRIC"
       ],
-      "out": 1277,
-      "collectedAt": 1782425423726
+      "out": 701,
+      "collectedAt": 1782431034491
     },
     "pacificorp": {
       "name": "PacifiCorp (Pacific Power / Rocky Mountain Power)",
@@ -448,24 +448,24 @@
         "PACIFIC POWER",
         "ROCKY MOUNTAIN POWER"
       ],
-      "out": 2386,
-      "collectedAt": 1782425439136
+      "out": 2344,
+      "collectedAt": 1782431048676
     },
     "we-energies": {
       "name": "We Energies (Wisconsin Electric)",
       "match": [
         "WISCONSIN ELECTRIC"
       ],
-      "out": 10,
-      "collectedAt": 1782425448841
+      "out": 24,
+      "collectedAt": 1782431059105
     },
     "wisconsin-public-service": {
       "name": "Wisconsin Public Service (WPS)",
       "match": [
         "WISCONSIN PUBLIC SERVICE"
       ],
-      "out": 4,
-      "collectedAt": 1782425449393
+      "out": 1,
+      "collectedAt": 1782431059694
     },
     "aes-indiana": {
       "name": "AES Indiana (Indianapolis P&L)",
@@ -473,24 +473,24 @@
         "INDIANAPOLIS POWER",
         "AES INDIANA"
       ],
-      "out": 37,
-      "collectedAt": 1782425405031
+      "out": 9,
+      "collectedAt": 1782431016386
     },
     "duquesne": {
       "name": "Duquesne Light (PA)",
       "match": [
         "DUQUESNE LIGHT"
       ],
-      "out": 2,
-      "collectedAt": 1782412243765
+      "out": 5,
+      "collectedAt": 1782431032384
     },
     "el-paso": {
       "name": "El Paso Electric (TX/NM)",
       "match": [
         "EL PASO ELECTRIC"
       ],
-      "out": 201,
-      "collectedAt": 1782425421845
+      "out": 10,
+      "collectedAt": 1782431033150
     },
     "idaho-power": {
       "name": "Idaho Power (ID)",
@@ -498,7 +498,7 @@
         "IDAHO POWER"
       ],
       "out": 10,
-      "collectedAt": 1782425427939
+      "collectedAt": 1782431038569
     },
     "luma": {
       "name": "LUMA / PREPA (Puerto Rico)",
@@ -506,16 +506,16 @@
         "PUERTO RICO ELECTRIC",
         "LUMA"
       ],
-      "out": 4055,
-      "collectedAt": 1782425432085
+      "out": 646,
+      "collectedAt": 1782431041786
     },
     "midamerican": {
       "name": "MidAmerican Energy (IA)",
       "match": [
         "MIDAMERICAN"
       ],
-      "out": 15,
-      "collectedAt": 1782425433071
+      "out": 558,
+      "collectedAt": 1782431042727
     },
     "ppl": {
       "name": "PPL Electric Utilities (PA)",
@@ -523,16 +523,16 @@
         "PPL ELECTRIC",
         "PPL"
       ],
-      "out": 959,
-      "collectedAt": 1782425441421
+      "out": 250,
+      "collectedAt": 1782431051480
     },
     "puget": {
       "name": "Puget Sound Energy (WA)",
       "match": [
         "PUGET SOUND"
       ],
-      "out": 171,
-      "collectedAt": 1782425442669
+      "out": 203,
+      "collectedAt": 1782431053398
     },
     "rienergy": {
       "name": "Rhode Island Energy (Narragansett)",
@@ -540,8 +540,8 @@
         "NARRAGANSETT",
         "RHODE ISLAND ENERGY"
       ],
-      "out": 9,
-      "collectedAt": 1782425443067
+      "out": 5,
+      "collectedAt": 1782431053728
     },
     "seattle-city-light": {
       "name": "Seattle City Light (WA)",
@@ -549,16 +549,16 @@
         "CITY OF SEATTLE",
         "SEATTLE CITY LIGHT"
       ],
-      "out": 536,
-      "collectedAt": 1782425445237
+      "out": 197,
+      "collectedAt": 1782431055720
     },
     "teco": {
       "name": "Tampa Electric (TECO)",
       "match": [
         "TAMPA ELECTRIC"
       ],
-      "out": 38,
-      "collectedAt": 1782425447642
+      "out": 26,
+      "collectedAt": 1782431058016
     },
     "ladwp": {
       "name": "LADWP (Los Angeles)",
@@ -573,8 +573,8 @@
       "match": [
         "TUCSON ELECTRIC"
       ],
-      "out": 1,
-      "collectedAt": 1782419740480
+      "out": 3603,
+      "collectedAt": 1782431058506
     },
     "comed": {
       "name": "ComEd (Chicago, IL)",
@@ -582,16 +582,16 @@
         "COMMONWEALTH EDISON",
         "COMED"
       ],
-      "out": 541,
-      "collectedAt": 1782425412325
+      "out": 722,
+      "collectedAt": 1782431025173
     },
     "consumers-energy": {
       "name": "Consumers Energy (MI)",
       "match": [
         "CONSUMERS ENERGY"
       ],
-      "out": 3358,
-      "collectedAt": 1782425413652
+      "out": 4107,
+      "collectedAt": 1782431026556
     },
     "dte": {
       "name": "DTE Electric (Detroit, MI)",
@@ -599,8 +599,8 @@
         "DTE ELECTRIC",
         "DETROIT EDISON"
       ],
-      "out": 1731,
-      "collectedAt": 1782425415433
+      "out": 1922,
+      "collectedAt": 1782431028174
     },
     "heco": {
       "name": "Hawaiian Electric (HECO/MECO/HELCO)",
@@ -610,8 +610,8 @@
         "MAUI ELECTRIC",
         "HAWAII ELECTRIC LIGHT"
       ],
-      "out": 259,
-      "collectedAt": 1782425427410
+      "out": 42,
+      "collectedAt": 1782431038033
     },
     "sdge": {
       "name": "San Diego Gas & Electric (CA)",
@@ -619,15 +619,15 @@
         "SAN DIEGO GAS"
       ],
       "out": 1,
-      "collectedAt": 1782425444807
+      "collectedAt": 1782431055412
     },
     "clay-electric": {
       "name": "Clay Electric Coop (FL)",
       "match": [
         "CLAY ELECTRIC"
       ],
-      "out": 68,
-      "collectedAt": 1782425410588
+      "out": 127,
+      "collectedAt": 1782431023137
     },
     "cobb-emc": {
       "name": "Cobb EMC (GA)",
@@ -635,15 +635,15 @@
         "COBB ELECTRIC"
       ],
       "out": 4,
-      "collectedAt": 1782425411448
+      "collectedAt": 1782431023922
     },
     "colorado-springs": {
       "name": "Colorado Springs Utilities",
       "match": [
         "COLORADO SPRINGS"
       ],
-      "out": 2,
-      "collectedAt": 1782425411953
+      "out": 0,
+      "collectedAt": 1782431024762
     },
     "coserv": {
       "name": "CoServ / Denton County EC (TX)",
@@ -651,24 +651,24 @@
         "DENTON COUNTY ELEC",
         "COSERV"
       ],
-      "out": 4,
-      "collectedAt": 1782425413887
+      "out": 3,
+      "collectedAt": 1782431026819
     },
     "jackson-emc": {
       "name": "Jackson EMC (GA)",
       "match": [
         "JACKSON ELECTRIC MEMBER"
       ],
-      "out": 1,
-      "collectedAt": 1782425428758
+      "out": 3,
+      "collectedAt": 1782431039181
     },
     "lcec": {
       "name": "Lee County Electric Coop (FL)",
       "match": [
         "LEE COUNTY ELECTRIC"
       ],
-      "out": 29,
-      "collectedAt": 1782425431449
+      "out": 320,
+      "collectedAt": 1782431041327
     },
     "mississippi-power": {
       "name": "Mississippi Power (Southern Co)",
@@ -676,15 +676,15 @@
         "MISSISSIPPI POWER"
       ],
       "out": 97,
-      "collectedAt": 1782425433488
+      "collectedAt": 1782431043089
     },
     "nashville-nes": {
       "name": "Nashville Electric Service (NES)",
       "match": [
         "NASHVILLE ELECTRIC"
       ],
-      "out": 5,
-      "collectedAt": 1782425433809
+      "out": 4,
+      "collectedAt": 1782431043558
     },
     "orlando-ouc": {
       "name": "Orlando Utilities Commission (OUC)",
@@ -693,15 +693,15 @@
         "OUC"
       ],
       "out": 0,
-      "collectedAt": 1782425437794
+      "collectedAt": 1782431047561
     },
     "pedernales": {
       "name": "Pedernales Electric Coop (TX)",
       "match": [
         "PEDERNALES"
       ],
-      "out": 7,
-      "collectedAt": 1782425439808
+      "out": 5,
+      "collectedAt": 1782431049354
     },
     "santee-cooper": {
       "name": "Santee Cooper (SC Public Service Authority)",
@@ -709,8 +709,8 @@
         "SOUTH CAROLINA PUBLIC SERVICE",
         "SANTEE COOPER"
       ],
-      "out": 0,
-      "collectedAt": 1782425443523
+      "out": 4,
+      "collectedAt": 1782431054202
     },
     "sawnee-emc": {
       "name": "Sawnee EMC (GA)",
@@ -718,7 +718,7 @@
         "SAWNEE"
       ],
       "out": 7,
-      "collectedAt": 1782425443773
+      "collectedAt": 1782431054494
     },
     "seco-energy": {
       "name": "SECO Energy (Sumter Electric, FL)",
@@ -726,8 +726,8 @@
         "SUMTER ELECTRIC",
         "SECO"
       ],
-      "out": 99,
-      "collectedAt": 1782425445500
+      "out": 0,
+      "collectedAt": 1782431056067
     },
     "tacoma-power": {
       "name": "Tacoma Power (WA)",
@@ -743,16 +743,16 @@
       "match": [
         "WITHLACOOCHEE"
       ],
-      "out": 3,
-      "collectedAt": 1782425449739
+      "out": 1,
+      "collectedAt": 1782431060027
     },
     "xcel-sps": {
       "name": "Xcel Energy — Southwestern Public Service (TX/NM)",
       "match": [
         "SOUTHWESTERN PUBLIC SERVICE"
       ],
-      "out": 47,
-      "collectedAt": 1782425451622
+      "out": 205,
+      "collectedAt": 1782431061823
     },
     "clark-pud": {
       "name": "Clark Public Utilities (WA)",
@@ -760,16 +760,16 @@
         "CLARK COUNTY",
         "CLARK PUBLIC"
       ],
-      "out": 7,
-      "collectedAt": 1782425410324
+      "out": 1,
+      "collectedAt": 1782431022841
     },
     "cleco": {
       "name": "CLECO Power (LA)",
       "match": [
         "CLECO"
       ],
-      "out": 280,
-      "collectedAt": 1782425411019
+      "out": 4,
+      "collectedAt": 1782431023465
     },
     "empire-liberty": {
       "name": "Liberty Utilities — Empire District (MO/AR/KS/OK)",
@@ -777,16 +777,16 @@
         "EMPIRE DISTRICT",
         "LIBERTY UTILITIES"
       ],
-      "out": 170,
-      "collectedAt": 1782425422337
+      "out": 202,
+      "collectedAt": 1782431033563
     },
     "green-mountain-power": {
       "name": "Green Mountain Power (VT)",
       "match": [
         "GREEN MOUNTAIN POWER"
       ],
-      "out": 36,
-      "collectedAt": 1782425426248
+      "out": 1,
+      "collectedAt": 1782431036655
     },
     "knoxville-kub": {
       "name": "Knoxville Utilities Board (TN)",
@@ -794,8 +794,8 @@
         "KNOXVILLE UTILITIES",
         "KUB"
       ],
-      "out": 4,
-      "collectedAt": 1782425430669
+      "out": 24,
+      "collectedAt": 1782431040325
     },
     "memphis-mlgw": {
       "name": "Memphis Light, Gas & Water (MLGW)",
@@ -804,8 +804,8 @@
         "MLGW",
         "MEMPHIS LIGHT"
       ],
-      "out": 285,
-      "collectedAt": 1782425432645
+      "out": 275,
+      "collectedAt": 1782431042307
     },
     "northwestern-energy": {
       "name": "NorthWestern Energy (MT/SD)",
@@ -813,16 +813,16 @@
         "NORTHWESTERN ENERGY",
         "NORTHWESTERN CORP"
       ],
-      "out": 199,
-      "collectedAt": 1782425434993
+      "out": 60,
+      "collectedAt": 1782431045040
     },
     "portland-general": {
       "name": "Portland General Electric (OR)",
       "match": [
         "PORTLAND GENERAL"
       ],
-      "out": 173,
-      "collectedAt": 1782425441097
+      "out": 40,
+      "collectedAt": 1782431051077
     },
     "novec": {
       "name": "Northern Virginia Electric Coop (NOVEC)",

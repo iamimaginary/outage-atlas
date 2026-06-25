@@ -1,1 +1,1 @@
-{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782425433071,"official":{"out":15,"served":810356,"nOut":2},"areas":[{"name":"AUDUBON","out":8,"served":2613,"etr":null,"loc":null,"subs":[]},{"name":"WOODBURY","out":7,"served":45287,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782431042727,"official":{"out":558,"served":810356,"nOut":1},"areas":[{"name":"CERRO GORDO","out":558,"served":660,"etr":null,"loc":null,"subs":[]}]}

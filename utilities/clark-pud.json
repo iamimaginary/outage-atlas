@@ -1,1 +1,1 @@
-{"schema":1,"id":"clark-pud","name":"Clark Public Utilities (WA)","adapter":"clark-pud","collectedAt":1782425410324,"official":{"out":7,"served":229737,"nOut":1},"areas":[{"name":"41275","out":7,"served":7,"etr":null,"loc":[45.68314,0],"subs":[]}]}
+{"schema":1,"id":"clark-pud","name":"Clark Public Utilities (WA)","adapter":"clark-pud","collectedAt":1782431022841,"official":{"out":1,"served":229737,"nOut":1},"areas":[{"name":"41276","out":1,"served":1,"etr":null,"loc":[45.864235,0],"subs":[]}]}
