@@ -1,0 +1,52 @@
+{
+  "raw": {
+    "status": {
+      "code": 200,
+      "error": false
+    },
+    "data": [
+      {
+        "state": "MO",
+        "city": "WEBB CITY",
+        "no_of_incident_percity": "3",
+        "customer_affected": "854",
+        "customer_served": "5000"
+      },
+      {
+        "state": "KS",
+        "city": "BAXTER SPRINGS",
+        "no_of_incident_percity": "1",
+        "customer_affected": "1",
+        "customer_served": "2000"
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 448200
+  },
+  "expected": {
+    "official": {
+      "out": 855,
+      "served": 448200,
+      "nOut": 4
+    },
+    "areas": [
+      {
+        "name": "WEBB CITY, MO",
+        "out": 854,
+        "served": 5000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "BAXTER SPRINGS, KS",
+        "out": 1,
+        "served": 2000,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

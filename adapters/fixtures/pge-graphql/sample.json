@@ -1,0 +1,65 @@
+{
+  "raw": {
+    "data": {
+      "getOutagesByCounty": [
+        {
+          "county": "WASHINGTON",
+          "totalCustomersImpacted": 998,
+          "zipCodeInfo": [
+            {
+              "zipCode": "97123",
+              "lat": 45.5,
+              "long": -122.9,
+              "totalCustomersEffected": 998
+            }
+          ]
+        },
+        {
+          "county": "MULTNOMAH",
+          "totalCustomersImpacted": 460,
+          "zipCodeInfo": []
+        }
+      ]
+    }
+  },
+  "opts": {
+    "servedTotal": 922478
+  },
+  "expected": {
+    "official": {
+      "out": 1458,
+      "served": 922478,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "WASHINGTON",
+        "out": 998,
+        "served": 998,
+        "etr": null,
+        "loc": null,
+        "subs": [
+          {
+            "id": "97123",
+            "name": "97123",
+            "out": 998,
+            "served": 998,
+            "etr": null,
+            "loc": [
+              45.5,
+              -122.9
+            ]
+          }
+        ]
+      },
+      {
+        "name": "MULTNOMAH",
+        "out": 460,
+        "served": 460,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

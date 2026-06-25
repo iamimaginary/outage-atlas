@@ -1,0 +1,17 @@
+{
+  "id": "memphis-mlgw",
+  "name": "Memphis Light, Gas & Water (MLGW)",
+  "adapter": "mlgw",
+  "match": [
+    "CITY OF MEMPHIS",
+    "MLGW",
+    "MEMPHIS LIGHT"
+  ],
+  "config": {
+    "referer": "https://outagemap.mlgw.org/",
+    "servedTotal": 427114
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

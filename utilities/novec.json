@@ -1,0 +1,15 @@
+{
+  "id": "novec",
+  "name": "Northern Virginia Electric Coop (NOVEC)",
+  "adapter": "novec",
+  "match": [
+    "NORTHERN VIRGINIA ELEC"
+  ],
+  "config": {
+    "referer": "https://www.novec.com/",
+    "servedTotal": 178903
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "empire-liberty",
+  "name": "Liberty Utilities \u2014 Empire District (MO/AR/KS/OK)",
+  "adapter": "liberty",
+  "match": [
+    "EMPIRE DISTRICT",
+    "LIBERTY UTILITIES"
+  ],
+  "config": {
+    "companyGroupCode": "LUMO",
+    "referer": "https://outage.libertyutilities.com/",
+    "servedTotal": 448200
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

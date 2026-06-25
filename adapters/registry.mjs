@@ -30,6 +30,15 @@ import * as teco from "./teco.mjs";
 import * as elPaso from "./el-paso.mjs";
 import * as puget from "./puget.mjs";
 import * as smud from "./smud.mjs";
+import * as mlgw from "./mlgw.mjs";
+import * as nwe from "./nwe.mjs";
+import * as cleco from "./cleco.mjs";
+import * as gmp from "./gmp.mjs";
+import * as clarkPud from "./clark-pud.mjs";
+import * as kub from "./kub.mjs";
+import * as liberty from "./liberty.mjs";
+import * as novec from "./novec.mjs";
+import * as pge2 from "./pge-graphql.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -67,6 +76,15 @@ export const ADAPTERS = {
   "el-paso": { mod: elPaso, defaultFn: "parseElPaso", canonical: true },            // El Paso Electric (AES-GCM)
   puget: { mod: puget, defaultFn: "parsePuget", canonical: true },                  // Puget Sound Energy (Sitecore)
   smud: { mod: smud, defaultFn: "parseSmud", canonical: true },                     // Sacramento Municipal Utility District
+  mlgw: { mod: mlgw, defaultFn: "parseMlgw", canonical: true },                     // Memphis Light, Gas & Water (GeoJSON)
+  nwe: { mod: nwe, defaultFn: "parseNwe", canonical: true },                        // NorthWestern Energy (MT)
+  cleco: { mod: cleco, defaultFn: "parseCleco", canonical: true },                  // CLECO (LA)
+  gmp: { mod: gmp, defaultFn: "parseGmp", canonical: true },                        // Green Mountain Power (VT)
+  "clark-pud": { mod: clarkPud, defaultFn: "parseClarkPud", canonical: true },      // Clark Public Utilities (WA, JSONP)
+  kub: { mod: kub, defaultFn: "parseKub", canonical: true },                        // Knoxville Utilities Board
+  liberty: { mod: liberty, defaultFn: "parseLiberty", canonical: true },            // Liberty/Empire (SmartCMobile)
+  novec: { mod: novec, defaultFn: "parseNovec", canonical: true },                  // Northern Virginia EC (StormCenter XML)
+  "pge-graphql": { mod: pge2, defaultFn: "parsePge2", canonical: true },            // Portland General Electric (GraphQL)
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

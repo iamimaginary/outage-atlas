@@ -1,0 +1,53 @@
+{
+  "raw": {
+    "data": [
+      {
+        "affectedCount": 23,
+        "location": "Pearl River",
+        "latitude": 30.37,
+        "longitude": -89.74,
+        "restorationTime": "2026-06-24T22:00:00"
+      },
+      {
+        "affectedCount": 16,
+        "location": "Flagon",
+        "latitude": 31.1,
+        "longitude": -92.4
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 292770
+  },
+  "expected": {
+    "official": {
+      "out": 39,
+      "served": 292770,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Pearl River",
+        "out": 23,
+        "served": 23,
+        "etr": "2026-06-24T22:00:00",
+        "loc": [
+          30.37,
+          -89.74
+        ],
+        "subs": []
+      },
+      {
+        "name": "Flagon",
+        "out": 16,
+        "served": 16,
+        "etr": null,
+        "loc": [
+          31.1,
+          -92.4
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

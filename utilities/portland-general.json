@@ -1,0 +1,15 @@
+{
+  "id": "portland-general",
+  "name": "Portland General Electric (OR)",
+  "adapter": "pge-graphql",
+  "match": [
+    "PORTLAND GENERAL"
+  ],
+  "config": {
+    "referer": "https://portlandgeneral.com/outages",
+    "servedTotal": 922478
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

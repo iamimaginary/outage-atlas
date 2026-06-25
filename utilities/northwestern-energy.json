@@ -1,0 +1,16 @@
+{
+  "id": "northwestern-energy",
+  "name": "NorthWestern Energy (MT/SD)",
+  "adapter": "nwe",
+  "match": [
+    "NORTHWESTERN ENERGY",
+    "NORTHWESTERN CORP"
+  ],
+  "config": {
+    "referer": "https://northwesternenergy.com/outages",
+    "servedTotal": 387094
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

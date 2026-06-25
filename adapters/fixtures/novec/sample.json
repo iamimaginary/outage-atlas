@@ -1,0 +1,37 @@
+{
+  "raw": "<outages><outage numOut=\"13\" county=\"PW\" lat=\"38.7\" lng=\"-77.5\" eTime=\"11:02 PM 06/24/2026\" cause=\"Tree\" id=\"2026-06-24-1921\"/><outage numOut=\"2\" county=\"FX\" lat=\"38.8\" lng=\"-77.3\" eTime=\"\" cause=\"\" id=\"2026-06-24-1922\"/></outages>",
+  "opts": {
+    "servedTotal": 178903
+  },
+  "expected": {
+    "official": {
+      "out": 15,
+      "served": 178903,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Prince William #2026-06-24-1921",
+        "out": 13,
+        "served": 13,
+        "etr": "11:02 PM 06/24/2026",
+        "loc": [
+          38.7,
+          -77.5
+        ],
+        "subs": []
+      },
+      {
+        "name": "Fairfax #2026-06-24-1922",
+        "out": 2,
+        "served": 2,
+        "etr": null,
+        "loc": [
+          38.8,
+          -77.3
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

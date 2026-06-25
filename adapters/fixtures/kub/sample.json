@@ -1,0 +1,65 @@
+{
+  "raw": {
+    "electricOutage": [
+      {
+        "id": 1,
+        "customerCount": "35",
+        "x": -83.92,
+        "y": 35.96,
+        "estimatedRestoreTime": "2026-06-24T21:00:00",
+        "ertProvided": true
+      },
+      {
+        "id": 2,
+        "customerCount": "16",
+        "x": -83.9,
+        "y": 35.9,
+        "ertProvided": false
+      }
+    ],
+    "meta": {
+      "total": 2
+    },
+    "electricOutageInfo": [
+      {
+        "id": "current",
+        "totalElectricCustomers": 228355,
+        "electricCustomersWithoutPower": 51
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 228355
+  },
+  "expected": {
+    "official": {
+      "out": 51,
+      "served": 228355,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Outage 1",
+        "out": 35,
+        "served": 35,
+        "etr": "2026-06-24T21:00:00",
+        "loc": [
+          35.96,
+          -83.92
+        ],
+        "subs": []
+      },
+      {
+        "name": "Outage 2",
+        "out": 16,
+        "served": 16,
+        "etr": null,
+        "loc": [
+          35.9,
+          -83.9
+        ],
+        "subs": []
+      }
+    ]
+  }
+}
