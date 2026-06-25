@@ -1,0 +1,40 @@
+{
+  "raw": {
+    "ok": true,
+    "result": {
+      "totalAffectedCustomerCount": 5,
+      "openOutages": [
+        {
+          "key": "41270",
+          "affectedCustomerCount": 5,
+          "estimatedRestoration": "2026-06-24T22:00:00-07:00",
+          "lat": 45.78,
+          "lng": -122.5
+        }
+      ]
+    }
+  },
+  "opts": {
+    "servedTotal": 229737
+  },
+  "expected": {
+    "official": {
+      "out": 5,
+      "served": 229737,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "41270",
+        "out": 5,
+        "served": 5,
+        "etr": "2026-06-24T22:00:00-07:00",
+        "loc": [
+          45.78,
+          -122.5
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

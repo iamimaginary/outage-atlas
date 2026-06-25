@@ -1,0 +1,16 @@
+{
+  "id": "clark-pud",
+  "name": "Clark Public Utilities (WA)",
+  "adapter": "clark-pud",
+  "match": [
+    "CLARK COUNTY",
+    "CLARK PUBLIC"
+  ],
+  "config": {
+    "referer": "https://www.clarkpublicutilities.com/outage-map/",
+    "servedTotal": 229737
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

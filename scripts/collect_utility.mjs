@@ -171,6 +171,38 @@ async function fetchHeco(c) {
 async function fetchSmud(c) {
   return jget(c.url || "https://usage.smud.org/omkml/api/communitylist/", { Referer: c.referer || "https://myaccount.smud.org/manage/outage" });
 }
+// Memphis MLGW: GeoJSON (browser UA required).
+async function fetchMlgw(c) { return jget(c.url || "https://outagemap.mlgw.org/geojson.php", { Referer: c.referer || "https://outagemap.mlgw.org/" }); }
+// NorthWestern Energy: ScriptService {d:"<json-string>"} -> double-parse to an events array.
+async function fetchNwe(c) {
+  const r = await jget(c.url || "https://northwesternenergy.com/get-outage-map-data", { Referer: c.referer || "https://northwesternenergy.com/outages" });
+  if (r && typeof r.d === "string") { try { return JSON.parse(r.d); } catch { throw new Error("nwe: .d not JSON"); } }
+  return r;
+}
+// CLECO: Azure APIM. /alloutages/{type}/{service}: type 2 = active/unplanned, service 1 = electric.
+async function fetchCleco(c) { return jget(c.url || "https://cleco-prod.azure-api.net/outage/api/1/outage/alloutages/2/1", { Referer: c.referer || "https://www.cleco.com/" }); }
+// Green Mountain Power: own .NET API (per-town).
+async function fetchGmp(c) { return jget(c.url || "https://api.greenmountainpower.com/api/v2/outages/incidents/towns?all=true", { Referer: c.referer || "https://greenmountainpower.com/outages/" }); }
+// Clark PUD: JSONP -> strip gksUpdateOutageData( ... ) wrapper.
+async function fetchClarkPud(c) {
+  const txt = await tget(c.url || "https://www.clarkpublicutilities.com/outage-map/data.js", { Referer: c.referer || "https://www.clarkpublicutilities.com/outage-map/" });
+  const m = txt.match(/gksUpdateOutageData\(([\s\S]*)\)\s*;?\s*$/);
+  return JSON.parse(m ? m[1] : txt);
+}
+// Knoxville Utilities Board.
+async function fetchKub(c) { return jget(c.url || "https://www.kub.org/api/outage/v1/electric-outages", { Referer: c.referer || "https://www.kub.org/outages" }); }
+// Liberty/Empire: SmartCMobile city summary (companyGroupCode selects the region).
+async function fetchLiberty(c) {
+  const grp = c.companyGroupCode || "LUMO";
+  return jget(c.url || `https://LibertyCF2-svc.smartcmobile.com/OutageAPI/api/1/Outage/OutageSummaryCity?companyGroupCode=${grp}`, { Referer: c.referer || "https://outage.libertyutilities.com/" });
+}
+// NOVEC: StormCenter XML (cache-busted).
+async function fetchNovec(c) { return tget(`${c.url || "https://www.novec.com/stormcenter/data/outagedtl.xml"}?${Date.now()}`, { Referer: c.referer || "https://www.novec.com/" }); }
+// Portland General: public GraphQL (no auth) — per-county outages.
+async function fetchPge2(c) {
+  const body = { query: "query getOutagesByCounty($params: OutageByCountyParams) { getOutagesByCounty(params: $params) }", variables: {} };
+  return jpost(c.url || "https://apix.portlandgeneral.com/pge-graphql", body, { Referer: c.referer || "https://portlandgeneral.com/outages" });
+}
 
 // Generic Esri ArcGIS fetch (config-driven): pages an outage layer, asks for the configured fields +
 // geometry in WGS84. Field MEANINGS live in config.fields; parseArcgis interprets them.
@@ -323,7 +355,7 @@ async function fetchPuget(c) {
   return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud };
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2 };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

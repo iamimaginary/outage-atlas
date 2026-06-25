@@ -1,0 +1,15 @@
+{
+  "id": "cleco",
+  "name": "CLECO Power (LA)",
+  "adapter": "cleco",
+  "match": [
+    "CLECO"
+  ],
+  "config": {
+    "referer": "https://www.cleco.com/",
+    "servedTotal": 292770
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

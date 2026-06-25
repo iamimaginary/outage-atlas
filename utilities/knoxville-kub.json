@@ -1,0 +1,16 @@
+{
+  "id": "knoxville-kub",
+  "name": "Knoxville Utilities Board (TN)",
+  "adapter": "kub",
+  "match": [
+    "KNOXVILLE UTILITIES",
+    "KUB"
+  ],
+  "config": {
+    "referer": "https://www.kub.org/outages",
+    "servedTotal": 228355
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

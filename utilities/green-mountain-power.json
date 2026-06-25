@@ -1,0 +1,15 @@
+{
+  "id": "green-mountain-power",
+  "name": "Green Mountain Power (VT)",
+  "adapter": "gmp",
+  "match": [
+    "GREEN MOUNTAIN POWER"
+  ],
+  "config": {
+    "referer": "https://greenmountainpower.com/outages/",
+    "servedTotal": 306211
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
