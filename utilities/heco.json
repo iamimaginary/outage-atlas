@@ -3,13 +3,6 @@
   "name": "Hawaiian Electric (HECO/MECO/HELCO)",
   "adapter": "heco",
   "match": ["HAWAIIAN ELECTRIC", "HECO", "MAUI ELECTRIC", "HAWAII ELECTRIC LIGHT"],
-  "disabled": true,
-  "config": {
-    "requiresSecret": "HECO_ACCESS_KEY",
-    "company": "HECO",
-    "proxyUrl": "",
-    "servedTotal": 470000
-  },
-  "reconciliation": { "tolerancePct": 15 },
-  "notes": "SCAFFOLD: ODIN has zero Hawaii coverage and HECO's feed is auth-gated (JWT from a pre-shared key) + origin-locked. Enable by deploying workers/heco-proxy.mjs with a HECO-issued HECO_ACCESS_KEY (then set config.proxyUrl or run the collector with the env secret) and flipping disabled=false. Until then this is skipped."
+  "config": { "base": "https://outagemap-api-heco.azurewebsites.net", "referer": "https://outagemap-heco.azurewebsites.net/", "servedTotal": 471911 },
+  "reconciliation": { "tolerancePct": 15 }
 }

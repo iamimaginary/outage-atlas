@@ -1,0 +1,8 @@
+{
+  "id": "dte",
+  "name": "DTE Electric (Detroit, MI)",
+  "adapter": "kubra",
+  "match": ["DTE ELECTRIC", "DETROIT EDISON"],
+  "config": { "instance": "4fbb3ad3-e01d-4d71-9575-d453769c1171", "view": "8ed2824a-bd92-474e-a7c4-848b812b7f9b", "referer": "https://outage.dteenergy.com/", "thematic": true, "servedTotal": 2261902 },
+  "reconciliation": { "tolerancePct": 15 }
+}

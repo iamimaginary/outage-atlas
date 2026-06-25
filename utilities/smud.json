@@ -1,0 +1,8 @@
+{
+  "id": "smud",
+  "name": "SMUD (Sacramento)",
+  "adapter": "smud",
+  "match": ["SACRAMENTO MUNICIPAL", "SMUD"],
+  "config": { "url": "https://usage.smud.org/omkml/api/communitylist/", "referer": "https://myaccount.smud.org/manage/outage", "servedTotal": 647097 },
+  "reconciliation": { "tolerancePct": 10 }
+}

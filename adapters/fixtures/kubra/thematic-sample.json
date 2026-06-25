@@ -1,0 +1,72 @@
+{
+  "raw": {
+    "thematic": {
+      "file_data": [
+        {
+          "id": "Boun|Washtenaw|county",
+          "title": "Washtenaw",
+          "desc": {
+            "name": "Washtenaw",
+            "n_out": 3,
+            "cust_s": 164896,
+            "cust_a": {
+              "val": 88
+            },
+            "etr": "2026-06-25T05:00:00Z"
+          }
+        },
+        {
+          "id": "Boun|Wayne|county",
+          "title": "Wayne",
+          "desc": {
+            "name": "Wayne",
+            "n_out": 2,
+            "cust_s": 779720,
+            "cust_a": {
+              "val": 32
+            },
+            "etr": "ETR-NULL"
+          }
+        }
+      ]
+    },
+    "summary": {
+      "summaryFileData": {
+        "totals": [
+          {
+            "total_cust_a": {
+              "val": 120
+            },
+            "total_cust_s": 2261902,
+            "total_outages": 5
+          }
+        ]
+      }
+    }
+  },
+  "expected": {
+    "official": {
+      "out": 120,
+      "served": 2261902,
+      "nOut": 5
+    },
+    "areas": [
+      {
+        "name": "Washtenaw",
+        "out": 88,
+        "served": 164896,
+        "etr": "2026-06-25T05:00:00Z",
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Wayne",
+        "out": 32,
+        "served": 779720,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

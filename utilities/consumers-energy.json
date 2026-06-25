@@ -1,0 +1,14 @@
+{
+  "id": "consumers-energy",
+  "name": "Consumers Energy (MI)",
+  "adapter": "arcgis",
+  "match": ["CONSUMERS ENERGY"],
+  "config": {
+    "base": "https://www.consumersenergy.com/arcgispublic/rest/services/CEOutageMap/MapServer",
+    "layer": 3,
+    "groupBy": "COUNTY_NAME",
+    "fields": { "out": "OUTAGE_COUNT", "served": "CUSTOMER_COUNT", "id": "OBJECTID", "name": "COUNTY_NAME" },
+    "referer": "https://www.consumersenergy.com/outagemap"
+  },
+  "reconciliation": { "tolerancePct": 10 }
+}

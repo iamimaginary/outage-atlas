@@ -44,8 +44,34 @@ function mkArea(node) {
   return { name: node.name, out: sane(rawOut, served), served, etr: node.etr || null, loc: centroid(node.gotoMap && node.gotoMap.bbox), subs };
 }
 
+// Kübra THEMATIC-layer model: some utilities (DTE, SDG&E) have an EMPTY configuration.reports list but
+// publish per-area data via config.layers thematic_areas.json. The collector's fetchKubra returns
+// { thematic, summary } for these; we parse the flat node list + summary totals into the same canonical
+// shape. Dispatched from parseKubraReport when report.thematic is present.
+export function parseKubraThematic(raw) {
+  const fd = raw && raw.thematic && Array.isArray(raw.thematic.file_data) ? raw.thematic.file_data : null;
+  if (!fd) throw new Error("kubra-thematic: missing thematic.file_data[]");
+  const areas = fd.map((n) => {
+    const d = n.desc || {};
+    const served = (typeof d.cust_s === "number" && isFinite(d.cust_s)) ? d.cust_s : 0;
+    const out = sane(d.cust_a && typeof d.cust_a.val === "number" ? d.cust_a.val : 0, served);
+    const etr = (typeof d.etr === "string" && d.etr && !/ETR-?NULL/i.test(d.etr)) ? d.etr : null;
+    return { name: String(d.name || n.title || n.id || "(area)"), out, served, etr, loc: null, subs: [] };
+  }).filter((a) => a.served > 0 || a.out > 0);
+  if (!areas.length) throw new Error("kubra-thematic: no areas");
+  const tot = (raw.summary && raw.summary.summaryFileData && Array.isArray(raw.summary.summaryFileData.totals) ? raw.summary.summaryFileData.totals[0] : null) || {};
+  const tnum = (v) => (typeof v === "number" && isFinite(v)) ? v : 0;
+  const official = {
+    out: tot.total_cust_a && typeof tot.total_cust_a.val === "number" ? Math.max(0, tot.total_cust_a.val) : areas.reduce((a, x) => a + x.out, 0),
+    served: tnum(tot.total_cust_s) || areas.reduce((a, x) => a + x.served, 0),
+    nOut: tnum(tot.total_outages) || areas.filter((a) => a.out > 0).length,
+  };
+  return { official, areas };
+}
+
 // raw Kübra report.json -> { official, areas } (canonical). Throws on a structurally empty report.
 export function parseKubraReport(report) {
+  if (report && report.thematic) return parseKubraThematic(report); // thematic-layer utilities (DTE, SDG&E)
   const fd = report && report.file_data;
   if (!fd || !Array.isArray(fd.areas) || !fd.areas.length) throw new Error("kubra: report.file_data.areas missing/empty");
   const tot = fd.totals || {};
