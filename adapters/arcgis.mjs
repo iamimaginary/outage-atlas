@@ -43,6 +43,7 @@ export function parseArcgis(raw, opts = {}) {
     const a = f.attributes || {};
     return {
       out: Math.max(0, num(a[outF])),
+      served: F.served && a[F.served] != null ? Math.max(0, num(a[F.served])) : null,
       etr: F.etr ? etrVal(a[F.etr]) : null,
       id: String((F.id && a[F.id] != null ? a[F.id] : a.OBJECTID) ?? i),
       loc: pointLoc(a, f.geometry, F),
@@ -54,16 +55,20 @@ export function parseArcgis(raw, opts = {}) {
     const groups = new Map();
     feats.forEach((f, i) => { const inc = incident(f, i); const k = (f.attributes && String(f.attributes[opts.groupBy] ?? "").trim()) || "Unknown"; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(inc); });
     areas = [...groups].map(([name, items]) => {
-      const subs = items.map((m) => ({ id: m.id, name: `${name} #${m.id}`, out: m.out, served: m.out, etr: m.etr, loc: m.loc }));
+      const subs = items.map((m) => ({ id: m.id, name: `${name} #${m.id}`, out: m.out, served: m.served != null ? Math.max(m.served, m.out) : m.out, etr: m.etr, loc: m.loc }));
       const etrs = subs.map((s) => s.etr).filter(Boolean).sort();
       const locs = subs.map((s) => s.loc).filter(Boolean);
       const out = subs.reduce((s, x) => s + x.out, 0);
-      return { name, out, served: out, etr: etrs.length ? etrs[etrs.length - 1] : null, loc: locs.length ? [r5(avg(locs.map((l) => l[0]))), r5(avg(locs.map((l) => l[1])))] : null, subs };
+      const served = items.some((m) => m.served != null) ? subs.reduce((s, x) => s + x.served, 0) : out;
+      return { name, out, served, etr: etrs.length ? etrs[etrs.length - 1] : null, loc: locs.length ? [r5(avg(locs.map((l) => l[0]))), r5(avg(locs.map((l) => l[1])))] : null, subs };
     });
   } else {
-    areas = feats.map((f, i) => { const m = incident(f, i); return { name: m.name || `outage #${m.id}`, out: m.out, served: m.out, etr: m.etr, loc: m.loc, subs: [] }; });
+    areas = feats.map((f, i) => { const m = incident(f, i); return { name: m.name || `outage #${m.id}`, out: m.out, served: m.served != null ? Math.max(m.served, m.out) : m.out, etr: m.etr, loc: m.loc, subs: [] }; });
   }
   const totOut = areas.reduce((a, x) => a + x.out, 0);
-  const official = { out: totOut, served: num(opts.servedTotal) || totOut, nOut: feats.length };
+  // a real per-feature served field (config.fields.served) gives the true denominator (e.g. Consumers
+  // Energy's CUSTOMER_COUNT); otherwise fall back to the configured system total or the out floor.
+  const served = F.served ? areas.reduce((a, x) => a + x.served, 0) : (num(opts.servedTotal) || totOut);
+  const official = { out: totOut, served, nOut: feats.length };
   return { official, areas };
 }

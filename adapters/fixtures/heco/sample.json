@@ -1,54 +1,72 @@
 {
   "raw": {
-    "TotalCustomersAffected": 142,
-    "OutageStartTime": "2026-06-24T10:00:00",
     "outages": [
       {
-        "OutageId": "OAH-10231",
-        "OutageCause": "Equipment",
-        "OutageStatus": "CrewWorkingToRestorePower",
-        "EstimatedRestoreTime": "2026-06-24T14:30:00",
-        "Latitude": 21.3187,
-        "Longitude": -157.8583,
-        "CustomersAffected": 120
+        "outageId": 101,
+        "totalCustomersAffected": 560,
+        "affectedAreas": [
+          "Waianae",
+          "Makaha"
+        ],
+        "estimatedRestoreTime": "Today at 03:30 PM HST",
+        "company": 0,
+        "geometry": {
+          "coordinates": [
+            {
+              "y": 21.44,
+              "x": -158.18
+            }
+          ]
+        }
       },
       {
-        "OutageId": "MAU-44190",
-        "OutageCause": "Under investigation",
-        "OutageStatus": "OutageReportReceived",
-        "EstimatedRestoreTime": null,
-        "Latitude": 20.8893,
-        "Longitude": -156.4729,
-        "CustomersAffected": 22
+        "outageId": 102,
+        "totalCustomersAffected": 6,
+        "affectedAreas": [
+          "Kaneohe"
+        ],
+        "estimatedRestoreTime": null,
+        "company": 0,
+        "geometry": {
+          "coordinates": [
+            {
+              "y": 21.4,
+              "x": -157.79
+            }
+          ]
+        }
       }
     ]
   },
+  "opts": {
+    "servedTotal": 471911
+  },
   "expected": {
     "official": {
-      "out": 142,
-      "served": 142,
+      "out": 566,
+      "served": 471911,
       "nOut": 2
     },
     "areas": [
       {
-        "name": "HECO outage #OAH-10231",
-        "out": 120,
-        "served": 120,
-        "etr": "2026-06-24T14:30:00",
+        "name": "Waianae, Makaha",
+        "out": 560,
+        "served": 560,
+        "etr": "Today at 03:30 PM HST",
         "loc": [
-          21.3187,
-          -157.8583
+          21.44,
+          -158.18
         ],
         "subs": []
       },
       {
-        "name": "HECO outage #MAU-44190",
-        "out": 22,
-        "served": 22,
+        "name": "Kaneohe",
+        "out": 6,
+        "served": 6,
         "etr": null,
         "loc": [
-          20.8893,
-          -156.4729
+          21.4,
+          -157.79
         ],
         "subs": []
       }

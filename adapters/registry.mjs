@@ -29,6 +29,7 @@ import * as tep from "./tep.mjs";
 import * as teco from "./teco.mjs";
 import * as elPaso from "./el-paso.mjs";
 import * as puget from "./puget.mjs";
+import * as smud from "./smud.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -65,6 +66,7 @@ export const ADAPTERS = {
   teco: { mod: teco, defaultFn: "parseTeco", canonical: true },                     // Tampa Electric (micustomer ES)
   "el-paso": { mod: elPaso, defaultFn: "parseElPaso", canonical: true },            // El Paso Electric (AES-GCM)
   puget: { mod: puget, defaultFn: "parsePuget", canonical: true },                  // Puget Sound Energy (Sitecore)
+  smud: { mod: smud, defaultFn: "parseSmud", canonical: true },                     // Sacramento Municipal Utility District
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

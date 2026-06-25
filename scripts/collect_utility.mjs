@@ -47,6 +47,15 @@ async function fetchKubra(c) {
   const H = { Referer: c.referer, Origin: new URL(c.referer).origin };
   const cs = await jget(`${KB}/stormcenter/api/v1/stormcenters/${c.instance}/views/${c.view}/currentState?preview=false`, H);
   const dataPath = cs.data.interval_generation_data, dep = cs.stormcenterDeploymentId;
+  // Thematic-layer utilities (DTE, SDG&E) have an empty reports list; per-area data is in the thematic
+  // layer file + a summary file. parseKubraReport dispatches on the { thematic, summary } shape.
+  if (c.thematic) {
+    const layer = c.thematicLayer || "thematic-1";
+    const thematic = await jget(`${KB}/${dataPath}/public/${layer}/thematic_areas.json`, H);
+    let summary = null;
+    try { summary = await jget(`${KB}/${dataPath}/public/summary-1/data.json`, H); } catch { /* totals fall back to area sums */ }
+    return { thematic, summary };
+  }
   const conf = await jget(`${KB}/stormcenter/api/v1/stormcenters/${c.instance}/views/${c.view}/configuration/${dep}?preview=false`, H);
   const reps = conf.config.reports.data.interval_generation_data;
   const src = (reps.find((r) => /report\.json$/i.test(r.source)) || reps[0]).source;
@@ -149,12 +158,18 @@ async function fetchKiuc(c) {
 // HECO: auth-gated + origin-locked (Hawaii). Goes through the operator-keyed serverless proxy (preferred)
 // or, server-side, the direct handshake helper. Requires HECO_ACCESS_KEY — the config ships disabled and
 // the IIFE below skips it cleanly until that secret is set.
+// HECO: anonymous 2-step bearer chain (no credential). GET /access-token (raw JWE text) -> GET /outages
+// with that Bearer. Reachable server-side: no key, no Origin/CORS lock, no bot wall.
 async function fetchHeco(c) {
-  const key = process.env[c.requiresSecret || "HECO_ACCESS_KEY"];
-  if (!key) throw new Error(`heco: ${c.requiresSecret || "HECO_ACCESS_KEY"} not set`);
-  if (c.proxyUrl) return jget(c.proxyUrl, { Authorization: `Bearer ${key}` });
-  const { fetchHecoRaw } = await import("../workers/heco-proxy.mjs");
-  return fetchHecoRaw(key, c.company || "HECO");
+  const base = (c.base || "https://outagemap-api-heco.azurewebsites.net").replace(/\/$/, "");
+  const token = (await tget(`${base}/api/v1/access-token`, {})).trim();
+  if (!token) throw new Error("heco: empty access token from /api/v1/access-token");
+  const url = `${base}/api/v1/outages${c.company ? `?company=${encodeURIComponent(c.company)}` : ""}`;
+  return jget(url, { Authorization: `Bearer ${token}` });
+}
+// SMUD: anonymous per-community JSON summary.
+async function fetchSmud(c) {
+  return jget(c.url || "https://usage.smud.org/omkml/api/communitylist/", { Referer: c.referer || "https://myaccount.smud.org/manage/outage" });
 }
 
 // Generic Esri ArcGIS fetch (config-driven): pages an outage layer, asks for the configured fields +
@@ -308,7 +323,7 @@ async function fetchPuget(c) {
   return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget };
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

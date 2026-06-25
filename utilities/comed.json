@@ -1,0 +1,8 @@
+{
+  "id": "comed",
+  "name": "ComEd (Chicago, IL)",
+  "adapter": "kubra",
+  "match": ["COMMONWEALTH EDISON", "COMED"],
+  "config": { "instance": "0f46457f-e3ee-473c-8040-d7da9e776ccb", "view": "a7f6692c-38f6-4bef-8681-989b2bcba5da", "referer": "https://kubra.io/" },
+  "reconciliation": { "tolerancePct": 15 }
+}

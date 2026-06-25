@@ -1,0 +1,60 @@
+{
+  "raw": {
+    "totalCount": 3,
+    "returndata": [
+      {
+        "Title": "SMUD",
+        "OutageCount": 2,
+        "CustomersImpacted": 30
+      },
+      {
+        "Title": "Citrus Heights",
+        "OutageCount": 1,
+        "CustomersImpacted": 25,
+        "GeocenterLat": 38.69,
+        "GeocenterLong": -121.28
+      },
+      {
+        "Title": "Folsom",
+        "OutageCount": 1,
+        "CustomersImpacted": 5,
+        "GeocenterLat": 38.68,
+        "GeocenterLong": -121.18
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 647097
+  },
+  "expected": {
+    "official": {
+      "out": 30,
+      "served": 647097,
+      "nOut": 2
+    },
+    "areas": [
+      {
+        "name": "Citrus Heights",
+        "out": 25,
+        "served": 25,
+        "etr": null,
+        "loc": [
+          38.69,
+          -121.28
+        ],
+        "subs": []
+      },
+      {
+        "name": "Folsom",
+        "out": 5,
+        "served": 5,
+        "etr": null,
+        "loc": [
+          38.68,
+          -121.18
+        ],
+        "subs": []
+      }
+    ]
+  }
+}
