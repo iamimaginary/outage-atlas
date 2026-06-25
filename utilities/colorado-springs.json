@@ -1,0 +1,16 @@
+{
+  "id": "colorado-springs",
+  "name": "Colorado Springs Utilities",
+  "adapter": "kubra",
+  "match": [
+    "COLORADO SPRINGS"
+  ],
+  "config": {
+    "instance": "7679ce5f-19fa-4ff6-9502-683324ed3f3a",
+    "view": "b79da9e4-6406-41b7-8252-ad925d585a2f",
+    "referer": "https://s3.amazonaws.com/outagemap.csu.com/external/default.html"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

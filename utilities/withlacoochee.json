@@ -1,0 +1,14 @@
+{
+  "id": "withlacoochee",
+  "name": "Withlacoochee River EC (FL)",
+  "adapter": "kiuc",
+  "match": [
+    "WITHLACOOCHEE"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/withlacoochee/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

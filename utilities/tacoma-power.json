@@ -1,0 +1,25 @@
+{
+  "id": "tacoma-power",
+  "name": "Tacoma Power (WA)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF TACOMA",
+    "TACOMA POWER"
+  ],
+  "config": {
+    "base": "https://services8.arcgis.com/WmwtIvhWFFy9A5go/arcgis/rest/services/Outage_Point/FeatureServer",
+    "layer": 2,
+    "fields": {
+      "out": "CustAffected",
+      "etr": "ETR",
+      "id": "OutageID",
+      "name": "Cause"
+    },
+    "referer": "https://apps.vertigisstudio.com",
+    "servedTotal": 193912
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

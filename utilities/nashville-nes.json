@@ -1,0 +1,17 @@
+{
+  "id": "nashville-nes",
+  "name": "Nashville Electric Service (NES)",
+  "adapter": "datacapable",
+  "match": [
+    "NASHVILLE ELECTRIC"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/NES/map/events",
+    "referer": "https://map.datacapable.com/i/nes/",
+    "servedTotal": 436995
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

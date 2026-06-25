@@ -1,0 +1,17 @@
+{
+  "id": "seco-energy",
+  "name": "SECO Energy (Sumter Electric, FL)",
+  "adapter": "kubra",
+  "match": [
+    "SUMTER ELECTRIC",
+    "SECO"
+  ],
+  "config": {
+    "instance": "c63333d7-dc3c-4fb1-b874-461216e528bf",
+    "view": "0730fe50-c114-4eb0-97a9-3553ab8421cd",
+    "referer": "https://stormcenter.secoenergy.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
