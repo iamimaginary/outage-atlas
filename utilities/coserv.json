@@ -1,1 +1,1 @@
-{"schema":1,"id":"coserv","name":"CoServ / Denton County EC (TX)","adapter":"kiuc","collectedAt":1782438761969,"official":{"out":0,"served":346310,"nOut":0},"areas":[{"name":"CoServ","out":0,"served":341531,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"coserv","name":"CoServ / Denton County EC (TX)","adapter":"kiuc","collectedAt":1782453825987,"official":{"out":48,"served":346351,"nOut":1},"areas":[{"name":"CoServ","out":48,"served":341664,"etr":null,"loc":null,"subs":[]}]}
