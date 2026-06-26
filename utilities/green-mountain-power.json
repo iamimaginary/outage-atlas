@@ -1,1 +1,1 @@
-{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782431036655,"official":{"out":1,"served":306211,"nOut":1},"areas":[{"name":"Swanton","out":1,"served":572,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782438773294,"official":{"out":1,"served":306211,"nOut":1},"areas":[{"name":"Hartford","out":1,"served":7276,"etr":null,"loc":null,"subs":[]}]}
