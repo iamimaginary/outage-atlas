@@ -1,1 +1,1 @@
-{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782453847999,"official":{"out":1589,"served":810356,"nOut":2},"areas":[{"name":"POLK","out":1587,"served":250115,"etr":null,"loc":null,"subs":[]},{"name":"SCOTT","out":2,"served":80086,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782475659085,"official":{"out":2,"served":810356,"nOut":1},"areas":[{"name":"POLK","out":2,"served":250120,"etr":null,"loc":null,"subs":[]}]}
