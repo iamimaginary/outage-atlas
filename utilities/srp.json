@@ -1,1 +1,1 @@
-{"schema":1,"id":"srp","name":"Salt River Project (AZ)","adapter":"arcgis","collectedAt":1782533809306,"official":{"out":8,"served":1118823,"nOut":1},"areas":[{"name":"outage #260699624","out":8,"served":8,"etr":"2026-06-27T06:30:00+00:00","loc":[33.24735,-111.88094],"subs":[]}]}
+{"schema":1,"id":"srp","name":"Salt River Project (AZ)","adapter":"arcgis","collectedAt":1782545657385,"official":{"out":63,"served":1118823,"nOut":1},"areas":[{"name":"outage #260699647","out":63,"served":63,"etr":"2026-06-27T08:37:20+00:00","loc":[33.5353,-112.09732],"subs":[]}]}
