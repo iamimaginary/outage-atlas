@@ -1,1 +1,1 @@
-{"schema":1,"id":"knoxville-kub","name":"Knoxville Utilities Board (TN)","adapter":"kub","collectedAt":1782564611441,"official":{"out":1,"served":228394,"nOut":1},"areas":[{"name":"Outage 260032707","out":1,"served":1,"etr":"2026-06-27T15:00:00.000+00:00","loc":null,"subs":[]}]}
+{"schema":1,"id":"knoxville-kub","name":"Knoxville Utilities Board (TN)","adapter":"kub","collectedAt":1782575257890,"official":{"out":71,"served":228394,"nOut":1},"areas":[{"name":"Outage 260032710","out":71,"served":71,"etr":"2026-06-27T17:00:00.000+00:00","loc":null,"subs":[]}]}

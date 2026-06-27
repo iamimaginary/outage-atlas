@@ -1,1 +1,1 @@
-{"schema":1,"id":"heco","name":"Hawaiian Electric (HECO/MECO/HELCO)","adapter":"heco","collectedAt":1782564609649,"official":{"out":1,"served":471911,"nOut":1},"areas":[{"name":"Wailuku","out":1,"served":1,"etr":null,"loc":[20.854191972142402,-156.505708263689],"subs":[]}]}
+{"schema":1,"id":"heco","name":"Hawaiian Electric (HECO/MECO/HELCO)","adapter":"heco","collectedAt":1782575255379,"official":{"out":1,"served":471911,"nOut":1},"areas":[{"name":"Wailuku","out":1,"served":1,"etr":null,"loc":[20.854191972142402,-156.505708263689],"subs":[]}]}
