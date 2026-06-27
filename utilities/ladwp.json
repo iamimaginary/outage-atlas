@@ -1,1 +1,1 @@
-{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782584252343,"official":{"out":30,"served":1488920,"nOut":1},"areas":[{"name":"MISSION HILLS","out":30,"served":30,"etr":"2026-06-27T10:30:00.000Z","loc":[34.26693,-118.46548],"subs":[]}]}
+{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782589909636,"official":{"out":30,"served":1488920,"nOut":1},"areas":[{"name":"MISSION HILLS","out":30,"served":30,"etr":"2026-06-27T10:30:00.000Z","loc":[34.26693,-118.46548],"subs":[]}]}
