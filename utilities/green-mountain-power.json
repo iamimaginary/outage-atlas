@@ -1,1 +1,1 @@
-{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782622106728,"official":{"out":429,"served":306211,"nOut":1},"areas":[{"name":"Williamstown","out":429,"served":926,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782634630193,"official":{"out":84,"served":306211,"nOut":1},"areas":[{"name":"Rockingham","out":84,"served":3232,"etr":null,"loc":null,"subs":[]}]}
