@@ -1,1 +1,1 @@
-{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782634636170,"official":{"out":20,"served":810356,"nOut":2},"areas":[{"name":"BUENA VISTA","out":1,"served":6218,"etr":null,"loc":null,"subs":[]},{"name":"WOODBURY","out":19,"served":45288,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"midamerican","name":"MidAmerican Energy (IA)","adapter":"midamerican","collectedAt":1782643128140,"official":{"out":19,"served":810356,"nOut":1},"areas":[{"name":"WOODBURY","out":19,"served":45288,"etr":null,"loc":null,"subs":[]}]}
