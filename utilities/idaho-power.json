@@ -1,1 +1,1 @@
-{"schema":1,"id":"idaho-power","name":"Idaho Power (ID)","adapter":"idaho-power","collectedAt":1782661280152,"official":{"out":42,"served":611598,"nOut":1},"areas":[{"name":"CALDWELL","out":42,"served":42,"etr":"2026-06-28T10:30:00","loc":[43.65286737900004,-116.69659996899998],"subs":[]}]}
+{"schema":1,"id":"idaho-power","name":"Idaho Power (ID)","adapter":"idaho-power","collectedAt":1782683176457,"official":{"out":16,"served":611598,"nOut":1},"areas":[{"name":"SALMON","out":16,"served":16,"etr":"2026-06-28T17:00:00","loc":[45.133297466000045,-113.972652644],"subs":[]}]}

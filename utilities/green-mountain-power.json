@@ -1,1 +1,1 @@
-{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782679486611,"official":{"out":17,"served":306211,"nOut":1},"areas":[{"name":"Colchester","out":17,"served":9070,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782683174305,"official":{"out":18,"served":306211,"nOut":2},"areas":[{"name":"Addison","out":1,"served":891,"etr":null,"loc":null,"subs":[]},{"name":"Colchester","out":17,"served":9070,"etr":null,"loc":null,"subs":[]}]}
