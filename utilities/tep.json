@@ -1,1 +1,1 @@
-{"schema":1,"id":"tep","name":"Tucson Electric Power (AZ)","adapter":"tep","collectedAt":1782661302867,"official":{"out":63,"served":458000,"nOut":1},"areas":[{"name":"Unplanned","out":63,"served":63,"etr":"","loc":[32.46015,-110.92511],"subs":[]}]}
+{"schema":1,"id":"tep","name":"Tucson Electric Power (AZ)","adapter":"tep","collectedAt":1782665279906,"official":{"out":57,"served":458000,"nOut":1},"areas":[{"name":"Unplanned","out":57,"served":57,"etr":"Jun 28, 10:12 AM","loc":[32.46015,-110.92511],"subs":[]}]}
