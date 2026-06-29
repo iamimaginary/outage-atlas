@@ -1,1 +1,1 @@
-{"schema":1,"id":"eweb","name":"Eugene Water & Electric Board (OR)","adapter":"arcgis","collectedAt":1782763483460,"official":{"out":8,"served":97636,"nOut":1},"areas":[{"name":"outage #INC 16002967","out":8,"served":8,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"eweb","name":"Eugene Water & Electric Board (OR)","adapter":"arcgis","collectedAt":1782763967056,"official":{"out":8,"served":97636,"nOut":1},"areas":[{"name":"outage #INC 16002967","out":8,"served":8,"etr":null,"loc":null,"subs":[]}]}

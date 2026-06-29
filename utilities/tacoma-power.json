@@ -1,1 +1,1 @@
-{"schema":1,"id":"tacoma-power","name":"Tacoma Power (WA)","adapter":"arcgis","collectedAt":1782763748337,"official":{"out":4,"served":193912,"nOut":1},"areas":[{"name":"Current Outage","out":4,"served":4,"etr":null,"loc":[47.23445,-122.39798],"subs":[]}]}
+{"schema":1,"id":"tacoma-power","name":"Tacoma Power (WA)","adapter":"arcgis","collectedAt":1782764028428,"official":{"out":4,"served":193912,"nOut":1},"areas":[{"name":"Current Outage","out":4,"served":4,"etr":null,"loc":[47.23445,-122.39798],"subs":[]}]}
