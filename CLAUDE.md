@@ -4,8 +4,10 @@ This app is **designed to be maintained by Claude agents** behind copious audit 
 your standing brief: what it is, the contracts you must not break, the recurring jobs you'll do, the
 guardrails, and when to STOP. Read it before touching anything.
 
-> Status: under construction (see "Build phases" at the bottom). Phase 0 (scaffold + audit harness)
-> is in place; the national baseline collector and the location-first page come next.
+> Status: LIVE. Phases −1→4 complete; Phase 5 expansion well underway. **Deep precision coverage
+> ≈ 76.8% of US electricity customers (~118.7M) across ~127 wired utilities**, on top of the ~99.5%
+> ODIN national baseline. ~31 adapter families (see "Adapter families" below). The remaining tail is
+> small sub-threshold co-ops + a documented gated/deferred set.
 
 ## What this is
 
@@ -46,6 +48,38 @@ The analytics engine is **utility-agnostic**: it only needs the canonical model 
    `data/national/index.json` (manifest of what has deep data + freshness), `data/utilities/<id>.json`
    (per-utility canonical snapshot), `data/history/<id>.json` (bounded per-utility history).
    NEO's single giant `state.json` does NOT scale nationally — keep the shards small.
+
+## Adapter families (the platform — ~31, all in `adapters/`, registry-resolved)
+
+Most new utilities are now **config-only** on an existing family — identify the vendor, add
+`utilities/<id>.json`, live-verify by geography + reconcile. Build a new adapter only for a genuinely
+new vendor. Vendor → adapter cheat-sheet:
+
+- **Kübra StormCenter** (`kubra`) — biggest family. Standard `report.json` (FirstEnergy, Dominion, AEP
+  family, ComEd, Alabama/Mississippi/Georgia Power, many co-ops). Set `config.thematic:true` for the
+  **thematic-layer** variant whose `reports` list is empty (DTE, SDG&E) — data lives in
+  `config.layers` `thematic_areas.json`. GUIDs: `instance`/`view` (grep the outage-map iframe/BOOTSTRAP_CONFIG).
+- **Esri ArcGIS** (`arcgis`) — `FeatureServer/MapServer .../query`. `config.fields.{out,served,etr,id,name}`,
+  optional `groupBy`, `where`. `fields.served` reads a real per-feature denominator (Consumers Energy).
+  Finicky hosts get a minimal-query fallback (NV Energy). Xcel opcos share one EMCS MapServer filtered by `where states`.
+- **iFactor** (`ifactor`) — legacy static Storm Center (Con Ed, Eversource).
+- **DataCapable / UtiliSocial** (`datacapable`) — `utilisocial.io|<host>/datacapable/v2/p/<id>/map/events` flat array.
+- **NISC cloud.coop "Hosted Outage Map"** (`kiuc`) — `outagemap-data.cloud.coop/<slug>/Hosted_Outage_Map/summary.json`
+  (KIUC + ~9 co-ops: Clay, CoServ, Jackson EMC, Volunteer, Berkeley, …). Just set `config.base`.
+- **Milsoft "Web Outage Viewer"** (`milsoft`) — per-host `/data/{boundaries.json|outages.json}` (South Central,
+  Flint, NGEMC, Bluebonnet, Horry, First Electric, Otter Tail, Modesto, GVEC).
+- **DataVoice/Milsoft OutageEntry** (`outageentry`) — POST `outageentry.com/.../ajaxShellOut.php`, `client=<slug>`.
+- **OMAP** (`omap`, PPL+RI), **PG&E** (`pge`), **PG-Electric GraphQL** (`pge-graphql`, Portland General),
+  **Duke** (`duke`), **FPL** (`fpl`), **GridVu** (`gridvu`), **SmartC/SEDC** (`smartc`), **Sienatech** (`sienatech`),
+  **WEC** (`wec`), **PacifiCorp** (`pacificorp`), **AES** (`aes-ohio`/`aes-indiana`), **LUMA** (`luma`, PR),
+  **HECO** (`heco`, anonymous bearer chain; HI), **MidAmerican/Idaho/TEP/TECO/El-Paso/Puget/MLGW/NWE/CLECO/
+  GMP/Clark-PUD/KUB/Liberty/NOVEC/SMUD/Anaheim** — mostly self-hosted single-utility feeds.
+
+**Gated/deferred (documented, not wired):** Akamai/bot-walled or credential/VPN-gated — NIPSCO, Alliant
+(Interstate P&L + Wisconsin P&L), Avangrid (NYSEG/CMP/RG&E/UI), CORE, GreyStone, Magic Valley, DEMCO,
+SLEMCO, Dakota EC, Delaware EC, Cumberland EMC, UNS, United Coop, NPPD. Calm-unverifiable or
+fragile-format (revisit when active): IID/SEW, Montana-Dakota, Turlock, Carroll EC, SnoPUD (PMTiles),
+Springfield (Brotli). **poweroutage.us stays OFF** (ToS — see STOP rules).
 
 ## Validated assumptions (spike 2026-06-24 — evidence in `spikes/`)
 
@@ -229,4 +263,8 @@ the public `tracker-data` raw data.
 - [x] Phase 2 — location resolution (find-my-location): web/geo.mjs + index.html (ZIP/geo → county → serving utility), geo golden tests, CSP audit
 - [x] Phase 3 — first deep utility (Kübra/FirstEnergy) = MVP: utilities/firstenergy-oh.json, collect_utility.mjs, per-utility check_reconciliation.mjs, audit_baseline_deep.mjs, page deep view (live: 43 counties / 749 townships, summed==official)
 - [x] Phase 4 — embedded maintenance / audit-agent system: lib/audits.mjs (tested core), audits.yml (drift/reconciliation/feeds/coverage → auto-filed issues), ToS guard, test_audits, file_issue, docs/FEEDBACK.md
-- [ ] Phase 5+ — expansion (more utilities, other vendors, serverless proxy, ToS-gated poweroutage)
+- [~] Phase 5+ — expansion (IN PROGRESS): ~127 utilities / ~76.8% deep across ~31 adapter families
+  (Kübra standard+thematic, ArcGIS, iFactor, DataCapable, cloud.coop/NISC, Milsoft, OutageEntry, OMAP,
+  Duke, PG&E, GridVu, SmartC, Sienatech, LUMA, HECO, + many self-hosted). Next: sub-90k co-op sweep
+  (mostly config-only on the families above), revisit calm-deferred feeds, optional serverless proxy.
+  poweroutage.us remains OFF (ToS).
