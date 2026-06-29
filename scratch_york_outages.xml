@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MobileOutageInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://tempuri.org/">
+  <Outages>
+    <MobileOutage>
+      <OutageTime>6/29/2026 10:23:00 AM</OutageTime>
+      <CaseNumber>260629-O0007</CaseNumber>
+      <CutomersAffected>89</CutomersAffected>
+      <PoleNumber>R24</PoleNumber>
+      <RestorationTime xsi:nil="true" />
+      <StartTime>0001-01-01T00:00:00</StartTime>
+      <EndTime>0001-01-01T00:00:00</EndTime>
+      <ElementName>R24</ElementName>
+      <CaseStatus>CauseUnknown</CaseStatus>
+      <Cause />
+      <X>-81.038512502607446</X>
+      <Y>34.840455170254721</Y>
+      <Assigned>True</Assigned>
+      <AssignedTo>JEROMY KNIGHT</AssignedTo>
+    </MobileOutage>
+  </Outages>
+  <TotalCustAffected>89</TotalCustAffected>
+  <TotalCustomers>71205</TotalCustomers>
+  <OldestOutageTime>1H 49M</OldestOutageTime>
+</MobileOutageInfo>

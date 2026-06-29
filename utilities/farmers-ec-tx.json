@@ -1,0 +1,18 @@
+{
+  "id": "farmers-ec-tx",
+  "name": "Farmers EC (Greenville, TX)",
+  "adapter": "milsoft",
+  "match": [
+    "FARMERS ELECTRIC COOP, INC - (TX)"
+  ],
+  "config": {
+    "base": "https://outageviewer.fecelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 98310,
+    "referer": "https://outageviewer.fecelectric.com/"
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

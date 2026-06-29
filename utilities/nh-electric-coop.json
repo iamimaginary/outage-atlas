@@ -1,0 +1,15 @@
+{
+  "id": "nh-electric-coop",
+  "name": "New Hampshire Electric Coop",
+  "adapter": "kiuc",
+  "match": [
+    "NEW HAMPSHIRE ELEC COOP"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/nhec/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

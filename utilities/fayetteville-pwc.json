@@ -1,0 +1,18 @@
+{
+  "id": "fayetteville-pwc",
+  "name": "Fayetteville PWC (NC)",
+  "adapter": "kubra",
+  "match": [
+    "FAYETTEVILLE PUBLIC WORKS",
+    "PUBLIC WORKS COMM-CITY OF FAYETTEVILLE"
+  ],
+  "config": {
+    "instance": "8ad06f1b-2952-4b97-ac39-b26ecc7a7c46",
+    "view": "f625cb6b-6541-44d1-bb2f-38d1fcc38ce8",
+    "referer": "https://kubra.io/"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

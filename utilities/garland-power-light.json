@@ -1,0 +1,22 @@
+{
+  "id": "garland-power-light",
+  "name": "Garland Power & Light (TX)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF GARLAND"
+  ],
+  "config": {
+    "base": "https://gplmap.gpltexas.org/outage/rest/services/Public/OutageIncidents/MapServer",
+    "layer": 0,
+    "groupBy": "INCIDENT_ID",
+    "fields": {
+      "out": "CUSTOMER_COUNT"
+    },
+    "referer": "https://gpltexas.org/",
+    "servedTotal": 74180
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}
