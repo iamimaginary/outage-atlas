@@ -1,1 +1,1 @@
-{"schema":1,"id":"cleco","name":"CLECO Power (LA)","adapter":"cleco","collectedAt":1782709069745,"official":{"out":14,"served":292770,"nOut":1},"areas":[{"name":"Ball","out":14,"served":14,"etr":"23:40","loc":[31.422960733333333,-92.41370673333333],"subs":[]}]}
+{"schema":1,"id":"cleco","name":"CLECO Power (LA)","adapter":"cleco","collectedAt":1782725148435,"official":{"out":12,"served":292770,"nOut":1},"areas":[{"name":"Berkley Street","out":12,"served":12,"etr":"06:00","loc":[30.240406333333336,-89.79786075],"subs":[]}]}
