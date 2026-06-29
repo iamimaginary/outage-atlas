@@ -1,0 +1,17 @@
+{
+  "id": "first-electric-ar",
+  "name": "First Electric Cooperative (AR)",
+  "adapter": "milsoft",
+  "match": [
+    "FIRST ELECTRIC COOP"
+  ],
+  "config": {
+    "base": "https://outage.fecc.coop",
+    "file": "outages.json",
+    "servedTotal": 100458,
+    "referer": "https://outage.fecc.coop/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

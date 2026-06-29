@@ -1,0 +1,17 @@
+{
+  "id": "horry-electric",
+  "name": "Horry Electric Cooperative (SC)",
+  "adapter": "milsoft",
+  "match": [
+    "HORRY ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outages.horryelectric.com",
+    "file": "outages.json",
+    "servedTotal": 90475,
+    "referer": "https://outages.horryelectric.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

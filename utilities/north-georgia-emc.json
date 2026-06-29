@@ -1,0 +1,17 @@
+{
+  "id": "north-georgia-emc",
+  "name": "North Georgia EMC",
+  "adapter": "milsoft",
+  "match": [
+    "NORTH GEORGIA ELEC"
+  ],
+  "config": {
+    "base": "https://www2.ngemc.com",
+    "file": "boundaries.json",
+    "servedTotal": 103991,
+    "referer": "https://www2.ngemc.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "flint-emc",
+  "name": "Flint Energies / Flint EMC (GA)",
+  "adapter": "milsoft",
+  "match": [
+    "FLINT ELECTRIC",
+    "FLINT ENERGIES"
+  ],
+  "config": {
+    "base": "https://outage.flintemc.com",
+    "file": "boundaries.json",
+    "servedTotal": 92481,
+    "referer": "https://outage.flintemc.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

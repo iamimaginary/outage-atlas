@@ -1,0 +1,17 @@
+{
+  "id": "south-central-power",
+  "name": "South Central Power (OH)",
+  "adapter": "milsoft",
+  "match": [
+    "SOUTH CENTRAL POWER"
+  ],
+  "config": {
+    "base": "https://outage.southcentralpower.com",
+    "file": "boundaries.json",
+    "servedTotal": 124742,
+    "referer": "https://outage.southcentralpower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

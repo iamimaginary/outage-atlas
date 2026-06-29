@@ -1,0 +1,17 @@
+{
+  "id": "bluebonnet-ec",
+  "name": "Bluebonnet Electric Cooperative (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "BLUEBONNET"
+  ],
+  "config": {
+    "base": "https://outage.bluebonnetelectric.coop",
+    "file": "boundaries.json",
+    "servedTotal": 119740,
+    "referer": "https://outage.bluebonnetelectric.coop/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}
