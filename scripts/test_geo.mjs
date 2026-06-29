@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const fix = (f) => JSON.parse(readFileSync(join(ROOT, "web", "fixtures", "geo", f), "utf8"));
-const ZIP = fix("zippopotam-44113.json"), FCC = fix("fcc-cleveland.json"), HIFLD = fix("hifld-cleveland.json");
+const ZIP = fix("zippopotam-44113.json"), FCC = fix("fcc-cleveland.json"), HIFLD = fix("hifld-cleveland.json"), NOMI = fix("nominatim-columbus.json");
 
 // fixture-backed fetch stub keyed by URL substring
 globalThis.fetch = async (url) => {
@@ -18,6 +18,7 @@ globalThis.fetch = async (url) => {
   if (u.includes("api.zippopotam.us/us/44113")) body = ZIP;
   else if (u.includes("geo.fcc.gov/api/census/area")) body = FCC;
   else if (u.includes("Electric_Retail_Service_Territories_HIFLD")) body = HIFLD;
+  else if (u.includes("nominatim.openstreetmap.org")) body = /columbus/i.test(u) ? NOMI : []; // free-text geocode
   else throw new Error(`unexpected fetch in test: ${u}`);
   return { ok: true, status: 200, json: async () => body };
 };
@@ -36,6 +37,11 @@ ok(/Cleveland, OH 44113/.test(g.label), `geocode label "${g.label}"`);
 // 2) bare lat,lon passes through without a fetch
 const ll = await geocode("41.4816,-81.7018");
 ok(ll.lat === 41.4816 && ll.lon === -81.7018, "geocode accepts a 'lat,lon' pair");
+
+// 2b) free-text place/address geocode -> Nominatim
+const fg = await geocode("Columbus, OH");
+ok(Math.abs(fg.lat - 39.9623) < 0.01 && Math.abs(fg.lon + 83.0007) < 0.01, `geocode free-text "Columbus, OH" -> lat,lon (${fg.lat},${fg.lon})`);
+ok(/Columbus/.test(fg.label), `free-text label "${fg.label}"`);
 
 // 3) county + utilities resolution (the overlap case)
 const r = await resolvePoint(g.lat, g.lon);
