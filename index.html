@@ -143,13 +143,49 @@ function initMap(b) {
   L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
     { attribution: "© OpenStreetMap, © CARTO", maxZoom: 18 }).addTo(map);
   const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
-  const pts = Object.values(b.counties).filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
+  const pts = Object.entries(b.counties).map(([fips, c]) => ({ ...c, fips }))
+    .filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
   for (const c of pts) {
-    L.circleMarker(c.loc, { radius: Math.min(22, 3 + Math.sqrt(c.out)), color: sev(c.out), weight: 1, fillOpacity: 0.35 })
-      .bindPopup(`<b>${c.county}, ${c.state}</b><br>${fmt(c.out)} out · ${c.incidents} incident(s)` +
-        (c.utilities[0] ? `<br>${c.utilities[0].name}` : ""))
-      .addTo(map);
+    const dm = deepMatch(c.utilities || []);
+    const m = L.circleMarker(c.loc, { radius: Math.min(22, 3 + Math.sqrt(c.out)), color: sev(c.out), weight: 1, fillOpacity: 0.35 }).addTo(map);
+    m._county = c; m._dm = dm;
+    m.bindPopup(popupHtml(c, dm));
   }
+  // wire the popup's drill-down link once it's in the DOM (the source marker carries its county/deep-match)
+  map.on("popupopen", (e) => {
+    const src = e.popup._source; if (!src || !src._county) return;
+    const el = e.popup.getElement();
+    const btn = el && el.querySelector("[data-deep-btn]");
+    if (btn) btn.onclick = (ev) => { ev.preventDefault(); map.closePopup(); showCounty(src._county, src._dm); };
+  });
+}
+function popupHtml(c, dm) {
+  return `<b>${c.county}, ${c.state}</b><br>${fmt(c.out)} out · ${c.incidents} incident(s)`
+    + (c.utilities && c.utilities[0] ? `<br>${c.utilities[0].name}` : "")
+    + (c.eta && c.eta.kind !== "restored" && c.eta.label ? `<br>⏱ ${c.eta.label}` : "")
+    + (dm ? ` <span class="chip deep">✓ deep</span>` : "")
+    + `<br><a href="#" data-deep-btn class="small">${dm ? "View " + dm.name + " breakdown ›" : "More detail ›"}</a>`;
+}
+// ---- click-through from a map marker: county detail (+ auto-load the deep breakdown if available) ----
+function showCounty(c, dm) {
+  $("result").classList.remove("hide");
+  let html = `<div class="small muted">From the map</div>`;
+  html += `<div style="margin-top:6px"><span class="big">${fmt(c.out)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
+  html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + new Date(c.etr).toLocaleString() : ""}</div>`;
+  if (c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
+  const alerts = (c.fips && BASELINE.alertsByFips && BASELINE.alertsByFips[c.fips]) || [];
+  if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
+  if (c.utilities && c.utilities.length) {
+    html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
+    for (const u of c.utilities) html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(u.out)} out</span></div>`;
+  }
+  html += dm
+    ? `<div style="margin-top:8px"><span class="chip deep">✓ deep detail — ${dm.name}</span></div>`
+    : `<div style="margin-top:8px" class="small muted">Deep per-utility detail not available here — national baseline shown.</div>`;
+  $("result").innerHTML = html;
+  const old = $("deepbox"); if (old) old.remove();
+  if (dm) renderDeep(dm.id, { county: c.county, state: c.state });
+  $("result").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // ---- which serving utility (HIFLD) has a deep feed in our index? ----
@@ -221,12 +257,21 @@ async function renderDeep(id, county) {
   let html = `<div class="small muted">${snap.name} — deep detail · updated ${age} min ago</div>`;
   html += `<div style="margin-top:4px"><span class="big">${fmt(snap.official.out)}</span> <span class="muted">out of ${fmt(snap.official.served)} served (utility-wide)</span></div>`;
   if (area) {
-    html += `<div style="margin-top:10px" class="util">${area.name} county — ${fmt(area.out)} out</div>`;
+    html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${area.etr ? " · ETR " + new Date(area.etr).toLocaleString() : ""}</div>`;
     const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
     if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
-    else html += `<div class="small muted" style="margin-top:4px">No active outages in this county right now.</div>`;
+    else html += `<div class="small muted" style="margin-top:4px">No active sub-area outages broken out for this county right now.</div>`;
   } else {
-    html += `<div class="small muted" style="margin-top:8px">This county isn't in ${snap.name}'s service area, or has no data.</div>`;
+    // no county-named area matched (e.g. feeds grouped by city/feeder) -> show the most-affected areas + their sub-areas
+    const top = [...snap.areas].filter((a) => a.out > 0).sort((a, b) => b.out - a.out).slice(0, 12);
+    html += county
+      ? `<div class="small muted" style="margin-top:8px">No per-area row for ${county.county} county — most affected areas in ${snap.name}:</div>`
+      : `<div class="small muted" style="margin-top:8px">Most affected areas:</div>`;
+    if (top.length) for (const a of top) {
+      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${a.etr ? " · ETR " + new Date(a.etr).toLocaleString() : ""}</span></div>`;
+      for (const s of (a.subs || []).filter((s) => s.out > 0).sort((x, y) => y.out - x.out).slice(0, 4))
+        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${s.etr ? " · " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
+    } else html += `<div class="small muted" style="margin-top:4px">No active outages in ${snap.name} right now.</div>`;
   }
   host.innerHTML = html;
 }
