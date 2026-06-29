@@ -1,0 +1,21 @@
+{
+  "id": "lincoln-electric-system",
+  "name": "Lincoln Electric System (NE)",
+  "adapter": "arcgis",
+  "match": [
+    "LINCOLN ELECTRIC SYSTEM"
+  ],
+  "config": {
+    "base": "https://services2.arcgis.com/knPkBS6PAixcYX73/arcgis/rest/services/ResponderOutages57_view/FeatureServer",
+    "layer": 1,
+    "groupBy": "LES_AREA",
+    "fields": {
+      "out": "CUSTOMER_COUNT"
+    },
+    "referer": "https://www.les.com/",
+    "servedTotal": 147837
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

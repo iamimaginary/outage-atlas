@@ -1,0 +1,17 @@
+{
+  "id": "vectren-indiana",
+  "name": "CenterPoint/Vectren \u2014 Southern Indiana",
+  "adapter": "datacapable",
+  "match": [
+    "SOUTHERN INDIANA GAS",
+    "VECTREN"
+  ],
+  "config": {
+    "url": "https://centerpoint.datacapable.com/datacapable/v2/p/centerpoint/r/indiana/map/events",
+    "referer": "https://www.centerpointenergy.com/",
+    "servedTotal": 151007
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

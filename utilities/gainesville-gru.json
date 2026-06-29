@@ -1,0 +1,16 @@
+{
+  "id": "gainesville-gru",
+  "name": "Gainesville Regional Utilities (GRU)",
+  "adapter": "datacapable",
+  "match": [
+    "GAINESVILLE REGIONAL"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/GRU/map/events",
+    "referer": "https://www.gru.com/",
+    "servedTotal": 101050
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "rappahannock-ec",
+  "name": "Rappahannock Electric Cooperative (VA)",
+  "adapter": "kubra",
+  "match": [
+    "RAPPAHANNOCK ELECTRIC"
+  ],
+  "config": {
+    "instance": "3c15ff3f-f850-4a3e-8b49-e5cad018020f",
+    "view": "3813996e-0d1b-4ae5-a99d-143bd984c0c5",
+    "referer": "https://outagemap.myrec.coop/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

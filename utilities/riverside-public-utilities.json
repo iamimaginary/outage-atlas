@@ -1,0 +1,23 @@
+{
+  "id": "riverside-public-utilities",
+  "name": "Riverside Public Utilities (CA)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF RIVERSIDE",
+    "RIVERSIDE PUBLIC"
+  ],
+  "config": {
+    "base": "https://services.arcgis.com/Fu2oOWg1Aw7azh41/arcgis/rest/services/ElectricOutageAGOL1/FeatureServer",
+    "layer": 0,
+    "groupBy": "circuit",
+    "fields": {
+      "out": "customers_out_of_power"
+    },
+    "where": "customers_out_of_power <> 0 AND outage_active_flag = 'True' AND outage_planned_flag = 'False'",
+    "referer": "https://www.riversideca.gov/",
+    "servedTotal": 112235
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

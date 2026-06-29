@@ -1,0 +1,16 @@
+{
+  "id": "kentucky-power",
+  "name": "Kentucky Power (AEP)",
+  "adapter": "kubra",
+  "match": [
+    "KENTUCKY POWER"
+  ],
+  "config": {
+    "instance": "23dcd38e-2573-4e20-a463-959b11cae011",
+    "view": "60f31606-5702-4a1e-a74c-08d866b7a6fa",
+    "referer": "https://outagemap.kentuckypower.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
