@@ -1,0 +1,57 @@
+{
+  "raw": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "ID": "A1",
+          "ETR": "2026-06-29T13:00:00"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -117.91,
+            33.83
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "ID": "A1"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -117.92,
+            33.84
+          ]
+        }
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 122391
+  },
+  "expected": {
+    "official": {
+      "out": 2,
+      "served": 122391,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Incident A1",
+        "out": 2,
+        "served": 2,
+        "etr": "2026-06-29T13:00:00",
+        "loc": [
+          33.83,
+          -117.91
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

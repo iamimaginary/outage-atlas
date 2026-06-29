@@ -40,6 +40,10 @@ import * as liberty from "./liberty.mjs";
 import * as novec from "./novec.mjs";
 import * as pge2 from "./pge-graphql.mjs";
 import * as milsoft from "./milsoft.mjs";
+import * as gridvu from "./gridvu.mjs";
+import * as smartc from "./smartc.mjs";
+import * as sienatech from "./sienatech.mjs";
+import * as anaheim from "./anaheim.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -87,6 +91,10 @@ export const ADAPTERS = {
   novec: { mod: novec, defaultFn: "parseNovec", canonical: true },                  // Northern Virginia EC (StormCenter XML)
   "pge-graphql": { mod: pge2, defaultFn: "parsePge2", canonical: true },            // Portland General Electric (GraphQL)
   milsoft: { mod: milsoft, defaultFn: "parseMilsoft", canonical: true },            // Milsoft Web Outage Viewer (co-op static JSON)
+  gridvu: { mod: gridvu, defaultFn: "parseGridvu", canonical: true },               // ACS GridVu (Lubbock, Lansing)
+  smartc: { mod: smartc, defaultFn: "parseSmartc", canonical: true },               // SmartC Mobile / SEDC (Madison G&E)
+  sienatech: { mod: sienatech, defaultFn: "parseSienatech", canonical: true },      // Siena WebSurv (United Power)
+  anaheim: { mod: anaheim, defaultFn: "parseAnaheim", canonical: true },            // Anaheim Public Utilities GeoJSON
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

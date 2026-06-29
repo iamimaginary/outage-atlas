@@ -1,0 +1,26 @@
+{
+  "raw": "<NewDataSet><OMSCASES><SERIAL>21547</SERIAL><PLANNED>0</PLANNED><AVGLAT>40.1574</AVGLAT><AVGLONG>-104.9996</AVGLONG><INITCUST>1</INITCUST><CURCUST>1</CURCUST><RESTORETIM>2026-06-29 09:00:00</RESTORETIM><DESC_CAUSE>Unknown</DESC_CAUSE></OMSCASES></NewDataSet>",
+  "opts": {
+    "servedTotal": 106943
+  },
+  "expected": {
+    "official": {
+      "out": 1,
+      "served": 106943,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Outage #21547",
+        "out": 1,
+        "served": 1,
+        "etr": "2026-06-29 09:00:00",
+        "loc": [
+          40.1574,
+          -104.9996
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

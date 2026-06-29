@@ -1,0 +1,47 @@
+{
+  "raw": {
+    "result": {
+      "Status": 1,
+      "Data": {
+        "listOutageResultSetTwo": [
+          {
+            "CustomerAffected": 18,
+            "City": "Madison",
+            "Zipcode": "53711",
+            "Latitude": 43.05,
+            "Longitude": -89.4,
+            "ETR": "2026-06-29T16:00:00"
+          }
+        ],
+        "listTotalOutage": [
+          {
+            "TotalCusomerServed": 174433
+          }
+        ]
+      }
+    }
+  },
+  "opts": {
+    "servedTotal": 174433
+  },
+  "expected": {
+    "official": {
+      "out": 18,
+      "served": 174433,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Madison",
+        "out": 18,
+        "served": 18,
+        "etr": "2026-06-29T16:00:00",
+        "loc": [
+          43.05,
+          -89.4
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "connexus",
+  "name": "Connexus Energy (MN)",
+  "adapter": "arcgis",
+  "match": [
+    "CONNEXUS"
+  ],
+  "config": {
+    "base": "https://services6.arcgis.com/tLxmfwKZGo8Ff5TR/arcgis/rest/services/OutagePro_WFL1/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "CUSTOMER_C"
+    },
+    "referer": "https://www.connexusenergy.com/",
+    "servedTotal": 142316
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

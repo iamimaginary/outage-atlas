@@ -1,0 +1,18 @@
+{
+  "id": "modesto-id",
+  "name": "Modesto Irrigation District (CA)",
+  "adapter": "milsoft",
+  "match": [
+    "MODESTO IRRIGATION"
+  ],
+  "config": {
+    "base": "https://outage.mid.org",
+    "file": "outages.json",
+    "servedTotal": 119021,
+    "referer": "https://outage.mid.org/"
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

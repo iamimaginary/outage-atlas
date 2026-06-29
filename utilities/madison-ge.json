@@ -1,0 +1,16 @@
+{
+  "id": "madison-ge",
+  "name": "Madison Gas & Electric (WI)",
+  "adapter": "smartc",
+  "match": [
+    "MADISON GAS"
+  ],
+  "config": {
+    "url": "https://mge-svc.smartcmobile.com/WidgetAPI/Outage/PreloginGetOutageData?isPlannedOutage=0",
+    "referer": "https://www.mge.com/",
+    "servedTotal": 174433
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
