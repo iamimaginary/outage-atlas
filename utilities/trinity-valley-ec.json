@@ -1,0 +1,18 @@
+{
+  "id": "trinity-valley-ec",
+  "name": "Trinity Valley EC (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "TRINITY VALLEY ELEC COOP"
+  ],
+  "config": {
+    "base": "https://outages.tvec.net",
+    "file": "outages.json",
+    "servedTotal": 83220,
+    "referer": "https://outages.tvec.net/"
+  },
+  "tol": 12,
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

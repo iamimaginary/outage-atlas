@@ -1,0 +1,15 @@
+{
+  "id": "grayson-collin-ec",
+  "name": "Grayson-Collin EC (TX)",
+  "adapter": "kiuc",
+  "match": [
+    "GRAYSON-COLLIN ELEC COOP"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/graysoncollin/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

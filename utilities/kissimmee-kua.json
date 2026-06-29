@@ -1,0 +1,17 @@
+{
+  "id": "kissimmee-kua",
+  "name": "Kissimmee Utility Authority (FL)",
+  "adapter": "datacapable",
+  "match": [
+    "KISSIMMEE UTILITY"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/kissimmee/map/events",
+    "referer": "https://www.kua.com/",
+    "servedTotal": 85744
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

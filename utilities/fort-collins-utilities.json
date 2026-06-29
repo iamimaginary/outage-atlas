@@ -1,0 +1,22 @@
+{
+  "id": "fort-collins-utilities",
+  "name": "Fort Collins Utilities (CO)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF FORT COLLINS"
+  ],
+  "config": {
+    "base": "https://gis.fortcollins.gov/arcgis/rest/services/EDAR_OMS/MapServer",
+    "layer": 7,
+    "fields": {
+      "out": "AFFECTEDSERV",
+      "id": "OUTAGEID"
+    },
+    "referer": "https://www.fcgov.com/utilities/",
+    "servedTotal": 78450
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

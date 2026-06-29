@@ -1,0 +1,23 @@
+{
+  "id": "greenville-nc-utilities",
+  "name": "Greenville Utilities Commission (NC)",
+  "adapter": "arcgis",
+  "match": [
+    "GREENVILLE UTILITIES"
+  ],
+  "config": {
+    "base": "https://utility.arcgis.com/usrsvcs/servers/3d1f60a279b74677b24e99d494bc87b2/rest/services/Outage/Responder/MapServer",
+    "layer": 2,
+    "groupBy": "INCIDENT_ID",
+    "fields": {
+      "out": "CUSTOMER_COUNT"
+    },
+    "where": "CUSTOMER_COUNT > 0 AND CONFIRMED = 1",
+    "referer": "https://www.guc.com/",
+    "servedTotal": 72148
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "sam-houston-ec",
+  "name": "Sam Houston EC (TX)",
+  "adapter": "kiuc",
+  "match": [
+    "SAM HOUSTON ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/samhouston/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

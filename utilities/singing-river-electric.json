@@ -1,0 +1,18 @@
+{
+  "id": "singing-river-electric",
+  "name": "Singing River Electric (MS)",
+  "adapter": "milsoft",
+  "match": [
+    "SINGING RIVER ELEC"
+  ],
+  "config": {
+    "base": "https://outageviewer.singingriver.com",
+    "file": "outages.json",
+    "servedTotal": 78324,
+    "referer": "https://outageviewer.singingriver.com/"
+  },
+  "tol": 12,
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
