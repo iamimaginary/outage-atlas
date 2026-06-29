@@ -69,6 +69,7 @@
 
   <div class="panel" id="national">
     <div class="stats" id="nat-stats"><span class="muted">Loading…</span></div>
+    <div id="nat-blend" class="small" style="margin-top:6px"></div>
     <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
     <div class="states" id="nat-states"></div>
   </div>
@@ -129,11 +130,16 @@ async function loadBaseline() {
 
 // ---- national overview ----
 function renderNational(b) {
+  const bl = b.national.blended; // ODIN baseline + deep-utility own totals (de-duped); falls back to ODIN-only
+  const total = bl ? bl.out : b.national.out;
   $("nat-stats").innerHTML = `
-    <div class="stat"><div class="big">${fmt(b.national.out)}</div><div class="small">customers out (US)</div></div>
+    <div class="stat"><div class="big">${fmt(total)}</div><div class="small">customers out (US)</div></div>
     <div class="stat"><div class="big">${fmt(b.national.counties)}</div><div class="small">counties affected</div></div>
     <div class="stat"><div class="big">${fmt(b.national.states)}</div><div class="small">states</div></div>
-    <div class="stat"><div class="big">${fmt(b.national.utilities)}</div><div class="small">utilities reporting</div></div>`;
+    <div class="stat"><div class="big">${fmt(b.national.utilities + (bl ? bl.deepUtilities : 0))}</div><div class="small">utilities reporting</div></div>`;
+  $("nat-blend").innerHTML = bl
+    ? `<span class="muted">${fmt(bl.odinOut)} from the ODIN baseline + ${fmt(bl.deepOut)} from ${fmt(bl.deepUtilities)} deep utility feeds${bl.supersededOut ? ` (−${fmt(bl.supersededOut)} de-duplicated)` : ""}.</span>`
+    : "";
   const byState = {};
   for (const k in b.counties) { const c = b.counties[k]; byState[c.state] = (byState[c.state] || 0) + c.out; }
   $("nat-states").innerHTML = Object.entries(byState).sort((a, z) => z[1] - a[1])

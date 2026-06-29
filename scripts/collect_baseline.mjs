@@ -106,6 +106,28 @@ async function fetchAlerts() {
   index.baseline = { source: "odin", collectedAt, counties: national.counties, out: national.out, states: national.states, utilities: national.utilities };
   index.deep = index.deep || {};
 
+  // --- blended national total: ODIN baseline + each deep utility's OWN published total, de-duped ---
+  // ODIN only covers utilities that report to it; we also run 100+ deep feeds whose own official totals we
+  // trust (per-utility reconciliation gate). Fold them into a blended headline: start from ODIN, subtract
+  // the ODIN rows a deep feed supersedes (so a utility in BOTH isn't double-counted), then add deep totals.
+  // national.out stays pure-ODIN (the integrity invariant); national.blended is the fuller picture.
+  const FRESH_MS = 3 * 60 * 60 * 1000; // a stale/dead deep collector shouldn't inflate the headline
+  const deepPatterns = [];
+  let deepOut = 0, deepCount = 0;
+  for (const id in index.deep) {
+    const d = index.deep[id];
+    if (!d || typeof d.out !== "number") continue;
+    if (d.collectedAt && (collectedAt - d.collectedAt) > FRESH_MS) continue;
+    deepOut += Math.max(0, d.out); deepCount++;
+    for (const p of [d.name, ...(d.match || [])]) if (p) deepPatterns.push(String(p).toUpperCase());
+  }
+  let supersededOut = 0;
+  for (const fips in counties) for (const u of (counties[fips].utilities || [])) {
+    const n = String(u.name || "").toUpperCase();
+    if (deepPatterns.some((p) => n.includes(p))) supersededOut += (u.out || 0);
+  }
+  national.blended = { out: Math.max(0, national.out - supersededOut) + deepOut, odinOut: national.out, deepOut, supersededOut, deepUtilities: deepCount };
+
   writeFileSync(`${OUT_DIR}/baseline.json`, JSON.stringify(baseline));
   writeFileSync(`${OUT_DIR}/index.json`, JSON.stringify(index, null, 2));
   writeFileSync(HIST_PATH, JSON.stringify(history));
