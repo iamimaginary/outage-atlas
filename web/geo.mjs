@@ -10,6 +10,7 @@
 const ZIPPOPOTAM = "https://api.zippopotam.us/us";
 const FCC_AREA = "https://geo.fcc.gov/api/census/area";
 const HIFLD = "https://services3.arcgis.com/OYP7N6mAJJCyH6hd/arcgis/rest/services/Electric_Retail_Service_Territories_HIFLD/FeatureServer/0/query";
+const NOMINATIM = "https://nominatim.openstreetmap.org/search"; // keyless, CORS-open free-text geocoder (US-biased)
 
 async function getJson(url, opts = {}) {
   const r = await fetch(url, { signal: AbortSignal.timeout(opts.timeout || 15000) });
@@ -27,15 +28,18 @@ export async function geocodeZip(zip) {
   return { lat: Number(p.latitude), lon: Number(p.longitude), place: p["place name"], state: p["state abbreviation"], zip: z };
 }
 
-// Free-text input -> { lat, lon, label }. ZIP goes through Zippopotam (CORS-open); a bare "lat,lon"
-// is accepted directly; anything else is left to the caller (address geocoding needs a keyed/proxied
-// service and is a later enhancement — the UI nudges users to ZIP or "use my location").
+// Free-text input -> { lat, lon, label }. Accepts, in order: a bare "lat,lon" pair; a 5-digit ZIP
+// (Zippopotam, CORS-open); otherwise any place / address / county / "City, ST" via Nominatim
+// (keyless, CORS-open, US-biased). Throws with guidance if nothing resolves.
 export async function geocode(query) {
   const q = String(query || "").trim();
   const ll = q.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
   if (ll) return { lat: Number(ll[1]), lon: Number(ll[2]), label: q };
   if (/^\d{5}$/.test(q)) { const g = await geocodeZip(q); return { lat: g.lat, lon: g.lon, label: `${g.place}, ${g.state} ${g.zip}` }; }
-  throw new Error("Enter a 5-digit ZIP code, a 'lat,lon' pair, or use 'My location'.");
+  if (q.length < 3) throw new Error("Enter a ZIP, city, address, 'lat,lon', or use 'My location'.");
+  const r = await getJson(`${NOMINATIM}?format=jsonv2&limit=1&countrycodes=us&q=${encodeURIComponent(q)}`);
+  if (Array.isArray(r) && r.length && r[0].lat) return { lat: Number(r[0].lat), lon: Number(r[0].lon), label: String(r[0].display_name || q).replace(/, United States$/, "") };
+  throw new Error(`Couldn't find "${q}" — try a ZIP, "City, ST", an address, or a 'lat,lon' pair.`);
 }
 
 // lat,lon -> { fips, county, state } via the FCC Area API.

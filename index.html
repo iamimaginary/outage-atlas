@@ -8,7 +8,7 @@
   script-src 'self' https://unpkg.com 'unsafe-inline';
   style-src 'self' https://unpkg.com 'unsafe-inline';
   img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
-  connect-src 'self' https://api.zippopotam.us https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com;
+  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com;
 " />
 <title>outage-atlas — find outages near you</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -57,7 +57,7 @@
 
 <main>
   <div class="search">
-    <input id="q" inputmode="numeric" placeholder="ZIP code (e.g. 44113) or lat,lon" autocomplete="postal-code" />
+    <input id="q" placeholder="ZIP, city, address, county, or lat,lon" autocomplete="off" />
     <button class="primary" id="go">Check</button>
     <button id="geo">📍 My location</button>
   </div>
@@ -78,7 +78,8 @@
   <b>Data:</b> outage baseline from <a href="https://odin.ornl.gov/" target="_blank" rel="noopener">ODIN</a> (DOE/ORNL),
   weather from <a href="https://www.weather.gov/" target="_blank" rel="noopener">NWS</a>, serving-utility lookup from
   <a href="https://hifld-geoplatform.hub.arcgis.com/" target="_blank" rel="noopener">HIFLD</a>, geocoding from
-  US Census / Zippopotam. Outage counts are customers reported out; coverage varies by utility participation.
+  Zippopotam / <a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap (Nominatim)</a>.
+  Outage counts are customers reported out; coverage varies by utility participation.
   Not affiliated with any utility. <a href="https://github.com/iamimaginary/outage-atlas" target="_blank" rel="noopener">Source</a>.
 </footer>
 
@@ -98,7 +99,9 @@ const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/data
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
-let BASELINE = null, INDEX = { deep: {} }, map, locMarker;
+// ETR strings vary by feed; some aren't Date-parseable (showed "Invalid Date"). Fall back to the raw string.
+const fmtEtr = (v) => { if (!v) return ""; const d = new Date(v); return isNaN(d.getTime()) ? String(v) : d.toLocaleString(); };
+let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null;
 
 // ---- data load: prefer the published snapshot; refresh from live ODIN if it's stale or unavailable ----
 const STALE_MIN = 30; // if the collector isn't running, don't show a frozen baseline — ODIN is CORS-open
@@ -171,7 +174,7 @@ function showCounty(c, dm) {
   $("result").classList.remove("hide");
   let html = `<div class="small muted">From the map</div>`;
   html += `<div style="margin-top:6px"><span class="big">${fmt(c.out)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
-  html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + new Date(c.etr).toLocaleString() : ""}</div>`;
+  html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
   if (c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
   const alerts = (c.fips && BASELINE.alertsByFips && BASELINE.alertsByFips[c.fips]) || [];
   if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
@@ -184,7 +187,7 @@ function showCounty(c, dm) {
     : `<div style="margin-top:8px" class="small muted">Deep per-utility detail not available here — national baseline shown.</div>`;
   $("result").innerHTML = html;
   const old = $("deepbox"); if (old) old.remove();
-  if (dm) renderDeep(dm.id, { county: c.county, state: c.state });
+  if (dm) renderDeep(dm.id, { county: c.county, state: c.state }); else clearDeep();
   $("result").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -203,6 +206,7 @@ function deepMatch(utilities) {
 // ---- resolve + render a location ----
 async function showLocation(lat, lon, label) {
   $("result").classList.remove("hide");
+  clearDeep(); // drop any deep markers from a previous lookup until this one's deep view is opened
   $("result").innerHTML = `<div class="muted">Resolving ${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}…</div>`;
   const { county, utilities } = await resolvePoint(lat, lon);
   const c = county && BASELINE.counties[county.fips];
@@ -212,7 +216,7 @@ async function showLocation(lat, lon, label) {
   let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
-    if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + new Date(c.etr).toLocaleString() : ""}</div>`;
+    if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
     else html += `<div class="small muted">No active outages reported in this county.</div>`;
     if (c && c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
@@ -242,6 +246,31 @@ async function showLocation(lat, lon, label) {
   if (dl) { const m = deepMatch(utilities); dl.onclick = (e) => { e.preventDefault(); renderDeep(m.id, county); }; }
 }
 
+// ---- plot the deep snapshot's affected areas/sub-areas on the map (those that carry coordinates) ----
+function clearDeep() { if (deepLayer) { map.removeLayer(deepLayer); deepLayer = null; } }
+function plotDeep(snap) {
+  clearDeep();
+  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#3fb950");
+  const pts = [];
+  for (const a of (snap.areas || [])) {
+    const subs = (a.subs || []).filter((s) => Array.isArray(s.loc) && s.out > 0);
+    if (subs.length) for (const s of subs) pts.push({ name: `${a.name} · ${s.name}`, out: s.out, etr: s.etr, loc: s.loc });
+    else if (Array.isArray(a.loc) && a.out > 0) pts.push({ name: a.name, out: a.out, etr: a.etr, loc: a.loc });
+  }
+  if (!pts.length) return 0; // feed without coordinates (e.g. iFactor / Con Edison) — nothing to plot
+  pts.sort((a, b) => b.out - a.out); // keep the most-affected points if a feed has thousands
+  const shown = pts.slice(0, 400);
+  deepLayer = L.layerGroup();
+  for (const p of shown) {
+    L.circleMarker(p.loc, { radius: Math.min(20, 4 + Math.sqrt(p.out)), color: sev(p.out), weight: 2, fillColor: sev(p.out), fillOpacity: 0.7 })
+      .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${p.etr ? "<br>⏱ ETR " + fmtEtr(p.etr) : ""}<br><span class="small muted">${snap.name} · deep</span>`)
+      .addTo(deepLayer);
+  }
+  deepLayer.addTo(map);
+  try { map.fitBounds(L.latLngBounds(shown.map((p) => p.loc)), { padding: [40, 40], maxZoom: 11 }); } catch (e) {}
+  return shown.length;
+}
+
 // ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
 async function renderDeep(id, county) {
   let host = $("deepbox");
@@ -251,15 +280,19 @@ async function renderDeep(id, county) {
   try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
   catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
   if (!snap || !Array.isArray(snap.areas) || !snap.official) { host.innerHTML = `<div class="small muted">Deep snapshot for ${id} is unavailable right now.</div>`; return; }
+  const plotted = plotDeep(snap); // draw the affected areas on the map (when the feed carries coordinates)
   const want = county ? normCounty(county.county) : null;
   const area = snap.areas.find((a) => normCounty(a.name) === want) || null;
   const age = Math.round((Date.now() - snap.collectedAt) / 60000);
   let html = `<div class="small muted">${snap.name} — deep detail · updated ${age} min ago</div>`;
   html += `<div style="margin-top:4px"><span class="big">${fmt(snap.official.out)}</span> <span class="muted">out of ${fmt(snap.official.served)} served (utility-wide)</span></div>`;
+  html += plotted
+    ? `<div class="small muted" style="margin-top:2px">📍 ${fmt(plotted)} affected area${plotted > 1 ? "s" : ""} mapped above.</div>`
+    : (snap.official.out > 0 ? `<div class="small muted" style="margin-top:2px">This utility's feed reports areas without map coordinates — listed below.</div>` : "");
   if (area) {
-    html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${area.etr ? " · ETR " + new Date(area.etr).toLocaleString() : ""}</div>`;
+    html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${area.etr ? " · ETR " + fmtEtr(area.etr) : ""}</div>`;
     const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
-    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
+    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + fmtEtr(s.etr) : ""}</span></div>`;
     else html += `<div class="small muted" style="margin-top:4px">No active sub-area outages broken out for this county right now.</div>`;
   } else {
     // no county-named area matched (e.g. feeds grouped by city/feeder) -> show the most-affected areas + their sub-areas
@@ -268,9 +301,9 @@ async function renderDeep(id, county) {
       ? `<div class="small muted" style="margin-top:8px">No per-area row for ${county.county} county — most affected areas in ${snap.name}:</div>`
       : `<div class="small muted" style="margin-top:8px">Most affected areas:</div>`;
     if (top.length) for (const a of top) {
-      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${a.etr ? " · ETR " + new Date(a.etr).toLocaleString() : ""}</span></div>`;
+      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${a.etr ? " · ETR " + fmtEtr(a.etr) : ""}</span></div>`;
       for (const s of (a.subs || []).filter((s) => s.out > 0).sort((x, y) => y.out - x.out).slice(0, 4))
-        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${s.etr ? " · " + new Date(s.etr).toLocaleString() : ""}</span></div>`;
+        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${s.etr ? " · " + fmtEtr(s.etr) : ""}</span></div>`;
     } else html += `<div class="small muted" style="margin-top:4px">No active outages in ${snap.name} right now.</div>`;
   }
   host.innerHTML = html;
