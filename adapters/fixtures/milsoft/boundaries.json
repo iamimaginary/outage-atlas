@@ -1,0 +1,56 @@
+{
+  "raw": [
+    {
+      "name": "Counties",
+      "nameField": "NAME",
+      "boundaries": [
+        {
+          "name": "Fairfield",
+          "customersAffected": 4,
+          "customersOutNow": 4,
+          "customersServed": 41797
+        },
+        {
+          "name": "Macon",
+          "customersAffected": 0,
+          "customersOutNow": 0,
+          "customersServed": 3120
+        },
+        {
+          "name": "Empty",
+          "customersAffected": 0,
+          "customersOutNow": 0,
+          "customersServed": 0
+        }
+      ]
+    }
+  ],
+  "opts": {
+    "servedTotal": 124742
+  },
+  "expected": {
+    "official": {
+      "out": 4,
+      "served": 124742,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "Fairfield",
+        "out": 4,
+        "served": 41797,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      },
+      {
+        "name": "Macon",
+        "out": 0,
+        "served": 3120,
+        "etr": null,
+        "loc": null,
+        "subs": []
+      }
+    ]
+  }
+}

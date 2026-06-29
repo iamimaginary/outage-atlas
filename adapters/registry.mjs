@@ -39,6 +39,7 @@ import * as kub from "./kub.mjs";
 import * as liberty from "./liberty.mjs";
 import * as novec from "./novec.mjs";
 import * as pge2 from "./pge-graphql.mjs";
+import * as milsoft from "./milsoft.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -85,6 +86,7 @@ export const ADAPTERS = {
   liberty: { mod: liberty, defaultFn: "parseLiberty", canonical: true },            // Liberty/Empire (SmartCMobile)
   novec: { mod: novec, defaultFn: "parseNovec", canonical: true },                  // Northern Virginia EC (StormCenter XML)
   "pge-graphql": { mod: pge2, defaultFn: "parsePge2", canonical: true },            // Portland General Electric (GraphQL)
+  milsoft: { mod: milsoft, defaultFn: "parseMilsoft", canonical: true },            // Milsoft Web Outage Viewer (co-op static JSON)
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

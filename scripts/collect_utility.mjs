@@ -198,6 +198,12 @@ async function fetchLiberty(c) {
 }
 // NOVEC: StormCenter XML (cache-busted).
 async function fetchNovec(c) { return tget(`${c.url || "https://www.novec.com/stormcenter/data/outagedtl.xml"}?${Date.now()}`, { Referer: c.referer || "https://www.novec.com/" }); }
+// Milsoft Web Outage Viewer: static per-utility JSON (boundaries.json county-grain or outages.json points).
+async function fetchMilsoft(c) {
+  const base = (c.base || "").replace(/\/$/, "");
+  if (!base) throw new Error("milsoft: config.base required");
+  return jget(`${base}/data/${c.file || "boundaries.json"}`, { Referer: c.referer || base + "/" });
+}
 // Portland General: public GraphQL (no auth) — per-county outages.
 async function fetchPge2(c) {
   const body = { query: "query getOutagesByCounty($params: OutageByCountyParams) { getOutagesByCounty(params: $params) }", variables: {} };
@@ -355,7 +361,7 @@ async function fetchPuget(c) {
   return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2 };
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

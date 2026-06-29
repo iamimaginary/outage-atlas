@@ -1,0 +1,38 @@
+{
+  "raw": [
+    {
+      "outageRecID": "2026-06-29-0950",
+      "outageName": "16-5K-4",
+      "outagePoint": {
+        "lat": 33.95,
+        "lng": -78.99
+      },
+      "estimatedTimeOfRestoral": "2026-06-29T11:00:00-04:00",
+      "customersOutNow": 4,
+      "customersOutInitially": 4
+    }
+  ],
+  "opts": {
+    "servedTotal": 90475
+  },
+  "expected": {
+    "official": {
+      "out": 4,
+      "served": 90475,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "16-5K-4",
+        "out": 4,
+        "served": 4,
+        "etr": "2026-06-29T11:00:00-04:00",
+        "loc": [
+          33.95,
+          -78.99
+        ],
+        "subs": []
+      }
+    ]
+  }
+}
