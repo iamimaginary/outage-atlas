@@ -1,0 +1,15 @@
+{
+  "id": "walton-emc",
+  "name": "Walton EMC (GA)",
+  "adapter": "outageentry",
+  "match": [
+    "WALTON ELECTRIC"
+  ],
+  "config": {
+    "client": "walton",
+    "servedTotal": 143882
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

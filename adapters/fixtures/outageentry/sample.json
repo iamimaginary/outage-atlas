@@ -1,0 +1,51 @@
+{
+  "raw": {
+    "0": {
+      "markers": [
+        {
+          "substation": "63",
+          "feeder": "3",
+          "incident_id": "D998263",
+          "estimated_restore_time": "Jun 29 2026 01:37 pm",
+          "formatted_ert": "Mon, Jun 29, 01:37 pm",
+          "consumers_affected": "5",
+          "lon": "-78.623",
+          "lat": "38.494"
+        },
+        {
+          "substation": "11",
+          "feeder": "3",
+          "incident_id": "D171224",
+          "formatted_ert": null,
+          "consumers_affected": "0",
+          "lon": "-118.3",
+          "lat": "34.2"
+        }
+      ]
+    },
+    "result": "true"
+  },
+  "opts": {
+    "servedTotal": 102634
+  },
+  "expected": {
+    "official": {
+      "out": 5,
+      "served": 102634,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "D998263",
+        "out": 5,
+        "served": 5,
+        "etr": "Mon, Jun 29, 01:37 pm",
+        "loc": [
+          38.494,
+          -78.623
+        ],
+        "subs": []
+      }
+    ]
+  }
+}
