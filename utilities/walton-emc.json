@@ -1,1 +1,1 @@
-{"schema":1,"id":"walton-emc","name":"Walton EMC (GA)","adapter":"outageentry","collectedAt":1782760072705,"official":{"out":1,"served":143882,"nOut":1},"areas":[{"name":"C1175718","out":1,"served":1,"etr":null,"loc":[33.83159025048431,-84.08717010408726],"subs":[]}]}
+{"schema":1,"id":"walton-emc","name":"Walton EMC (GA)","adapter":"outageentry","collectedAt":1782760830500,"official":{"out":1,"served":143882,"nOut":1},"areas":[{"name":"C1175717","out":1,"served":1,"etr":null,"loc":[33.87421466357624,-84.16479191690377],"subs":[]}]}
