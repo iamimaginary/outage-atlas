@@ -1,1 +1,1 @@
-{"schema":1,"id":"fort-collins-utilities","name":"Fort Collins Utilities (CO)","adapter":"arcgis","collectedAt":1782766343458,"official":{"out":3,"served":78450,"nOut":1},"areas":[{"name":"outage #428","out":3,"served":3,"etr":null,"loc":[40.51827,-105.01144],"subs":[]}]}
+{"schema":1,"id":"fort-collins-utilities","name":"Fort Collins Utilities (CO)","adapter":"arcgis","collectedAt":1782770817440,"official":{"out":3,"served":78450,"nOut":1},"areas":[{"name":"outage #428","out":3,"served":3,"etr":null,"loc":[40.51827,-105.01144],"subs":[]}]}
