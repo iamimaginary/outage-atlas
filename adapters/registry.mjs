@@ -44,6 +44,7 @@ import * as gridvu from "./gridvu.mjs";
 import * as smartc from "./smartc.mjs";
 import * as sienatech from "./sienatech.mjs";
 import * as anaheim from "./anaheim.mjs";
+import * as outageentry from "./outageentry.mjs";
 
 export const ADAPTERS = {
   kubra: { mod: kubra, defaultFn: "parseKubraReport", canonical: true },
@@ -95,6 +96,7 @@ export const ADAPTERS = {
   smartc: { mod: smartc, defaultFn: "parseSmartc", canonical: true },               // SmartC Mobile / SEDC (Madison G&E)
   sienatech: { mod: sienatech, defaultFn: "parseSienatech", canonical: true },      // Siena WebSurv (United Power)
   anaheim: { mod: anaheim, defaultFn: "parseAnaheim", canonical: true },            // Anaheim Public Utilities GeoJSON
+  outageentry: { mod: outageentry, defaultFn: "parseOutageentry", canonical: true }, // DataVoice/Milsoft OutageEntry SaaS
   // ODIN is the national baseline; its output is an OUT-COUNT aggregate (no `served`), so it is NOT
   // the per-utility canonical shape — validated by check_baseline.mjs, not validateCanonical.
   odin: { mod: odin, defaultFn: "parseOdinRecords", canonical: false }

@@ -1,0 +1,16 @@
+{
+  "id": "glendale-wp",
+  "name": "Glendale Water & Power (CA)",
+  "adapter": "outageentry",
+  "match": [
+    "CITY OF GLENDALE",
+    "GLENDALE WATER"
+  ],
+  "config": {
+    "client": "glendale",
+    "servedTotal": 95746
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

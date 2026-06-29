@@ -1,0 +1,15 @@
+{
+  "id": "shenandoah-valley-ec",
+  "name": "Shenandoah Valley EC (VA)",
+  "adapter": "outageentry",
+  "match": [
+    "SHENANDOAH VALLEY"
+  ],
+  "config": {
+    "client": "svec",
+    "servedTotal": 102634
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
