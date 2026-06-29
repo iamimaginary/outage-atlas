@@ -1,1 +1,1 @@
-{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782687415618,"official":{"out":3,"served":1488920,"nOut":1},"areas":[{"name":"HARBOR GATEWAY","out":3,"served":3,"etr":"2026-06-28T18:30:00.000Z","loc":[33.85452,-118.30071],"subs":[]}]}
+{"schema":1,"id":"ladwp","name":"LADWP (Los Angeles)","adapter":"arcgis","collectedAt":1782691464520,"official":{"out":3,"served":1488920,"nOut":1},"areas":[{"name":"HARBOR GATEWAY","out":3,"served":3,"etr":"2026-06-28T18:30:00.000Z","loc":[33.85452,-118.30071],"subs":[]}]}

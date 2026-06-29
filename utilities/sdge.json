@@ -1,1 +1,1 @@
-{"schema":1,"id":"sdge","name":"San Diego Gas & Electric (CA)","adapter":"kubra","collectedAt":1782687433287,"official":{"out":10,"served":1547961,"nOut":1},"areas":[{"name":"92114","out":10,"served":18671,"etr":"2026-06-29T01:00:00Z","loc":null,"subs":[]}]}
+{"schema":1,"id":"sdge","name":"San Diego Gas & Electric (CA)","adapter":"kubra","collectedAt":1782691478044,"official":{"out":10,"served":1547961,"nOut":1},"areas":[{"name":"92114","out":10,"served":18671,"etr":"2026-06-29T01:00:00Z","loc":null,"subs":[]}]}
