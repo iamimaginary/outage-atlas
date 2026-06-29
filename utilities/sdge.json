@@ -2,7 +2,18 @@
   "id": "sdge",
   "name": "San Diego Gas & Electric (CA)",
   "adapter": "kubra",
-  "match": ["SAN DIEGO GAS"],
-  "config": { "instance": "baefd37d-17f9-4bb7-befb-f2f2b38b8cb8", "view": "031b05f7-e0fe-4bd0-98fa-a70f017e8a5e", "referer": "https://outage.sdge.com/", "thematic": true, "servedTotal": 1499750 },
-  "reconciliation": { "tolerancePct": 15 }
+  "match": [
+    "SAN DIEGO GAS"
+  ],
+  "config": {
+    "instance": "baefd37d-17f9-4bb7-befb-f2f2b38b8cb8",
+    "view": "031b05f7-e0fe-4bd0-98fa-a70f017e8a5e",
+    "referer": "https://outage.sdge.com/",
+    "thematic": true,
+    "servedTotal": 1499750,
+    "geocodeRegion": "California"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
 }

@@ -2,11 +2,30 @@
   "id": "eversource",
   "name": "Eversource (CT/MA/NH)",
   "adapter": "ifactor",
-  "match": ["EVERSOURCE", "NSTAR", "CONNECTICUT LIGHT", "PUBLIC SERVICE CO OF NH", "WESTERN MASSACHUSETTS ELECTRIC"],
+  "match": [
+    "EVERSOURCE",
+    "NSTAR",
+    "CONNECTICUT LIGHT",
+    "PUBLIC SERVICE CO OF NH",
+    "WESTERN MASSACHUSETTS ELECTRIC"
+  ],
   "config": {
     "base": "https://outagemap.eversource.com/resources/data/external/interval_generation_data",
     "referer": "https://outagemap.eversource.com/",
-    "reports": ["report_conn.json", "report_east.json", "report_west.json", "report_hampshire.json"]
+    "reports": [
+      "report_conn.json",
+      "report_east.json",
+      "report_west.json",
+      "report_hampshire.json"
+    ],
+    "geocodeParentMap": {
+      "CTE": "Connecticut",
+      "EMA": "Massachusetts",
+      "WMA": "Massachusetts",
+      "NHE": "New Hampshire"
+    }
   },
-  "reconciliation": { "tolerancePct": 10 }
+  "reconciliation": {
+    "tolerancePct": 10
+  }
 }

@@ -9,7 +9,8 @@
     "base": "https://outages.otpco.com",
     "file": "boundaries.json",
     "servedTotal": 138447,
-    "referer": "https://outages.otpco.com/"
+    "referer": "https://outages.otpco.com/",
+    "geocodeRegion": "Minnesota"
   },
   "tol": 10,
   "reconciliation": {

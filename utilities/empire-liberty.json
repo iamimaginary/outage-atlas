@@ -9,7 +9,8 @@
   "config": {
     "companyGroupCode": "LUMO",
     "referer": "https://outage.libertyutilities.com/",
-    "servedTotal": 448200
+    "servedTotal": 448200,
+    "geocodeRegion": "Missouri"
   },
   "reconciliation": {
     "tolerancePct": 12

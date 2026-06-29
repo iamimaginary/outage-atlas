@@ -9,7 +9,8 @@
     "base": "https://outages.gvec.org",
     "file": "boundaries.json",
     "servedTotal": 106800,
-    "referer": "https://outages.gvec.org/"
+    "referer": "https://outages.gvec.org/",
+    "geocodeRegion": "Texas"
   },
   "tol": 10,
   "reconciliation": {

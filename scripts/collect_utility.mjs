@@ -380,6 +380,49 @@ async function fetchPuget(c) {
 
 const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft, gridvu: fetchGridvu, smartc: fetchSmartc, sienatech: fetchSienatech, anaheim: fetchAnaheim, outageentry: fetchOutageentry };
 
+// Some feeds (iFactor Con Ed/Eversource, LUMA, MidAmerican, Liberty, Kübra-thematic, Milsoft county
+// boundaries) publish area NAMES but no coordinates. When a config sets config.geocodeRegion, resolve
+// those names -> [lat,lon] so the page can MAP them. Results persist in a shared cache on tracker-data
+// (data/utilities/_geocache.json) and fill over runs, so Nominatim is hit <= MAX_NEW times/run (its
+// policy is <=1 req/s) and ~never once warm. The region hint disambiguates bare county/town names.
+const GEO_UA = "outage-atlas/1.0 (+https://github.com/iamimaginary/outage-atlas)";
+const GEOCACHE_PATH = join(ROOT, "data", "national", "geocache.json"); // outside data/utilities (not a snapshot)
+async function geocodePlace(q) {
+  const u = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&q=${encodeURIComponent(q)}`;
+  const r = await fetch(u, { headers: { "User-Agent": GEO_UA }, signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error(`nominatim ${r.status}`);
+  const j = await r.json();
+  if (Array.isArray(j) && j[0] && j[0].lat) return [Math.round(+j[0].lat * 1e5) / 1e5, Math.round(+j[0].lon * 1e5) / 1e5];
+  return null;
+}
+async function geocodeFill(areas, gcfg) {
+  const region = gcfg.geocodeRegion || "";
+  const pmap = gcfg.geocodeParentMap || null; // map an area code -> a region string (e.g. Eversource CTE -> Connecticut)
+  let cache = {};
+  if (existsSync(GEOCACHE_PATH)) { try { cache = JSON.parse(readFileSync(GEOCACHE_PATH, "utf8")); } catch {} }
+  let dirty = false, fresh = 0, filled = 0;
+  const MAX_NEW = 60;
+  const resolve = async (name, parent) => {
+    if (!name || /fuzzy|other$/i.test(name)) return null; // skip junk placeholder names
+    const ctx = (pmap && parent && pmap[parent]) || parent; // disambiguate sub names by their parent's region
+    const q = [name, ctx, region].filter(Boolean).join(", ");
+    const key = q.toLowerCase();
+    if (key in cache) return cache[key];           // hit (incl. cached null = "couldn't resolve")
+    if (fresh >= MAX_NEW) return null;             // bounded; resolves on a later run
+    let loc = null;
+    try { loc = await geocodePlace(q); } catch {}
+    cache[key] = loc; dirty = true; fresh++;
+    await new Promise((r) => setTimeout(r, 1100)); // Nominatim usage policy (<=1 req/s)
+    return loc;
+  };
+  for (const a of areas) {
+    if (!Array.isArray(a.loc) && a.name) { a.loc = await resolve(a.name); if (a.loc) filled++; }
+    for (const s of (a.subs || [])) if (!Array.isArray(s.loc) && s.name) { s.loc = await resolve(s.name, a.name); if (s.loc) filled++; }
+  }
+  if (dirty) { try { writeFileSync(GEOCACHE_PATH, JSON.stringify(cache)); } catch {} }
+  return { filled, fresh };
+}
+
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until
   // the required secret is present, so a not-yet-enabled feed never errors a collector cycle.
@@ -393,6 +436,12 @@ const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl
   const parser = reg.mod[reg.defaultFn];
   const { official, areas } = parser(raw, cfg.config); // 2nd arg lets feeds w/o served (PG&E) inject a system total
   if (!areas.length) throw new Error("empty deep report (no areas) — refusing to publish");
+  // coordinate-less feeds (iFactor, LUMA, Milsoft boundaries, etc.): resolve area names -> [lat,lon] so
+  // they're mappable. Opt-in + disambiguated via config.geocodeRegion; cached across runs.
+  if (cfg.config && (cfg.config.geocodeRegion || cfg.config.geocodeParentMap)) {
+    const g = await geocodeFill(areas, cfg.config);
+    if (g.fresh || g.filled) console.log(`  geocoded ${g.filled} area(s) to coords (${g.fresh} new lookups this run)`);
+  }
   const collectedAt = Date.now();
 
   const snapshot = { schema: 1, id, name: cfg.name, adapter: cfg.adapter, collectedAt, official, areas };
@@ -414,8 +463,9 @@ const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl
   if (existsSync(idxPath)) { try { idx = JSON.parse(readFileSync(idxPath, "utf8")); } catch {} }
   idx.deep = idx.deep || {};
   const udir = join(ROOT, "data", "utilities");
-  for (const f of readdirSync(udir).filter((x) => x.endsWith(".json"))) {
+  for (const f of readdirSync(udir).filter((x) => x.endsWith(".json") && !x.startsWith("_"))) {
     const s = JSON.parse(readFileSync(join(udir, f), "utf8"));
+    if (!s || !s.official || !s.id) continue; // skip non-snapshot files defensively
     const cfgPath = join(ROOT, "utilities", f);
     const ucfg = existsSync(cfgPath) ? JSON.parse(readFileSync(cfgPath, "utf8")) : {};
     idx.deep[s.id] = { name: s.name, match: ucfg.match || [], out: s.official.out, collectedAt: s.collectedAt };
