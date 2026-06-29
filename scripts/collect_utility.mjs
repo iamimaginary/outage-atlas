@@ -198,6 +198,18 @@ async function fetchLiberty(c) {
 }
 // NOVEC: StormCenter XML (cache-busted).
 async function fetchNovec(c) { return tget(`${c.url || "https://www.novec.com/stormcenter/data/outagedtl.xml"}?${Date.now()}`, { Referer: c.referer || "https://www.novec.com/" }); }
+// ACS GridVu: per-outage JSON list.
+async function fetchGridvu(c) { return jget(c.url, { Referer: c.referer || new URL(c.url).origin }); }
+// SmartC Mobile / SEDC WidgetAPI.
+async function fetchSmartc(c) { return jget(c.url, { Referer: c.referer || new URL(c.url).origin }); }
+// Anaheim GeoJSON.
+async function fetchAnaheim(c) { return jget(c.url, { Referer: c.referer || "https://www.anaheim.net/" }); }
+// Siena WebSurv: POST (empty body) -> XML.
+async function fetchSienatech(c) {
+  const r = await fetch(c.url, { method: "POST", headers: { "User-Agent": UA, Accept: "*/*", "Content-Type": "application/x-www-form-urlencoded", Referer: c.referer || new URL(c.url).origin }, body: "", signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error(`sienatech ${r.status}`);
+  return r.text();
+}
 // Milsoft Web Outage Viewer: static per-utility JSON (boundaries.json county-grain or outages.json points).
 async function fetchMilsoft(c) {
   const base = (c.base || "").replace(/\/$/, "");
@@ -361,7 +373,7 @@ async function fetchPuget(c) {
   return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
 }
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft };
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft, gridvu: fetchGridvu, smartc: fetchSmartc, sienatech: fetchSienatech, anaheim: fetchAnaheim };
 
 (async () => {
   // Gated/disabled feeds (e.g. HECO needs an operator-supplied credential): skip cleanly (exit 0) until

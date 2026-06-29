@@ -1,0 +1,17 @@
+{
+  "id": "lansing-bwl",
+  "name": "Lansing Board of Water & Light (MI)",
+  "adapter": "gridvu",
+  "match": [
+    "CITY OF LANSING",
+    "LANSING BOARD"
+  ],
+  "config": {
+    "url": "https://outages.lbwl.com/GridVuServer/Public/getAllOutages",
+    "referer": "https://outages.lbwl.com/",
+    "servedTotal": 99070
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

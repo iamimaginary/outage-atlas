@@ -1,0 +1,46 @@
+{
+  "raw": {
+    "outageLst": [
+      {
+        "idf": "i-1",
+        "subst": "NORTHEAST",
+        "fd": "H981",
+        "custAffected": 2,
+        "lat": 42.78,
+        "lon": -84.5,
+        "etr": "2026-06-29T12:00:00",
+        "planned": false
+      },
+      {
+        "idf": "i-2",
+        "subst": "WEST",
+        "custAffected": 0,
+        "lat": 42.7,
+        "lon": -84.6
+      }
+    ]
+  },
+  "opts": {
+    "servedTotal": 99070
+  },
+  "expected": {
+    "official": {
+      "out": 2,
+      "served": 99070,
+      "nOut": 1
+    },
+    "areas": [
+      {
+        "name": "NORTHEAST",
+        "out": 2,
+        "served": 2,
+        "etr": "2026-06-29T12:00:00",
+        "loc": [
+          42.78,
+          -84.5
+        ],
+        "subs": []
+      }
+    ]
+  }
+}

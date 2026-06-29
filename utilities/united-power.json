@@ -1,0 +1,16 @@
+{
+  "id": "united-power",
+  "name": "United Power (CO)",
+  "adapter": "sienatech",
+  "match": [
+    "UNITED POWER"
+  ],
+  "config": {
+    "url": "https://outages.unitedpower.com/Outages/Home/UpdatePushpin",
+    "referer": "https://outages.unitedpower.com/",
+    "servedTotal": 106943
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

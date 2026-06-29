@@ -1,0 +1,17 @@
+{
+  "id": "anaheim",
+  "name": "Anaheim Public Utilities (CA)",
+  "adapter": "anaheim",
+  "match": [
+    "CITY OF ANAHEIM",
+    "ANAHEIM PUBLIC"
+  ],
+  "config": {
+    "url": "https://gis.anaheim.net/electricoutages/ActiveIncidents.cshtml",
+    "referer": "https://www.anaheim.net/",
+    "servedTotal": 122391
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
