@@ -1,0 +1,24 @@
+{
+  "id": "tallahassee",
+  "name": "City of Tallahassee Utilities",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF TALLAHASSEE"
+  ],
+  "config": {
+    "base": "https://tallahassee-ags.esriemcs.com/arcgis/rest/services/TallahasseeOutageMap/MapServer",
+    "layer": 0,
+    "groupBy": "region",
+    "fields": {
+      "out": "customers",
+      "etr": "etr",
+      "id": "ticket"
+    },
+    "referer": "https://outagemap.talgov.com/",
+    "servedTotal": 122045
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

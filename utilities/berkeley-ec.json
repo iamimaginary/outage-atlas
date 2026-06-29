@@ -1,0 +1,15 @@
+{
+  "id": "berkeley-ec",
+  "name": "Berkeley Electric Coop (SC)",
+  "adapter": "kiuc",
+  "match": [
+    "BERKELEY ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/becsc/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

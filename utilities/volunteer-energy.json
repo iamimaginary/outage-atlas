@@ -1,0 +1,15 @@
+{
+  "id": "volunteer-energy",
+  "name": "Volunteer Energy Coop (TN)",
+  "adapter": "kiuc",
+  "match": [
+    "VOLUNTEER"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/volunteer/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

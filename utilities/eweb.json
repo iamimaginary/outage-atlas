@@ -1,0 +1,25 @@
+{
+  "id": "eweb",
+  "name": "Eugene Water & Electric Board (OR)",
+  "adapter": "arcgis",
+  "match": [
+    "EUGENE WATER",
+    "EWEB"
+  ],
+  "config": {
+    "base": "https://services7.arcgis.com/6AM8yPAeyXiPc9eF/arcgis/rest/services/PublicOutageMap_Public_View/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "custcnt",
+      "etr": "etor",
+      "id": "incidentid",
+      "name": "name"
+    },
+    "referer": "https://www.eweb.org/",
+    "servedTotal": 97636
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

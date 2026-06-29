@@ -1,0 +1,15 @@
+{
+  "id": "energyunited",
+  "name": "EnergyUnited EMC (NC)",
+  "adapter": "kiuc",
+  "match": [
+    "ENERGYUNITED"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/energyunited/Hosted_Outage_Map"
+  },
+  "tol": 15,
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

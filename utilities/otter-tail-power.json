@@ -1,0 +1,18 @@
+{
+  "id": "otter-tail-power",
+  "name": "Otter Tail Power (MN/ND/SD)",
+  "adapter": "milsoft",
+  "match": [
+    "OTTER TAIL"
+  ],
+  "config": {
+    "base": "https://outages.otpco.com",
+    "file": "boundaries.json",
+    "servedTotal": 138447,
+    "referer": "https://outages.otpco.com/"
+  },
+  "tol": 10,
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}
