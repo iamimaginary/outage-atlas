@@ -1,0 +1,22 @@
+{
+  "id": "minnesota-power",
+  "name": "ALLETE / Minnesota Power",
+  "adapter": "arcgis",
+  "match": [
+    "ALLETE",
+    "MINNESOTA POWER"
+  ],
+  "config": {
+    "base": "https://services.arcgis.com/ehV0YC56b0w2eenG/arcgis/rest/services/OutageMap2021AGOL_viewLayer/FeatureServer",
+    "layer": 2,
+    "fields": {
+      "out": "AFFECTEDCUST",
+      "served": "CUST_COUNT"
+    },
+    "referer": "https://www.mnpower.com/",
+    "servedTotal": 150464
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

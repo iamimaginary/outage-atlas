@@ -1,0 +1,16 @@
+{
+  "id": "smeco",
+  "name": "Southern Maryland Electric Cooperative",
+  "adapter": "kubra",
+  "match": [
+    "SOUTHERN MARYLAND ELEC"
+  ],
+  "config": {
+    "instance": "8f8e2a37-51ea-4029-a609-bf8bc3c384b3",
+    "view": "c00241ad-5a2f-4236-9be9-e4bc6f518449",
+    "referer": "https://outagemap.smeco.coop/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

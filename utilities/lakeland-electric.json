@@ -1,0 +1,16 @@
+{
+  "id": "lakeland-electric",
+  "name": "Lakeland Electric (FL)",
+  "adapter": "kubra",
+  "match": [
+    "LAKELAND"
+  ],
+  "config": {
+    "instance": "ea5d4449-04f0-4511-ba9e-c96762eda641",
+    "view": "f362d0d7-4493-4d66-bdd5-6b66609744b7",
+    "referer": "https://outagemap.lakelandelectric.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

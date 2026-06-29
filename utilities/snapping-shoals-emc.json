@@ -1,0 +1,22 @@
+{
+  "id": "snapping-shoals-emc",
+  "name": "Snapping Shoals EMC (GA)",
+  "adapter": "arcgis",
+  "match": [
+    "SNAPPING SHOALS"
+  ],
+  "config": {
+    "base": "https://maps.ssemc.com/ninbouoockprserver/rest/services/Contractor/PublicContractorSystem/MapServer",
+    "layer": 35,
+    "groupBy": "NAME",
+    "fields": {
+      "out": "o_ConT",
+      "served": "o_TotalCustomers"
+    },
+    "referer": "https://www.ssemc.com/",
+    "servedTotal": 105950
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

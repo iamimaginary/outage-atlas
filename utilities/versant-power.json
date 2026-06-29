@@ -1,0 +1,17 @@
+{
+  "id": "versant-power",
+  "name": "Versant Power (Bangor Hydro, ME)",
+  "adapter": "kubra",
+  "match": [
+    "VERSANT POWER",
+    "BANGOR HYDRO"
+  ],
+  "config": {
+    "instance": "6abd095a-98f2-40a2-bb75-d51133d0c2c8",
+    "view": "05bfafbb-0ad1-4ff1-8287-d32fd1ed7fce",
+    "referer": "https://kubra.io/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
