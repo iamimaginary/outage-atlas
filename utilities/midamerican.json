@@ -8,7 +8,8 @@
   "config": {
     "base": "https://www.midamericanenergy.com",
     "referer": "https://www.midamericanenergy.com/OutageWatch/dsk.html",
-    "servedTotal": 810356
+    "servedTotal": 810356,
+    "geocodeRegion": "Iowa"
   },
   "reconciliation": {
     "tolerancePct": 10

@@ -2,11 +2,20 @@
   "id": "coned",
   "name": "Con Edison (NYC)",
   "adapter": "ifactor",
-  "match": ["CONSOLIDATED EDISON", "CON EDISON"],
+  "match": [
+    "CONSOLIDATED EDISON",
+    "CON EDISON"
+  ],
   "config": {
     "base": "https://outagemap.coned.com/resources/data/external/interval_generation_data",
     "referer": "https://outagemap.coned.com/",
-    "reports": ["report_nyc.json", "report_westchester.json"]
+    "reports": [
+      "report_nyc.json",
+      "report_westchester.json"
+    ],
+    "geocodeRegion": "New York"
   },
-  "reconciliation": { "tolerancePct": 10 }
+  "reconciliation": {
+    "tolerancePct": 10
+  }
 }

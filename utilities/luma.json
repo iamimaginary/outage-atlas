@@ -8,7 +8,8 @@
   ],
   "config": {
     "base": "https://api.miluma.lumapr.com/miluma-outage-api",
-    "referer": "https://miluma.lumapr.com/"
+    "referer": "https://miluma.lumapr.com/",
+    "geocodeRegion": "Puerto Rico"
   },
   "reconciliation": {
     "tolerancePct": 10

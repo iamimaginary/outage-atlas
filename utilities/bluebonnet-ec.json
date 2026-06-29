@@ -9,7 +9,8 @@
     "base": "https://outage.bluebonnetelectric.coop",
     "file": "boundaries.json",
     "servedTotal": 119740,
-    "referer": "https://outage.bluebonnetelectric.coop/"
+    "referer": "https://outage.bluebonnetelectric.coop/",
+    "geocodeRegion": "Texas"
   },
   "reconciliation": {
     "tolerancePct": 10

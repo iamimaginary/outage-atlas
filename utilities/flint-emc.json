@@ -10,7 +10,8 @@
     "base": "https://outage.flintemc.com",
     "file": "boundaries.json",
     "servedTotal": 92481,
-    "referer": "https://outage.flintemc.com/"
+    "referer": "https://outage.flintemc.com/",
+    "geocodeRegion": "Georgia"
   },
   "reconciliation": {
     "tolerancePct": 10
