@@ -131,6 +131,15 @@ const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
 // ETR strings vary by feed; some aren't Date-parseable (showed "Invalid Date"). Fall back to the raw string.
 const fmtEtr = (v) => { if (!v) return ""; const d = new Date(v); return isNaN(d.getTime()) ? String(v) : d.toLocaleString(); };
+// City/area recovery text: prefer the utility's own published ETR; otherwise the per-area algorithmic
+// estimate (eta) the collector now attaches to every area/sub — so each city shows a recovery time.
+const etaText = (o) => {
+  if (o && o.etr) { const s = fmtEtr(o.etr); if (s) return "ETR " + s; }
+  if (o && o.eta && o.eta.kind && o.eta.kind !== "restored" && o.eta.label) return o.eta.label;
+  return "";
+};
+const etaSuffix = (o) => { const t = etaText(o); return t ? " · ⏱ " + t : ""; };
+const etaBr = (o) => { const t = etaText(o); return t ? "<br>⏱ " + t : ""; };
 let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null, HIST = null, CTX = {};
 
 // Inline-SVG sparkline from a numeric series (oldest→newest). Green when the trend is falling (recovering),
@@ -342,8 +351,8 @@ function plotDeep(snap) {
   const pts = [];
   for (const a of (snap.areas || [])) {
     const subs = (a.subs || []).filter((s) => Array.isArray(s.loc) && s.out > 0);
-    if (subs.length) for (const s of subs) pts.push({ name: `${a.name} · ${s.name}`, out: s.out, etr: s.etr, loc: s.loc });
-    else if (Array.isArray(a.loc) && a.out > 0) pts.push({ name: a.name, out: a.out, etr: a.etr, loc: a.loc });
+    if (subs.length) for (const s of subs) pts.push({ name: `${a.name} · ${s.name}`, out: s.out, etr: s.etr, eta: s.eta, loc: s.loc });
+    else if (Array.isArray(a.loc) && a.out > 0) pts.push({ name: a.name, out: a.out, etr: a.etr, eta: a.eta, loc: a.loc });
   }
   if (!pts.length) return 0; // feed without coordinates (e.g. iFactor / Con Edison) — nothing to plot
   pts.sort((a, b) => b.out - a.out); // keep the most-affected points if a feed has thousands
@@ -351,7 +360,7 @@ function plotDeep(snap) {
   deepLayer = L.layerGroup();
   for (const p of shown) {
     L.circleMarker(p.loc, { radius: Math.min(20, 4 + Math.sqrt(p.out)), color: sev(p.out), weight: 2, fillColor: sev(p.out), fillOpacity: 0.7 })
-      .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${p.etr ? "<br>⏱ ETR " + fmtEtr(p.etr) : ""}<br><span class="small muted">${snap.name} · deep</span>`)
+      .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${etaBr(p)}<br><span class="small muted">${snap.name} · deep</span>`)
       .addTo(deepLayer);
   }
   deepLayer.addTo(map);
@@ -379,9 +388,9 @@ async function renderDeep(id, county) {
     ? `<div class="small muted" style="margin-top:2px">📍 ${fmt(plotted)} affected area${plotted > 1 ? "s" : ""} mapped above.</div>`
     : (snap.official.out > 0 ? `<div class="small muted" style="margin-top:2px">This utility's feed reports areas without map coordinates — listed below.</div>` : "");
   if (area) {
-    html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${area.etr ? " · ETR " + fmtEtr(area.etr) : ""}</div>`;
+    html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${etaSuffix(area)}</div>`;
     const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
-    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${s.etr ? " · ETR " + fmtEtr(s.etr) : ""}</span></div>`;
+    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${etaSuffix(s)}</span></div>`;
     else html += `<div class="small muted" style="margin-top:4px">No active sub-area outages broken out for this county right now.</div>`;
   } else {
     // no county-named area matched (e.g. feeds grouped by city/feeder) -> show the most-affected areas + their sub-areas
@@ -390,9 +399,9 @@ async function renderDeep(id, county) {
       ? `<div class="small muted" style="margin-top:8px">No per-area row for ${county.county} county — most affected areas in ${snap.name}:</div>`
       : `<div class="small muted" style="margin-top:8px">Most affected areas:</div>`;
     if (top.length) for (const a of top) {
-      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${a.etr ? " · ETR " + fmtEtr(a.etr) : ""}</span></div>`;
+      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${etaSuffix(a)}</span></div>`;
       for (const s of (a.subs || []).filter((s) => s.out > 0).sort((x, y) => y.out - x.out).slice(0, 4))
-        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${s.etr ? " · " + fmtEtr(s.etr) : ""}</span></div>`;
+        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${etaSuffix(s)}</span></div>`;
     } else html += `<div class="small muted" style="margin-top:4px">No active outages in ${snap.name} right now.</div>`;
   }
   host.innerHTML = html;
