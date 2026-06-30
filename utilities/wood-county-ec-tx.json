@@ -1,0 +1,1 @@
+{"schema":1,"id":"wood-county-ec-tx","name":"Wood County Electric Cooperative (TX)","adapter":"milsoft","collectedAt":1782852409691,"official":{"out":2,"served":38000,"nOut":1},"areas":[{"name":"2026-06-30-1102","out":2,"served":2,"etr":null,"loc":[32.69211256520636,-95.31161630188805],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

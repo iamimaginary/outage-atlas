@@ -1,0 +1,1 @@
+{"schema":1,"id":"sevier-county-es-tn","name":"Sevier County Electric System (TN)","adapter":"milsoft","collectedAt":1782852307056,"official":{"out":2,"served":60000,"nOut":1},"areas":[{"name":"H25-898","out":2,"served":2,"etr":null,"loc":[35.72277583767171,-83.61339721794769],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

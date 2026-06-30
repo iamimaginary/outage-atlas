@@ -1,0 +1,1 @@
+{"schema":1,"id":"mckenzie-ec-nd","name":"McKenzie Electric Cooperative (ND)","adapter":"milsoft","collectedAt":1782852237437,"official":{"out":1,"served":4807,"nOut":1},"areas":[{"name":"23-Werner North","out":1,"served":1,"etr":null,"loc":[47.48444255051019,-102.51534938978364],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

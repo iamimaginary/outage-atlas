@@ -1,0 +1,1 @@
+{"schema":1,"id":"tallahatchie-valley-epa-ms","name":"Tallahatchie Valley EPA (MS)","adapter":"outageentry","collectedAt":1782852355085,"official":{"out":240,"served":28705,"nOut":1},"areas":[{"name":"D528543","out":240,"served":240,"etr":null,"loc":[34.65574270364553,-89.84974859652718],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

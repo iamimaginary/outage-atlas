@@ -1,0 +1,1 @@
+{"schema":1,"id":"wilson-energy-nc","name":"Wilson Energy (NC)","adapter":"outageentry","collectedAt":1782852395684,"official":{"out":11,"served":38791,"nOut":1},"areas":[{"name":"D357647","out":11,"served":11,"etr":"Tue, Jun 30, 07:23 pm","loc":[35.70652396472931,-77.89587424703197],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

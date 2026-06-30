@@ -1,0 +1,1 @@
+{"schema":1,"id":"woodruff-electric-ar","name":"Woodruff Electric Cooperative (AR)","adapter":"outageentry","collectedAt":1782852410277,"official":{"out":2,"served":19579,"nOut":1},"areas":[{"name":"D498568","out":2,"served":2,"etr":null,"loc":[34.910198312556865,-90.8628156258029],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}
