@@ -9,13 +9,27 @@ on:
   schedule:
     - cron: "17 */3 * * *"   # every 3h (offset so it doesn't collide with the collector)
   workflow_dispatch:
+  # GitHub creates a phantom push-event run for this workflow on every push; with no job matching the
+  # push event that run has ZERO jobs, which GitHub reports as a FAILED run ("No jobs were run") and
+  # emails. Declaring push + the no-op guard job below makes those runs PASS instead. The real audit
+  # jobs stay schedule/dispatch-only via `if: github.event_name != 'push'`, so they never run (or file
+  # issues) on an ordinary commit.
+  push:
 
 permissions:
   contents: read
   issues: write
 
 jobs:
+  # Passes the phantom push run (see the note under `on:`) so GitHub stops emailing "No jobs were run".
+  noop-on-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Scheduled audits run on cron / workflow_dispatch — nothing to do on push."
+
   drift:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -27,9 +41,11 @@ jobs:
         run: set -o pipefail; node scripts/audit_drift.mjs 2>&1 | tee /tmp/o.txt
       - if: steps.run.outcome == 'failure'
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-        run: node scripts/file_issue.mjs --title "Audit: ODIN payload drift" --labels "drift,adapter-broken" --signature "drift:odin" < /tmp/o.txt
+        run: |
+          node scripts/file_issue.mjs --title "Audit: ODIN payload drift" --labels "drift,adapter-broken" --signature "drift:odin" < /tmp/o.txt
 
   feeds:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -41,9 +57,11 @@ jobs:
         run: set -o pipefail; node scripts/audit_feeds.mjs 2>&1 | tee /tmp/o.txt
       - if: steps.run.outcome == 'failure'
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-        run: node scripts/file_issue.mjs --title "Audit: critical feed down" --labels "audit-failure" --signature "feeds:critical" < /tmp/o.txt
+        run: |
+          node scripts/file_issue.mjs --title "Audit: critical feed down" --labels "audit-failure" --signature "feeds:critical" < /tmp/o.txt
 
   reconciliation:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -63,9 +81,11 @@ jobs:
             && node scripts/audit_baseline_deep.mjs --baseline data/national/baseline.json --utils data/utilities --strict; } 2>&1 | tee /tmp/o.txt
       - if: steps.run.outcome == 'failure'
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-        run: node scripts/file_issue.mjs --title "Audit: reconciliation breach" --labels "data-wrong,audit-failure" --signature "reconciliation" < /tmp/o.txt
+        run: |
+          node scripts/file_issue.mjs --title "Audit: reconciliation breach" --labels "data-wrong,audit-failure" --signature "reconciliation" < /tmp/o.txt
 
   coverage:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
