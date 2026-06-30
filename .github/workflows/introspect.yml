@@ -1,0 +1,34 @@
+name: introspect
+
+# TEMPORARY one-off (workflow_dispatch only). Runs on a GitHub-hosted runner, which — unlike the dev
+# sandbox — has open egress, so it can reach the Avangrid esriemcs ArcGIS host to read CMP's layer field
+# names. Dumps geometry type + field list + a sample feature so utilities/cmp-maine.json can be wired
+# with the real fields. DELETE this file once CMP is wired.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  introspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Service root - list layers
+        run: |
+          curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer?f=json" \
+            | jq -r '"SERVICE OK", (.layers[]? | "LAYER \(.id) | \(.name) | \(.geometryType)")' \
+            || echo "ROOT REQUEST FAILED (esriemcs may block this runner too)"
+      - name: Per-layer fields + sample feature
+        run: |
+          for L in 0 1 2 3; do
+            echo "================= LAYER $L ================="
+            curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer/$L?f=json" \
+              | jq -r '"name=\(.name) geom=\(.geometryType)", (.fields[]? | "FIELD \(.name) \(.type)")' \
+              || echo "  layer $L request failed"
+            echo "----- sample feature attributes -----"
+            curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer/$L/query?where=1%3D1&outFields=*&resultRecordCount=2&f=json" \
+              | jq -c '.features[]?.attributes' | head -5
+          done
