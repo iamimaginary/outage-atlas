@@ -1,1 +1,1 @@
-{"schema":1,"id":"el-paso","name":"El Paso Electric (TX/NM)","adapter":"el-paso","collectedAt":1782843173593,"official":{"out":19,"served":465205,"nOut":1},"areas":[{"name":"79930","out":19,"served":19,"etr":"6/30/2026 1:00:00 PM","loc":[31.8136,-106.4526],"subs":[]}]}
+{"schema":1,"id":"el-paso","name":"El Paso Electric (TX/NM)","adapter":"el-paso","collectedAt":1782845695063,"official":{"out":19,"served":465205,"nOut":1},"areas":[{"name":"79930","out":19,"served":19,"etr":"6/30/2026 4:30:00 PM","loc":[31.8136,-106.4526],"subs":[]}]}
