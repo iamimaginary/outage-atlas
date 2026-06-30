@@ -1,1 +1,1 @@
-{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782819742112,"official":{"out":3,"served":306211,"nOut":1},"areas":[{"name":"Royalton","out":3,"served":1909,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"green-mountain-power","name":"Green Mountain Power (VT)","adapter":"gmp","collectedAt":1782826189625,"official":{"out":4,"served":306211,"nOut":2},"areas":[{"name":"Cornwall","out":3,"served":756,"etr":null,"loc":null,"subs":[]},{"name":"Castleton","out":1,"served":3069,"etr":null,"loc":null,"subs":[]}]}
