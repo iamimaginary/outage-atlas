@@ -1,1 +1,1 @@
-{"schema":1,"id":"kiuc","name":"Kauai Island Utility Coop (HI)","adapter":"kiuc","collectedAt":1782782865636,"official":{"out":66,"served":36321,"nOut":17},"areas":[{"name":"Kauai","out":66,"served":35629,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"kiuc","name":"Kauai Island Utility Coop (HI)","adapter":"kiuc","collectedAt":1782798088900,"official":{"out":20,"served":36321,"nOut":17},"areas":[{"name":"Kauai","out":19,"served":35629,"etr":null,"loc":null,"subs":[]},{"name":"(region)","out":1,"served":0,"etr":null,"loc":null,"subs":[]}]}

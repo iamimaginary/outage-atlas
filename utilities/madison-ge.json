@@ -1,1 +1,1 @@
-{"schema":1,"id":"madison-ge","name":"Madison Gas & Electric (WI)","adapter":"smartc","collectedAt":1782775030052,"official":{"out":1,"served":174490,"nOut":1},"areas":[{"name":"Addresses Affected: 2","out":1,"served":1,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"madison-ge","name":"Madison Gas & Electric (WI)","adapter":"smartc","collectedAt":1782798091979,"official":{"out":10,"served":174270,"nOut":1},"areas":[{"name":"Addresses Affected: 2","out":10,"served":10,"etr":null,"loc":null,"subs":[]}]}
