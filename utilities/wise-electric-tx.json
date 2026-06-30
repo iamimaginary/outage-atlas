@@ -1,0 +1,1 @@
+{"schema":1,"id":"wise-electric-tx","name":"Wise Electric Cooperative (TX)","adapter":"outageentry","collectedAt":1782856551580,"official":{"out":1,"served":27648,"nOut":1},"areas":[{"name":"C437864","out":1,"served":1,"etr":null,"loc":[33.24509452971305,-97.92489936426925],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}
