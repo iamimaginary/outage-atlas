@@ -1,0 +1,80 @@
+{
+ "raw": {
+  "updated": "Jun 30, 5:00 PM",
+  "OutagesCountTEP": "1",
+  "AffectedCustomersTEP": "100",
+  "CustomerBaseTEP": "458,000",
+  "OutagesCountUSE": "2",
+  "AffectedCustomersUSE": "37",
+  "CustomerBaseUSE": "21,000",
+  "outages": [
+   {
+    "bounds": {
+     "coordLatCenter": "32.7",
+     "coordLngCenter": "-114.62"
+    },
+    "customersOut": "25",
+    "formattedEstimatedRestoration": "Jun 30, 6:00 PM",
+    "updatedCause": "Equipment Repair",
+    "event": "Active",
+    "division": "USE"
+   },
+   {
+    "bounds": {
+     "coordLatCenter": "32.54",
+     "coordLngCenter": "-114.41"
+    },
+    "customersOut": "12",
+    "formattedEstimatedRestoration": "Jun 30, 7:00 PM",
+    "updatedCause": "Tree on Line",
+    "event": "Active",
+    "division": "USE"
+   },
+   {
+    "bounds": {
+     "coordLatCenter": "32.2",
+     "coordLngCenter": "-110.9"
+    },
+    "customersOut": "100",
+    "updatedCause": "TEP only",
+    "event": "Active",
+    "division": "TEP"
+   }
+  ]
+ },
+ "opts": {
+  "division": "USE",
+  "servedTotal": 21000
+ },
+ "expected": {
+  "official": {
+   "out": 37,
+   "served": 21000,
+   "nOut": 2
+  },
+  "areas": [
+   {
+    "name": "Equipment Repair",
+    "out": 25,
+    "served": 25,
+    "etr": "Jun 30, 6:00 PM",
+    "loc": [
+     32.7,
+     -114.62
+    ],
+    "subs": []
+   },
+   {
+    "name": "Tree on Line",
+    "out": 12,
+    "served": 12,
+    "etr": "Jun 30, 7:00 PM",
+    "loc": [
+     32.54,
+     -114.41
+    ],
+    "subs": []
+   }
+  ]
+ }
+}

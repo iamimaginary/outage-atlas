@@ -1,0 +1,14 @@
+{
+  "id": "nipsco",
+  "name": "NIPSCO (IN)",
+  "adapter": "nisource",
+  "match": ["NORTHERN INDIANA PUBLIC", "NIPSCO"],
+  "config": {
+    "url": "https://www.nipsco.com/nisource-api/ldc/GetPowerOutages",
+    "referer": "https://www.nipsco.com/outages/power-outages",
+    "servedTotal": 486000
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

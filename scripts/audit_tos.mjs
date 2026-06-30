@@ -17,14 +17,18 @@ const CODE_EXT = /\.(mjs|js|html)$/;
 const EXCLUDE = new Set(["audit_tos.mjs", "audits.mjs", "test_audits.mjs"]);
 
 // collect "real integration" signals only: filenames + quoted string literals (skips bare mentions in
-// comments/docs so the ToS STOP rule itself can be documented without tripping the guard).
+// comments/docs so the ToS STOP rule itself can be documented without tripping the guard). The literal
+// scan matches the poweroutage.us DOMAIN specifically — a real integration must reference that host — so
+// an unrelated identifier that merely contains the word doesn't false-positive (e.g. a legitimate utility
+// endpoint literally named ".../GetPowerOutages", or a "PowerOutages.json" path). Filename/import use a
+// word boundary for the same reason.
 const signals = [];
 const scanFile = (p) => {
   const name = basename(p);
-  if (/poweroutage/i.test(name)) signals.push(`file:${name}`);
+  if (/\bpoweroutage/i.test(name)) signals.push(`file:${name}`);
   const txt = readFileSync(p, "utf8");
-  for (const m of txt.matchAll(/["'`][^"'`]*poweroutage[^"'`]*["'`]/gi)) signals.push(`literal:${m[0].slice(0, 60)}`);
-  for (const m of txt.matchAll(/import[^;\n]*poweroutage[^;\n]*/gi)) signals.push(`import:${m[0].slice(0, 60)}`);
+  for (const m of txt.matchAll(/["'`][^"'`]*poweroutage\.us[^"'`]*["'`]/gi)) signals.push(`literal:${m[0].slice(0, 60)}`);
+  for (const m of txt.matchAll(/import[^;\n]*\bpoweroutage[^;\n]*/gi)) signals.push(`import:${m[0].slice(0, 60)}`);
 };
 const walk = (dir) => {
   let entries; try { entries = readdirSync(dir); } catch { return; }

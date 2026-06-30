@@ -1,0 +1,14 @@
+{
+  "id": "dakota-electric",
+  "name": "Dakota Electric Association (MN)",
+  "adapter": "dakota-electric",
+  "match": ["DAKOTA ELECTRIC"],
+  "config": {
+    "url": "https://amp.dakotaelectric.com/outagemap/",
+    "referer": "https://outage.dakotaelectric.com/map.php",
+    "servedTotal": 115000
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

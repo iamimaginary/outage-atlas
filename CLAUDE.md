@@ -5,9 +5,10 @@ your standing brief: what it is, the contracts you must not break, the recurring
 guardrails, and when to STOP. Read it before touching anything.
 
 > Status: LIVE. Phases −1→4 complete; Phase 5 expansion well underway. **Deep precision coverage
-> ≈ 76.8% of US electricity customers (~118.7M) across ~127 wired utilities**, on top of the ~99.5%
-> ODIN national baseline. ~31 adapter families (see "Adapter families" below). The remaining tail is
-> small sub-threshold co-ops + a documented gated/deferred set.
+> ≈ 77% of US electricity customers (estimate — configs don't store customer counts, so it isn't
+> recomputable from the repo) across ~146 wired utilities** (148 configs; CMP parked-disabled), on top
+> of the ~99.5% ODIN national baseline. ~33 adapter families (see "Adapter families" below). The
+> remaining tail is small sub-threshold co-ops + a documented gated/deferred set (re-triaged 2026-06-30).
 
 ## What this is
 
@@ -72,14 +73,36 @@ new vendor. Vendor → adapter cheat-sheet:
 - **OMAP** (`omap`, PPL+RI), **PG&E** (`pge`), **PG-Electric GraphQL** (`pge-graphql`, Portland General),
   **Duke** (`duke`), **FPL** (`fpl`), **GridVu** (`gridvu`), **SmartC/SEDC** (`smartc`), **Sienatech** (`sienatech`),
   **WEC** (`wec`), **PacifiCorp** (`pacificorp`), **AES** (`aes-ohio`/`aes-indiana`), **LUMA** (`luma`, PR),
-  **HECO** (`heco`, anonymous bearer chain; HI), **MidAmerican/Idaho/TEP/TECO/El-Paso/Puget/MLGW/NWE/CLECO/
-  GMP/Clark-PUD/KUB/Liberty/NOVEC/SMUD/Anaheim** — mostly self-hosted single-utility feeds.
+  **HECO** (`heco`, anonymous bearer chain; HI), **NIPSCO** (`nisource`, self-hosted LDC API — NOT Kübra
+  anymore; point grain, grouped by city), **Dakota Electric** (`dakota-electric`, MN — outages inline as a
+  `GPSData` JS array in the server-rendered map HTML), **MidAmerican/Idaho/TEP+UNS/TECO/El-Paso/Puget/MLGW/
+  NWE/CLECO/GMP/Clark-PUD/KUB/Liberty/NOVEC/SMUD/Anaheim** — mostly self-hosted single-utility feeds. (The
+  `tep` adapter takes `config.division` — TEP / USE = UNS Electric / UEE = UNS Energy share one feed.)
 
-**Gated/deferred (documented, not wired):** Akamai/bot-walled or credential/VPN-gated — NIPSCO, Alliant
-(Interstate P&L + Wisconsin P&L), Avangrid (NYSEG/CMP/RG&E/UI), CORE, GreyStone, Magic Valley, DEMCO,
-SLEMCO, Dakota EC, Delaware EC, Cumberland EMC, UNS, United Coop, NPPD. Calm-unverifiable or
-fragile-format (revisit when active): IID/SEW, Montana-Dakota, Turlock, Carroll EC, SnoPUD (PMTiles),
-Springfield (Brotli). **poweroutage.us stays OFF** (ToS — see STOP rules).
+**Gated/deferred — re-triaged 2026-06-30** (the old "bot-walled" bucket was mostly page-walls, not
+data-feed walls; classified A/B/C/D by live probe):
+
+- **Wired this pass (were deferred):** NIPSCO (`nisource`), GreyStone Power (`outageentry` client `GREYS`),
+  SLEMCO (`kiuc` slug `slemco`), UNS Electric (`tep` division `USE`), Dakota Electric (`dakota-electric`).
+- **Wired but PARKED (need an operator/infra step, gated by reconciliation):** CMP (`cmp-maine.json`,
+  `arcgis`, **`disabled:true`** — real backend is a public Esri ArcGIS MapServer, but `esriemcs.com` is
+  blocked by this env's egress policy and the field names are unverified; enable from an esriemcs-reachable
+  host after introspecting `.../MapServer/0?f=json`). United Coop (`united-coop-tx.json`, `milsoft` on
+  `outage.united-cs.com:7577` — the dev proxy can't tunnel **non-443 ports**, so it can't be verified here;
+  the production collector should reach it).
+- **Genuinely gated → STOP/needs-human (real access controls on the DATA feed, do NOT bypass):**
+  Avangrid NYSEG/RG&E/UI (esriemcs ArcGIS behind a JA3-level bot wall; no live state aggregator),
+  Alliant IPL+WPL (one SEW/SmartCMobile backend behind Cloudflare bot-management + a captcha-gated bearer
+  token), CORE / Magic Valley / DEMCO / Cumberland EMC (Sienatech's **new `cache.sienatech.com` cloud** —
+  reCAPTCHA Enterprise, HTTP 420; distinct from the legacy open-XML `sienatech` we parse), NPPD (Cloudflare
+  portal, no public map feed).
+- **Discovery-pending (not gated, just needs a one-time browser capture):** Delaware EC (NISC eBill GWT
+  viewer over ArcGIS — capture the FeatureServer URL in DevTools, then it's config-only on `arcgis`).
+- **Env limits to note to the operator:** `esriemcs.com` is egress-blocked here; the proxy can't do
+  non-443 HTTPS ports. Both block verification of otherwise-wireable feeds (CMP, United Coop) from THIS env.
+
+Calm-unverifiable or fragile-format (revisit when active): IID/SEW, Montana-Dakota, Turlock, Carroll EC,
+SnoPUD (PMTiles), Springfield (Brotli). **poweroutage.us stays OFF** (ToS — see STOP rules).
 
 ## Validated assumptions (spike 2026-06-24 — evidence in `spikes/`)
 

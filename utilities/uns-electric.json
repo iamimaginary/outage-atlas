@@ -1,0 +1,15 @@
+{
+  "id": "uns-electric",
+  "name": "UNS Electric (AZ)",
+  "adapter": "tep",
+  "match": ["UNS ELECTRIC", "UNISOURCE"],
+  "config": {
+    "url": "https://apps.tep.com/OutageApp/mapfeed",
+    "referer": "https://www.tep.com/outages/",
+    "division": "USE",
+    "servedTotal": 21000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

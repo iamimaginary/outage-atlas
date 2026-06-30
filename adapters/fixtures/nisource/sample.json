@@ -1,0 +1,630 @@
+{
+ "raw": {
+  "outageList": [
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "EAST CHICAGO",
+    "lat": 41.621784,
+    "lng": -87.478306,
+    "reported": "2026-06-30T12:22:00",
+    "restore": "2026-06-30T16:00:00Z",
+    "stormMode": false,
+    "status": "Crew Assigned",
+    "zip": "46312",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "GARY",
+    "lat": 41.535673,
+    "lng": -87.361133,
+    "reported": "2026-06-29T21:44:00",
+    "restore": "2026-06-30T20:00:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46408",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 1,
+    "cause": "tree",
+    "city": "GARY",
+    "lat": 41.589154,
+    "lng": -87.332635,
+    "reported": "2026-06-30T12:34:00",
+    "restore": "2026-06-30T23:15:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46407",
+    "maxAffected": 1,
+    "comment": "tree"
+   },
+   {
+    "affected": 2,
+    "cause": "Not Yet Determined",
+    "city": "GRIFFITH",
+    "lat": 41.546948,
+    "lng": -87.426533,
+    "reported": "2026-06-30T08:19:00",
+    "restore": "2026-06-30T15:45:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46319",
+    "maxAffected": 2,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 3,
+    "cause": "scheduled",
+    "city": "GRIFFITH",
+    "lat": 41.547975,
+    "lng": -87.427501,
+    "reported": "0001-01-01T00:00:00",
+    "restore": "2026-06-30T16:00:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46319",
+    "maxAffected": 3,
+    "comment": "scheduled"
+   },
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "HAMMOND",
+    "lat": 41.580403,
+    "lng": -87.487687,
+    "reported": "2026-06-30T12:14:00",
+    "restore": "2026-06-30T15:45:00Z",
+    "stormMode": false,
+    "status": "Crew Assigned",
+    "zip": "46324",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 1,
+    "cause": "equipment",
+    "city": "HOBART",
+    "lat": 41.496394,
+    "lng": -87.233362,
+    "reported": "0001-01-01T00:00:00",
+    "restore": "2026-06-30T09:30:00Z",
+    "stormMode": false,
+    "status": "Crew On-site",
+    "zip": "46342",
+    "maxAffected": 1,
+    "comment": "equipment"
+   },
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "HOBART",
+    "lat": 41.516129,
+    "lng": -87.318541,
+    "reported": "2026-06-29T06:42:00",
+    "restore": "2026-06-30T16:00:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46342",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 1,
+    "cause": "equipment",
+    "city": "HOBART",
+    "lat": 41.525034,
+    "lng": -87.262326,
+    "reported": "2026-06-30T12:01:00",
+    "restore": "2026-06-30T17:00:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46342",
+    "maxAffected": 1,
+    "comment": "equipment"
+   },
+   {
+    "affected": 1,
+    "cause": "unknown",
+    "city": "HOBART",
+    "lat": 41.529605,
+    "lng": -87.293272,
+    "reported": "2026-06-30T12:51:00",
+    "restore": "2026-07-01T01:30:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46342",
+    "maxAffected": 1,
+    "comment": "unknown"
+   },
+   {
+    "affected": 1,
+    "cause": "tree",
+    "city": "LAKE STATION",
+    "lat": 41.557511,
+    "lng": -87.309372,
+    "reported": "2026-06-30T09:58:00",
+    "restore": "2026-06-30T20:00:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46405",
+    "maxAffected": 1,
+    "comment": "tree"
+   },
+   {
+    "affected": 32,
+    "cause": "tree",
+    "city": "MERRILLVILLE",
+    "lat": 41.486644,
+    "lng": -87.348238,
+    "reported": "2026-06-30T08:35:00",
+    "restore": "2026-06-30T15:15:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46410",
+    "maxAffected": 32,
+    "comment": "tree"
+   },
+   {
+    "affected": 1,
+    "cause": "equipment",
+    "city": "MUNSTER",
+    "lat": 41.545055,
+    "lng": -87.48533,
+    "reported": "2026-06-29T20:22:00",
+    "restore": "2026-07-01T15:00:00Z",
+    "stormMode": false,
+    "status": "Crew On-site",
+    "zip": "46321",
+    "maxAffected": 1,
+    "comment": "equipment"
+   },
+   {
+    "affected": 1,
+    "cause": "tree",
+    "city": "PORTAGE",
+    "lat": 41.591526,
+    "lng": -87.173598,
+    "reported": "2026-06-29T20:25:00",
+    "restore": "2026-06-30T10:46:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46368",
+    "maxAffected": 1,
+    "comment": "tree"
+   },
+   {
+    "affected": 1,
+    "cause": "equipment",
+    "city": "PORTAGE",
+    "lat": 41.637022,
+    "lng": -87.154758,
+    "reported": "0001-01-01T00:00:00",
+    "restore": "2026-06-30T11:30:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "46368",
+    "maxAffected": 1,
+    "comment": "equipment"
+   },
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "VALPARAISO",
+    "lat": 41.526765,
+    "lng": -87.151186,
+    "reported": "2026-06-30T11:33:00",
+    "restore": "2026-06-30T15:00:00Z",
+    "stormMode": false,
+    "status": "Crew On-site",
+    "zip": "46383",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 43,
+    "cause": "Not Yet Determined",
+    "city": "VALPARAISO",
+    "lat": 41.526785,
+    "lng": -87.151186,
+    "reported": "2026-06-30T11:33:00",
+    "restore": "2026-06-30T15:00:00Z",
+    "stormMode": false,
+    "status": "Crew On-site",
+    "zip": "46385",
+    "maxAffected": 43,
+    "comment": "Not Yet Determined"
+   },
+   {
+    "affected": 1,
+    "cause": "equipment",
+    "city": "VALPARAISO",
+    "lat": 41.549049,
+    "lng": -87.140884,
+    "reported": "2026-06-30T08:54:00",
+    "restore": "2026-06-30T23:30:00Z",
+    "stormMode": false,
+    "status": "Crew Assigned",
+    "zip": "46385",
+    "maxAffected": 1,
+    "comment": "equipment"
+   },
+   {
+    "affected": 1,
+    "cause": "Not Yet Determined",
+    "city": "YEOMAN",
+    "lat": 40.668018,
+    "lng": -86.722266,
+    "reported": "2026-06-30T13:29:00",
+    "restore": "2026-06-30T16:30:00Z",
+    "stormMode": false,
+    "status": "Assessment in Progress",
+    "zip": "47997",
+    "maxAffected": 1,
+    "comment": "Not Yet Determined"
+   }
+  ],
+  "downResponse": {
+   "MaintenancePageMode": 0,
+   "Down": false,
+   "Text": null
+  }
+ },
+ "opts": {
+  "servedTotal": 486000
+ },
+ "expected": {
+  "official": {
+   "out": 95,
+   "served": 486000,
+   "nOut": 19
+  },
+  "areas": [
+   {
+    "name": "EAST CHICAGO",
+    "out": 1,
+    "served": 1,
+    "etr": "2026-06-30T16:00:00Z",
+    "loc": [
+     41.621784,
+     -87.478306
+    ],
+    "subs": [
+     {
+      "id": "46312-0",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T16:00:00Z",
+      "loc": [
+       41.621784,
+       -87.478306
+      ]
+     }
+    ]
+   },
+   {
+    "name": "GARY",
+    "out": 2,
+    "served": 2,
+    "etr": "2026-06-30T20:00:00Z",
+    "loc": [
+     41.535673,
+     -87.361133
+    ],
+    "subs": [
+     {
+      "id": "46408-0",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T20:00:00Z",
+      "loc": [
+       41.535673,
+       -87.361133
+      ]
+     },
+     {
+      "id": "46407-1",
+      "name": "tree",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T23:15:00Z",
+      "loc": [
+       41.589154,
+       -87.332635
+      ]
+     }
+    ]
+   },
+   {
+    "name": "GRIFFITH",
+    "out": 5,
+    "served": 5,
+    "etr": "2026-06-30T15:45:00Z",
+    "loc": [
+     41.546948,
+     -87.426533
+    ],
+    "subs": [
+     {
+      "id": "46319-0",
+      "name": "Not Yet Determined",
+      "out": 2,
+      "served": 2,
+      "etr": "2026-06-30T15:45:00Z",
+      "loc": [
+       41.546948,
+       -87.426533
+      ]
+     },
+     {
+      "id": "46319-1",
+      "name": "scheduled",
+      "out": 3,
+      "served": 3,
+      "etr": "2026-06-30T16:00:00Z",
+      "loc": [
+       41.547975,
+       -87.427501
+      ]
+     }
+    ]
+   },
+   {
+    "name": "HAMMOND",
+    "out": 1,
+    "served": 1,
+    "etr": "2026-06-30T15:45:00Z",
+    "loc": [
+     41.580403,
+     -87.487687
+    ],
+    "subs": [
+     {
+      "id": "46324-0",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T15:45:00Z",
+      "loc": [
+       41.580403,
+       -87.487687
+      ]
+     }
+    ]
+   },
+   {
+    "name": "HOBART",
+    "out": 4,
+    "served": 4,
+    "etr": "2026-06-30T09:30:00Z",
+    "loc": [
+     41.496394,
+     -87.233362
+    ],
+    "subs": [
+     {
+      "id": "46342-0",
+      "name": "equipment",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T09:30:00Z",
+      "loc": [
+       41.496394,
+       -87.233362
+      ]
+     },
+     {
+      "id": "46342-1",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T16:00:00Z",
+      "loc": [
+       41.516129,
+       -87.318541
+      ]
+     },
+     {
+      "id": "46342-2",
+      "name": "equipment",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T17:00:00Z",
+      "loc": [
+       41.525034,
+       -87.262326
+      ]
+     },
+     {
+      "id": "46342-3",
+      "name": "unknown",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-07-01T01:30:00Z",
+      "loc": [
+       41.529605,
+       -87.293272
+      ]
+     }
+    ]
+   },
+   {
+    "name": "LAKE STATION",
+    "out": 1,
+    "served": 1,
+    "etr": "2026-06-30T20:00:00Z",
+    "loc": [
+     41.557511,
+     -87.309372
+    ],
+    "subs": [
+     {
+      "id": "46405-0",
+      "name": "tree",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T20:00:00Z",
+      "loc": [
+       41.557511,
+       -87.309372
+      ]
+     }
+    ]
+   },
+   {
+    "name": "MERRILLVILLE",
+    "out": 32,
+    "served": 32,
+    "etr": "2026-06-30T15:15:00Z",
+    "loc": [
+     41.486644,
+     -87.348238
+    ],
+    "subs": [
+     {
+      "id": "46410-0",
+      "name": "tree",
+      "out": 32,
+      "served": 32,
+      "etr": "2026-06-30T15:15:00Z",
+      "loc": [
+       41.486644,
+       -87.348238
+      ]
+     }
+    ]
+   },
+   {
+    "name": "MUNSTER",
+    "out": 1,
+    "served": 1,
+    "etr": "2026-07-01T15:00:00Z",
+    "loc": [
+     41.545055,
+     -87.48533
+    ],
+    "subs": [
+     {
+      "id": "46321-0",
+      "name": "equipment",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-07-01T15:00:00Z",
+      "loc": [
+       41.545055,
+       -87.48533
+      ]
+     }
+    ]
+   },
+   {
+    "name": "PORTAGE",
+    "out": 2,
+    "served": 2,
+    "etr": "2026-06-30T10:46:00Z",
+    "loc": [
+     41.591526,
+     -87.173598
+    ],
+    "subs": [
+     {
+      "id": "46368-0",
+      "name": "tree",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T10:46:00Z",
+      "loc": [
+       41.591526,
+       -87.173598
+      ]
+     },
+     {
+      "id": "46368-1",
+      "name": "equipment",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T11:30:00Z",
+      "loc": [
+       41.637022,
+       -87.154758
+      ]
+     }
+    ]
+   },
+   {
+    "name": "VALPARAISO",
+    "out": 45,
+    "served": 45,
+    "etr": "2026-06-30T15:00:00Z",
+    "loc": [
+     41.526765,
+     -87.151186
+    ],
+    "subs": [
+     {
+      "id": "46383-0",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T15:00:00Z",
+      "loc": [
+       41.526765,
+       -87.151186
+      ]
+     },
+     {
+      "id": "46385-1",
+      "name": "Not Yet Determined",
+      "out": 43,
+      "served": 43,
+      "etr": "2026-06-30T15:00:00Z",
+      "loc": [
+       41.526785,
+       -87.151186
+      ]
+     },
+     {
+      "id": "46385-2",
+      "name": "equipment",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T23:30:00Z",
+      "loc": [
+       41.549049,
+       -87.140884
+      ]
+     }
+    ]
+   },
+   {
+    "name": "YEOMAN",
+    "out": 1,
+    "served": 1,
+    "etr": "2026-06-30T16:30:00Z",
+    "loc": [
+     40.668018,
+     -86.722266
+    ],
+    "subs": [
+     {
+      "id": "47997-0",
+      "name": "Not Yet Determined",
+      "out": 1,
+      "served": 1,
+      "etr": "2026-06-30T16:30:00Z",
+      "loc": [
+       40.668018,
+       -86.722266
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}
