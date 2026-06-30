@@ -2,8 +2,8 @@ name: introspect
 
 # TEMPORARY one-off (workflow_dispatch only). Runs on a GitHub-hosted runner, which — unlike the dev
 # sandbox — has open egress, so it can reach the Avangrid esriemcs ArcGIS host to read CMP's layer field
-# names. Dump the geometry type + field list + a sample feature so the CMP config (utilities/cmp-maine.json)
-# can be wired with the real fields. DELETE this file once CMP is wired.
+# names. Dumps geometry type + field list + a sample feature so utilities/cmp-maine.json can be wired
+# with the real fields. DELETE this file once CMP is wired.
 
 on:
   workflow_dispatch:
@@ -16,27 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Service root — list layers
+      - name: Service root - list layers
         run: |
           curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer?f=json" \
-            | python3 -c "import sys,json
-try:
-  d=json.load(sys.stdin)
-  print('SERVICE OK; layers:')
-  for l in d.get('layers',[]): print(' ', l['id'], '|', l['name'], '|', l.get('geometryType'))
-except Exception as e: print('ROOT PARSE FAILED:', e)" || echo "ROOT REQUEST FAILED (esriemcs may block this runner too)"
+            | jq -r '"SERVICE OK", (.layers[]? | "LAYER \(.id) | \(.name) | \(.geometryType)")' \
+            || echo "ROOT REQUEST FAILED (esriemcs may block this runner too)"
       - name: Per-layer fields + sample feature
         run: |
           for L in 0 1 2 3; do
             echo "================= LAYER $L ================="
             curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer/$L?f=json" \
-              | python3 -c "import sys,json
-try:
-  d=json.load(sys.stdin)
-  print('name=', d.get('name'), '| geom=', d.get('geometryType'))
-  for f in d.get('fields',[]): print('   FIELD', f['name'], f['type'])
-except Exception as e: print('  no field metadata:', e)" || echo "  layer $L request failed"
-            echo "----- sample feature (outFields=*) -----"
-            curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer/$L/query?where=1%3D1&outFields=*&resultRecordCount=2&f=json" | head -c 2500
-            echo
+              | jq -r '"name=\(.name) geom=\(.geometryType)", (.fields[]? | "FIELD \(.name) \(.type)")' \
+              || echo "  layer $L request failed"
+            echo "----- sample feature attributes -----"
+            curl -sS "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer/$L/query?where=1%3D1&outFields=*&resultRecordCount=2&f=json" \
+              | jq -c '.features[]?.attributes' | head -5
           done
