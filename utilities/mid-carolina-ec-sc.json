@@ -1,0 +1,29 @@
+{
+  "id": "mid-carolina-ec-sc",
+  "name": "Mid-Carolina Electric Cooperative (SC)",
+  "adapter": "arcgis",
+  "match": [
+    "MID-CAROLINA ELECTRIC",
+    "MID CAROLINA"
+  ],
+  "fips": [
+    "45063",
+    "45079",
+    "45071",
+    "45081",
+    "45003"
+  ],
+  "config": {
+    "base": "https://services5.arcgis.com/7kbUW1H9vfv5ZsKP/arcgis/rest/services/OutageArea18/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "internal_data_csv_CUST_OUT",
+      "id": "internal_data_csv_EVENT_ID"
+    },
+    "referer": "https://www.mcecoop.com/",
+    "servedTotal": 47000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

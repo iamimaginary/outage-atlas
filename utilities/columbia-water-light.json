@@ -1,0 +1,26 @@
+{
+  "id": "columbia-water-light",
+  "name": "City of Columbia Water & Light (MO)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF COLUMBIA",
+    "COLUMBIA WATER"
+  ],
+  "fips": [
+    "29019"
+  ],
+  "config": {
+    "base": "https://services.arcgis.com/GHhNHT1xiCkCAXvo/arcgis/rest/services/PublicOutages/FeatureServer",
+    "layer": 1,
+    "fields": {
+      "out": "CUSTOMER_AFFECTED",
+      "etr": "ETR",
+      "id": "INCIDENT_ID"
+    },
+    "referer": "https://www.como.gov/utilities/",
+    "servedTotal": 50000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "excelsior-emc",
+  "name": "Excelsior EMC (GA)",
+  "adapter": "milsoft",
+  "match": [
+    "EXCELSIOR EMC",
+    "EXCELSIOR ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.excelsioremc.com",
+    "file": "outages.json",
+    "servedTotal": 22000,
+    "referer": "https://outage.excelsioremc.com/",
+    "geocodeRegion": "Georgia"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

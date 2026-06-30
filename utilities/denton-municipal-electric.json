@@ -1,0 +1,26 @@
+{
+  "id": "denton-municipal-electric",
+  "name": "Denton Municipal Electric (TX)",
+  "adapter": "arcgis",
+  "match": [
+    "DENTON MUNICIPAL ELECTRIC",
+    "CITY OF DENTON"
+  ],
+  "fips": [
+    "48121"
+  ],
+  "config": {
+    "base": "https://dmegis.cityofdenton.com/arcgis/rest/services/OMS/Outages/MapServer",
+    "layer": 0,
+    "fields": {
+      "out": "CUSTOMER_COUNT",
+      "etr": "TIME_RESTORED_EST",
+      "id": "INCIDENT_ID"
+    },
+    "referer": "https://www.cityofdenton.com/",
+    "servedTotal": 68000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

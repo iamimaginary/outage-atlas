@@ -1,0 +1,19 @@
+{
+  "id": "cl-electric-ar",
+  "name": "C&L Electric Cooperative (AR)",
+  "adapter": "milsoft",
+  "match": [
+    "C&L ELECTRIC",
+    "C & L ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outages.clelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 21588,
+    "referer": "https://outages.clelectric.com/",
+    "geocodeRegion": "Arkansas"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "nlr-electric",
+  "name": "North Little Rock Electric (AR)",
+  "adapter": "milsoft",
+  "match": [
+    "NORTH LITTLE ROCK ELECTRIC",
+    "NLR ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap.nlrelectric.com",
+    "file": "outages.json",
+    "servedTotal": 40000,
+    "referer": "https://outagemap.nlrelectric.com/",
+    "geocodeRegion": "Arkansas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

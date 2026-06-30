@@ -1,0 +1,17 @@
+{
+  "id": "dominion-sc",
+  "name": "Dominion Energy South Carolina (SC)",
+  "adapter": "kubra",
+  "match": [
+    "SOUTH CAROLINA ELECTRIC",
+    "DOMINION ENERGY SOUTH CAROLINA"
+  ],
+  "config": {
+    "instance": "ba976967-dc3e-4d05-8206-50d0260b22c3",
+    "view": "5b77d88d-a054-4008-a168-0e13468a4d6d",
+    "referer": "https://outagemap.dominionenergysc.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

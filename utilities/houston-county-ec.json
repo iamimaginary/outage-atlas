@@ -1,0 +1,18 @@
+{
+  "id": "houston-county-ec",
+  "name": "Houston County EC (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "HOUSTON COUNTY ELECTRIC COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://milsoft.houstoncountyelec.com:16443",
+    "file": "outages.json",
+    "servedTotal": 21719,
+    "referer": "https://milsoft.houstoncountyelec.com:16443/",
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "pend-oreille-pud",
+  "name": "Pend Oreille County PUD (WA)",
+  "adapter": "kiuc",
+  "match": [
+    "PEND OREILLE"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/popud/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

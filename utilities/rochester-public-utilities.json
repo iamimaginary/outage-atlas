@@ -1,0 +1,25 @@
+{
+  "id": "rochester-public-utilities",
+  "name": "Rochester Public Utilities (MN)",
+  "adapter": "arcgis",
+  "match": [
+    "ROCHESTER PUBLIC UTILITIES"
+  ],
+  "fips": [
+    "27109"
+  ],
+  "config": {
+    "base": "https://services1.arcgis.com/zC7pGkrIoR451W0i/arcgis/rest/services/Public_Outages_Production_V2/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "CUSTOMER_COUNT",
+      "etr": "TIME_RESTORED_EST",
+      "id": "INCIDENT_ID"
+    },
+    "referer": "https://www.rpu.org/",
+    "servedTotal": 61000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

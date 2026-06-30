@@ -1,0 +1,18 @@
+{
+  "id": "cotton-electric",
+  "name": "Cotton Electric Cooperative (OK)",
+  "adapter": "milsoft",
+  "match": [
+    "COTTON ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.cottonelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 23000,
+    "referer": "https://outage.cottonelectric.com/",
+    "geocodeRegion": "Oklahoma"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

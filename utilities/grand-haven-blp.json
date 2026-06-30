@@ -1,0 +1,26 @@
+{
+  "id": "grand-haven-blp",
+  "name": "Grand Haven Board of Light & Power (MI)",
+  "adapter": "arcgis",
+  "match": [
+    "GRAND HAVEN",
+    "GRAND HAVEN BOARD OF LIGHT"
+  ],
+  "fips": [
+    "26139"
+  ],
+  "config": {
+    "base": "https://services7.arcgis.com/5FgqmI6JmLWjTKuy/arcgis/rest/services/Electric_Outage_Boundaries/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "Affected_Customers",
+      "served": "Total_Customers",
+      "name": "Name"
+    },
+    "referer": "https://ghblp.org/",
+    "servedTotal": 7725
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

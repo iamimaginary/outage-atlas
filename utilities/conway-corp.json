@@ -1,0 +1,19 @@
+{
+  "id": "conway-corp",
+  "name": "Conway Corporation (AR)",
+  "adapter": "milsoft",
+  "match": [
+    "CONWAY CORPORATION",
+    "CONWAY CORP"
+  ],
+  "config": {
+    "base": "https://outage.conwaycorp.com",
+    "file": "outages.json",
+    "servedTotal": 30000,
+    "referer": "https://outage.conwaycorp.com/",
+    "geocodeRegion": "Arkansas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

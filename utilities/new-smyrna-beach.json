@@ -1,0 +1,19 @@
+{
+  "id": "new-smyrna-beach",
+  "name": "New Smyrna Beach Utilities (FL)",
+  "adapter": "milsoft",
+  "match": [
+    "NEW SMYRNA BEACH",
+    "UTILITIES COMMISSION NEW SMYRNA"
+  ],
+  "config": {
+    "base": "https://outages.nsbufl.com",
+    "file": "outages.json",
+    "servedTotal": 28000,
+    "referer": "https://outages.nsbufl.com/",
+    "geocodeRegion": "Florida"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

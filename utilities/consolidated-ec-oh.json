@@ -1,0 +1,19 @@
+{
+  "id": "consolidated-ec-oh",
+  "name": "Consolidated Electric Coop (OH)",
+  "adapter": "milsoft",
+  "match": [
+    "CONSOLIDATED ELECTRIC COOPERATIVE",
+    "CONSOLIDATED COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://outageviewer.consolidatedelectric.com",
+    "file": "outages.json",
+    "servedTotal": 16000,
+    "referer": "https://outageviewer.consolidatedelectric.com/",
+    "geocodeRegion": "Ohio"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
