@@ -10,6 +10,7 @@ import { writeFileSync, mkdirSync, readFileSync, existsSync, readdirSync } from 
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { getAdapter } from "../adapters/registry.mjs";
+import { countyEta } from "./lib/eta.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const id = process.argv[2] || "firstenergy-oh";
@@ -20,6 +21,7 @@ if (!reg) throw new Error(`unknown adapter "${cfg.adapter}" for ${id}`);
 const KB = "https://kubra.io";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 const HIST_CAP = 1500;
+const AREA_SERIES_CAP = 24; // ~6h per area/sub at the 15-min cadence — enough for the 2.5h-window estimator
 
 async function jget(url, extra = {}) {
   const headers = { "User-Agent": UA, Accept: "application/json, text/plain, */*", "Accept-Language": "en-US,en;q=0.9", ...extra };
@@ -452,18 +454,43 @@ async function geocodeFill(areas, gcfg) {
   }
   const collectedAt = Date.now();
 
+  // --- per-area + per-sub algorithmic recovery ETA: give every CITY/area its own estimate, not just the
+  // county baseline. Uses the same estimator the baseline runs per county (lib/eta.mjs). History is keyed
+  // by a stable area/sub name; recovered (out==0) keys drop, so the file stays ~= currently-active areas.
+  // The utility's own ETR (area.etr) still wins on the page where present; this fills the (common) gaps.
+  const histPath = join(ROOT, "data", "history", `${id}.json`);
+  let prevHist = { total: [], areas: {} };
+  if (existsSync(histPath)) {
+    try {
+      const raw = JSON.parse(readFileSync(histPath, "utf8"));
+      if (Array.isArray(raw)) prevHist.total = raw;                       // migrate the old array-only shape
+      else prevHist = { total: raw.total || [], areas: raw.areas || {} };
+    } catch {}
+  }
+  const areaHist = {};
+  const trackEta = (key, out) => {
+    const prev = prevHist.areas[key] || { peak: 0, series: [] };
+    const series = (prev.series || []).concat([{ t: collectedAt, out }]);
+    while (series.length > AREA_SERIES_CAP) series.shift();
+    const peak = Math.max(prev.peak || 0, out);
+    areaHist[key] = { peak, series };
+    return countyEta(series, out, peak);
+  };
+  for (const a of areas) {
+    const akey = a.name || "?";
+    if (a.out > 0) a.eta = trackEta(akey, a.out);
+    for (const s of (a.subs || [])) if (s.out > 0) s.eta = trackEta(`${akey}||${s.name || "?"}`, s.out);
+  }
+
   const snapshot = { schema: 1, id, name: cfg.name, adapter: cfg.adapter, collectedAt, official, areas };
   mkdirSync(join(ROOT, "data", "utilities"), { recursive: true });
   mkdirSync(join(ROOT, "data", "history"), { recursive: true });
   writeFileSync(join(ROOT, "data", "utilities", `${id}.json`), JSON.stringify(snapshot));
 
-  // bounded history
-  const histPath = join(ROOT, "data", "history", `${id}.json`);
-  let hist = [];
-  if (existsSync(histPath)) { try { hist = JSON.parse(readFileSync(histPath, "utf8")); } catch {} }
-  hist.push({ t: collectedAt, out: official.out });
-  while (hist.length > HIST_CAP) hist.shift();
-  writeFileSync(histPath, JSON.stringify(hist));
+  // bounded utility-wide series (the page's per-utility sparkline source) + per-area series (above)
+  const total = (prevHist.total || []).concat([{ t: collectedAt, out: official.out }]);
+  while (total.length > HIST_CAP) total.shift();
+  writeFileSync(histPath, JSON.stringify({ total, areas: areaHist }));
 
   // refresh index.deep from the utility snapshots present (read-modify-write; preserve baseline fields)
   const idxPath = join(ROOT, "data", "national", "index.json");
