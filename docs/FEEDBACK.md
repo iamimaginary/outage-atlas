@@ -19,7 +19,18 @@ recurring job in `CLAUDE.md`:
 Dedupe: each issue carries a hidden `<!-- oa-audit:<sig> -->`; a recurrence while open updates nothing
 (no spam). Resolve per `CLAUDE.md`, then close — a fresh recurrence re-files.
 
-## 2. User feedback (if the in-app widget is enabled)
+## 2. User feedback (in-app widget — LIVE)
+
+The page's **Send feedback** widget (`index.html`) is **client-only by design**: it opens a *pre-filled*
+`github.com/<repo>/issues/new` in a new tab (title + body + `labels=triage`) and the **user** reviews and
+submits it. There is **no serverless intake worker and no GitHub token** — deliberately, so the static
+deployment needs no infra/secret and **PII never flows through our infra** (the user posts under their own
+GitHub account and sees exactly what's filed). The body auto-captures reproducible context (searched
+location, county/FIPS + out, serving utilities, open deep feed, baseline source/age, page URL, viewport).
+
+> A NEO-style server-side intake (`workers/feedback-intake.mjs`: sanitize PII → create labeled issue with
+> an operator token) remains a possible future enhancement, but it touches the **serverless layer** and
+> needs a **secret** → that's a `needs-human` decision (STOP rule #3), not an agent change.
 
 User reports arrive with auto-captured reproducible context (location, snapshot timestamp). Triage:
 
