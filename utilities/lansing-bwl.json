@@ -1,1 +1,1 @@
-{"schema":1,"id":"lansing-bwl","name":"Lansing Board of Water & Light (MI)","adapter":"gridvu","collectedAt":1782845714466,"official":{"out":1,"served":99070,"nOut":1},"areas":[{"name":"NORTHEAST","out":1,"served":1,"etr":"April 27, 2026 02:45 PM EDT","loc":[42.7671,-84.5042],"subs":[]}]}
+{"schema":1,"id":"lansing-bwl","name":"Lansing Board of Water & Light (MI)","adapter":"gridvu","collectedAt":1782850774706,"official":{"out":1,"served":99070,"nOut":1},"areas":[{"name":"NORTHEAST","out":1,"served":1,"etr":"April 27, 2026 02:45 PM EDT","loc":[42.7671,-84.5042],"subs":[]}]}
