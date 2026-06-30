@@ -4,7 +4,7 @@
   "adapter": "arcgis",
   "match": ["CENTRAL MAINE POWER", "CMP"],
   "disabled": true,
-  "_note": "Avangrid CMP. Real data backend is a public Esri ArcGIS MapServer (federated by the Maine GeoLibrary, arcgis.com item 1d8d28803cd34b63aed57f91446bcfaf). PARKED disabled because: (1) the esriemcs.com host is blocked by this dev environment's egress policy, so it could not be introspected/verified here; (2) the field names below are UNVERIFIED placeholders. To enable: from an esriemcs-reachable host, GET the layer metadata (.../MapServer/0?f=json), set config.fields.{out,etr,id,name} to the real fields, confirm via check_reconciliation, then remove this flag. The portal page (portal.cmpco.com) is bot-walled, but this ArcGIS endpoint is not.",
+  "_note": "Avangrid CMP. PARKED disabled / needs-human. The candidate host below (from Maine GeoLibrary arcgis.com item 1d8d28803cd34b63aed57f91446bcfaf) does NOT resolve on public DNS: an introspection run on a GitHub-hosted runner (open egress, 2026-06-30) returned 'curl: (6) Could not resolve host: avangrid-maine-ags.esriemcs.com' for the service root + every layer. So this is genuinely unreachable, not just blocked by the dev sandbox — esriemcs appears internal/split-horizon. Field names are also UNVERIFIED placeholders. To enable: re-capture the REAL data endpoint from the live CMP outage map in a browser (DevTools network tab), confirm it resolves publicly, set config.base + config.fields.{out,etr,id} to the real values, verify via check_reconciliation, then remove this flag.",
   "config": {
     "base": "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer",
     "layer": 0,

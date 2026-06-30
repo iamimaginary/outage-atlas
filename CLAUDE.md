@@ -82,14 +82,17 @@ new vendor. Vendor → adapter cheat-sheet:
 **Gated/deferred — re-triaged 2026-06-30** (the old "bot-walled" bucket was mostly page-walls, not
 data-feed walls; classified A/B/C/D by live probe):
 
-- **Wired this pass (were deferred):** NIPSCO (`nisource`), GreyStone Power (`outageentry` client `GREYS`),
-  SLEMCO (`kiuc` slug `slemco`), UNS Electric (`tep` division `USE`), Dakota Electric (`dakota-electric`).
-- **Wired but PARKED (need an operator/infra step, gated by reconciliation):** CMP (`cmp-maine.json`,
-  `arcgis`, **`disabled:true`** — real backend is a public Esri ArcGIS MapServer, but `esriemcs.com` is
-  blocked by this env's egress policy and the field names are unverified; enable from an esriemcs-reachable
-  host after introspecting `.../MapServer/0?f=json`). United Coop (`united-coop-tx.json`, `milsoft` on
-  `outage.united-cs.com:7577` — the dev proxy can't tunnel **non-443 ports**, so it can't be verified here;
-  the production collector should reach it).
+- **Wired this pass (were deferred), live in production:** NIPSCO (`nisource`), GreyStone Power
+  (`outageentry` client `GREYS`), SLEMCO (`kiuc` slug `slemco`), UNS Electric (`tep` division `USE` —
+  publishes when USE has an outage), Dakota Electric (`dakota-electric`), and **United Coop**
+  (`united-coop-tx.json`, `milsoft` on `outage.united-cs.com:7577` — the dev proxy can't do non-443 ports
+  but the GitHub-Actions collector reaches it fine; confirmed in the live manifest).
+- **CMP — re-classified needs-human (was "parked"):** `cmp-maine.json` stays `disabled:true`. The candidate
+  esriemcs ArcGIS host (`avangrid-maine-ags.esriemcs.com`, from the Maine GeoLibrary item) does **not
+  resolve on public DNS** — an introspection run on a GitHub-hosted runner (open egress, 2026-06-30)
+  got `Could not resolve host` for every layer. So it's genuinely unreachable (esriemcs looks
+  internal/split-horizon), not a sandbox limit. Needs a fresh browser-DevTools capture of CMP's real,
+  publicly-resolvable data endpoint before it can be wired.
 - **Genuinely gated → STOP/needs-human (real access controls on the DATA feed, do NOT bypass):**
   Avangrid NYSEG/RG&E/UI (esriemcs ArcGIS behind a JA3-level bot wall; no live state aggregator),
   Alliant IPL+WPL (one SEW/SmartCMobile backend behind Cloudflare bot-management + a captcha-gated bearer
