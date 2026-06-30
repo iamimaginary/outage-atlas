@@ -8,7 +8,7 @@
   script-src 'self' https://unpkg.com 'unsafe-inline';
   style-src 'self' https://unpkg.com 'unsafe-inline';
   img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
-  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com;
+  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com;
 " />
 <title>outage-atlas — find outages near you</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -50,6 +50,8 @@
   .trend .small { color:var(--mut); }
   .conf { font-size:11px; padding:1px 6px; border-radius:999px; border:1px solid var(--line); color:var(--mut); margin-left:6px; }
   .conf.good { border-color:var(--ok); color:var(--ok); } .conf.low { border-color:var(--warn); color:var(--warn); }
+  #fb select, #fb textarea { width:100%; margin-top:8px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); font:inherit; }
+  #fb textarea { min-height:90px; resize:vertical; } #fb .actions { display:flex; gap:8px; margin-top:8px; }
   footer { color:var(--mut); font-size:12px; padding:18px 16px; border-top:1px solid var(--line); margin-top:20px; }
   .leaflet-popup-content { font-size:13px; }
 </style>
@@ -79,6 +81,24 @@
     <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
     <div class="states" id="nat-states"></div>
   </div>
+
+  <div class="panel hide" id="fb">
+    <div><b>Send feedback</b></div>
+    <div class="small muted" style="margin-top:4px">Report wrong data, a bug, or request a utility/area. This opens a pre-filled GitHub issue in a new tab — <b>you</b> review and submit it; nothing is sent automatically.</div>
+    <select id="fb-kind" aria-label="Feedback type">
+      <option value="data-wrong">A number looks wrong</option>
+      <option value="bug">Something's broken</option>
+      <option value="feature">Feature idea</option>
+      <option value="utility-request">Add my utility / area</option>
+      <option value="other">Something else</option>
+    </select>
+    <textarea id="fb-text" placeholder="What happened? What did you expect?"></textarea>
+    <div class="small muted" style="margin-top:6px">Your current view (location, snapshot age) is attached automatically to help us reproduce. Please don't include personal info — this is a public issue tracker.</div>
+    <div class="actions">
+      <button class="primary" id="fb-send">Open GitHub issue ›</button>
+      <button id="fb-cancel">Cancel</button>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -88,6 +108,7 @@
   Zippopotam / <a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap (Nominatim)</a>.
   Outage counts are customers reported out; coverage varies by utility participation.
   Not affiliated with any utility. <a href="https://github.com/iamimaginary/outage-atlas" target="_blank" rel="noopener">Source</a>.
+  · <a href="#" id="fb-open">Send feedback</a>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -101,6 +122,7 @@ const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/nat
 const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/index.json`;
 const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
 const HIST_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/history.json`;
+const ISSUE_NEW = `https://github.com/${REPO}/issues/new`; // feedback opens a pre-filled issue (user submits)
 const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
@@ -109,7 +131,7 @@ const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
 // ETR strings vary by feed; some aren't Date-parseable (showed "Invalid Date"). Fall back to the raw string.
 const fmtEtr = (v) => { if (!v) return ""; const d = new Date(v); return isNaN(d.getTime()) ? String(v) : d.toLocaleString(); };
-let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null, HIST = null;
+let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null, HIST = null, CTX = {};
 
 // Inline-SVG sparkline from a numeric series (oldest→newest). Green when the trend is falling (recovering),
 // red when rising. Returns "" if there's too little history to be meaningful. Inline SVG = no CSP fetch.
@@ -234,6 +256,7 @@ function popupHtml(c, dm) {
 // ---- click-through from a map marker: county detail (+ auto-load the deep breakdown if available) ----
 function showCounty(c, dm) {
   $("result").classList.remove("hide");
+  CTX = { view: "map", county: `${c.county}, ${c.state}`, fips: c.fips, out: c.out, deep: dm ? dm.id : null };
   let html = `<div class="small muted">From the map</div>`;
   html += `<div style="margin-top:6px"><span class="big">${fmt(c.out)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
   html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
@@ -275,6 +298,7 @@ async function showLocation(lat, lon, label) {
   const c = county && BASELINE.counties[county.fips];
   const out = c ? c.out : 0;
   const alerts = (county && BASELINE.alertsByFips && BASELINE.alertsByFips[county.fips]) || [];
+  CTX = { view: "search", query: label || `${lat.toFixed(3)},${lon.toFixed(3)}`, county: county ? `${county.county}, ${county.state}` : null, fips: county ? county.fips : null, out, utilities: utilities.map((u) => u.name).join("; ") || null, deep: null };
 
   let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
@@ -337,6 +361,7 @@ function plotDeep(snap) {
 
 // ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
 async function renderDeep(id, county) {
+  CTX.deep = id;
   let host = $("deepbox");
   if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("result").after(host); }
   host.innerHTML = `<div class="muted">Loading deep detail…</div>`;
@@ -388,6 +413,42 @@ function onGeo() {
 $("go").onclick = onGo;
 $("geo").onclick = onGeo;
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter") onGo(); });
+
+// ---- feedback: build a pre-filled GitHub issue from the user's note + auto-captured view context ----
+// No server, no token: we open issues/new in a new tab and the USER reviews + submits. Their report
+// becomes a `triage`-labeled issue the maintenance agents pick up (see docs/FEEDBACK.md). PII never
+// flows through our infra — the user submits under their own GitHub account and sees exactly what posts.
+function feedbackBody(note) {
+  const b = BASELINE || {};
+  const age = b.collectedAt ? Math.round((Date.now() - b.collectedAt) / 60000) + " min old" : "unknown age";
+  const ctx = [
+    CTX.query ? `- searched: ${CTX.query}` : null,
+    CTX.county ? `- county: ${CTX.county}${CTX.fips ? ` (FIPS ${CTX.fips})` : ""} · ${fmt(CTX.out)} out` : null,
+    CTX.utilities ? `- serving utilities: ${CTX.utilities}` : null,
+    CTX.deep ? `- deep feed open: ${CTX.deep}` : null,
+    `- baseline source: ${b.source || "?"} · ${age}`,
+    `- page: ${location.href}`,
+    `- viewport: ${innerWidth}×${innerHeight}`,
+  ].filter(Boolean).join("\n");
+  return `${note}\n\n---\n_Auto-captured context (please keep — helps us reproduce):_\n${ctx}`;
+}
+function sendFeedback() {
+  const note = $("fb-text").value.trim();
+  if (!note) { $("fb-text").focus(); return; }
+  const kind = $("fb-kind").value;
+  const title = `[feedback] ${kind}: ${note.replace(/\s+/g, " ").slice(0, 60)}`;
+  const url = `${ISSUE_NEW}?labels=${encodeURIComponent("triage")}&title=${encodeURIComponent(title)}&body=${encodeURIComponent(feedbackBody(note))}`;
+  window.open(url, "_blank", "noopener");
+}
+function toggleFeedback(show) {
+  const el = $("fb");
+  const open = show === undefined ? el.classList.contains("hide") : show;
+  el.classList.toggle("hide", !open);
+  if (open) { el.scrollIntoView({ behavior: "smooth", block: "center" }); $("fb-text").focus(); }
+}
+$("fb-open").onclick = (e) => { e.preventDefault(); toggleFeedback(); };
+$("fb-send").onclick = sendFeedback;
+$("fb-cancel").onclick = () => toggleFeedback(false);
 
 // ---- boot ----
 (async () => {
