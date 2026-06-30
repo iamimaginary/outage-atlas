@@ -1,0 +1,16 @@
+{
+  "id": "united-coop-tx",
+  "name": "United Cooperative Services (TX)",
+  "adapter": "milsoft",
+  "match": ["UNITED COOPERATIVE SERVICES", "UNITED COOP"],
+  "config": {
+    "base": "https://outage.united-cs.com:7577",
+    "file": "boundaries.json",
+    "referer": "https://outage.united-cs.com:7577/",
+    "servedTotal": 95000,
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

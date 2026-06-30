@@ -1,0 +1,14 @@
+{
+  "id": "greystone-power",
+  "name": "GreyStone Power (GA)",
+  "adapter": "outageentry",
+  "match": ["GREYSTONE"],
+  "config": {
+    "client": "GREYS",
+    "serviceIndex": 1,
+    "servedTotal": 153888
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

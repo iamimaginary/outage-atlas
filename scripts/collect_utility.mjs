@@ -377,8 +377,16 @@ async function fetchElPaso(c) {
 async function fetchPuget(c) {
   return jget(c.url || "https://www.pse.com/api/sitecore/OutageMap/AnonymoussMapListView", { Referer: c.referer || "https://www.pse.com/en/outage/outage-map" });
 }
+// NIPSCO (NiSource): self-hosted LDC API, GET JSON (browser UA + Referer sufficient; un-walled).
+async function fetchNisource(c) {
+  return jget(c.url || "https://www.nipsco.com/nisource-api/ldc/GetPowerOutages", { Referer: c.referer || "https://www.nipsco.com/outages/power-outages" });
+}
+// Dakota Electric (MN): server-rendered outage-map HTML with outages inline as a GPSData JS array.
+async function fetchDakota(c) {
+  return tget(c.url || "https://amp.dakotaelectric.com/outagemap/", { Referer: c.referer || "https://outage.dakotaelectric.com/map.php" });
+}
 
-const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft, gridvu: fetchGridvu, smartc: fetchSmartc, sienatech: fetchSienatech, anaheim: fetchAnaheim, outageentry: fetchOutageentry };
+const FETCH = { kubra: fetchKubra, duke: fetchDuke, pge: fetchPge, fpl: fetchFpl, gvea: fetchGvea, chugach: fetchChugach, kiuc: fetchKiuc, heco: fetchHeco, arcgis: fetchArcgis, ifactor: fetchIfactor, pacificorp: fetchPacificorp, wec: fetchWec, "aes-ohio": fetchAesOhio, omap: fetchOmap, datacapable: fetchDatacapable, luma: fetchLuma, midamerican: fetchMidamerican, "idaho-power": fetchIdahoPower, "aes-indiana": fetchAesIndiana, tep: fetchTep, teco: fetchTeco, "el-paso": fetchElPaso, puget: fetchPuget, smud: fetchSmud, mlgw: fetchMlgw, nwe: fetchNwe, cleco: fetchCleco, gmp: fetchGmp, "clark-pud": fetchClarkPud, kub: fetchKub, liberty: fetchLiberty, novec: fetchNovec, "pge-graphql": fetchPge2, milsoft: fetchMilsoft, gridvu: fetchGridvu, smartc: fetchSmartc, sienatech: fetchSienatech, anaheim: fetchAnaheim, outageentry: fetchOutageentry, nisource: fetchNisource, "dakota-electric": fetchDakota };
 
 // Some feeds (iFactor Con Ed/Eversource, LUMA, MidAmerican, Liberty, Kübra-thematic, Milsoft county
 // boundaries) publish area NAMES but no coordinates. When a config sets config.geocodeRegion, resolve

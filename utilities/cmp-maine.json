@@ -1,0 +1,18 @@
+{
+  "id": "cmp-maine",
+  "name": "Central Maine Power (ME)",
+  "adapter": "arcgis",
+  "match": ["CENTRAL MAINE POWER", "CMP"],
+  "disabled": true,
+  "_note": "Avangrid CMP. Real data backend is a public Esri ArcGIS MapServer (federated by the Maine GeoLibrary, arcgis.com item 1d8d28803cd34b63aed57f91446bcfaf). PARKED disabled because: (1) the esriemcs.com host is blocked by this dev environment's egress policy, so it could not be introspected/verified here; (2) the field names below are UNVERIFIED placeholders. To enable: from an esriemcs-reachable host, GET the layer metadata (.../MapServer/0?f=json), set config.fields.{out,etr,id,name} to the real fields, confirm via check_reconciliation, then remove this flag. The portal page (portal.cmpco.com) is bot-walled, but this ArcGIS endpoint is not.",
+  "config": {
+    "base": "https://avangrid-maine-ags.esriemcs.com/arcgis/rest/services/CMPOutageMap_v2/MapServer",
+    "layer": 0,
+    "fields": { "out": "CustomersAffected", "etr": "ETR", "id": "OBJECTID" },
+    "referer": "https://portal.cmpco.com/",
+    "servedTotal": 650000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
