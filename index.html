@@ -372,7 +372,9 @@ function plotDeep(snap) {
 async function renderDeep(id, county) {
   CTX.deep = id;
   let host = $("deepbox");
-  if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("result").after(host); }
+  // insert the deep panel AFTER the map so the order reads result → map → deep detail: the affected
+  // areas are plotted on the map directly above this panel (matches the "mapped above" copy below).
+  if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("map").after(host); }
   host.innerHTML = `<div class="muted">Loading deep detail…</div>`;
   let snap;
   try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
