@@ -1,0 +1,16 @@
+{
+  "id": "alcorn-county-epa-ms",
+  "name": "Alcorn County EPA (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "ALCORN COUNTY"
+  ],
+  "config": {
+    "client": "alcorn_county",
+    "serviceIndex": 1,
+    "servedTotal": 23667
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

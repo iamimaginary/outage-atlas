@@ -1,0 +1,18 @@
+{
+  "id": "mckenzie-ec-nd",
+  "name": "McKenzie Electric Cooperative (ND)",
+  "adapter": "milsoft",
+  "match": [
+    "MCKENZIE ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outageviewer.mckenzieelectric.com",
+    "file": "outages.json",
+    "servedTotal": 4807,
+    "referer": "https://outageviewer.mckenzieelectric.com/",
+    "geocodeRegion": "North Dakota"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

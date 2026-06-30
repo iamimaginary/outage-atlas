@@ -1,0 +1,18 @@
+{
+  "id": "suwannee-valley-ec-fl",
+  "name": "Suwannee Valley Electric Coop (FL)",
+  "adapter": "milsoft",
+  "match": [
+    "SUWANNEE VALLEY"
+  ],
+  "config": {
+    "base": "https://outages.svec-coop.com",
+    "file": "boundaries.json",
+    "servedTotal": 29222,
+    "referer": "https://outages.svec-coop.com/",
+    "geocodeRegion": "Florida"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

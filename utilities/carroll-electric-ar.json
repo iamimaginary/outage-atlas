@@ -1,0 +1,16 @@
+{
+  "id": "carroll-electric-ar",
+  "name": "Carroll Electric Cooperative (AR)",
+  "adapter": "outageentry",
+  "match": [
+    "CARROLL ELECTRIC"
+  ],
+  "config": {
+    "client": "cecar",
+    "serviceIndex": 1,
+    "servedTotal": 126489
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

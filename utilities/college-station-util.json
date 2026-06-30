@@ -1,0 +1,18 @@
+{
+  "id": "college-station-util",
+  "name": "College Station Utilities (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "COLLEGE STATION"
+  ],
+  "config": {
+    "base": "https://outages.cstx.gov",
+    "file": "outages.json",
+    "servedTotal": 46914,
+    "referer": "https://outages.cstx.gov/",
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

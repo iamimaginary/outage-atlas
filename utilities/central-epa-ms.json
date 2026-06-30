@@ -1,0 +1,17 @@
+{
+  "id": "central-epa-ms",
+  "name": "Central Electric Power Association (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "CENTRAL ELECTRIC POWER ASSOC",
+    "CENTRAL EPA"
+  ],
+  "config": {
+    "client": "central_epa",
+    "serviceIndex": 1,
+    "servedTotal": 39104
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "dixie-epa-ms",
+  "name": "Dixie Electric Power Association (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "DIXIE ELECTRIC POWER",
+    "DIXIE EPA"
+  ],
+  "config": {
+    "client": "DIXIE_EPA_MS",
+    "serviceIndex": 1,
+    "servedTotal": 41754
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

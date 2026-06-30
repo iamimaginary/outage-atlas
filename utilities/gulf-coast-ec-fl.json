@@ -1,0 +1,18 @@
+{
+  "id": "gulf-coast-ec-fl",
+  "name": "Gulf Coast Electric Cooperative (FL)",
+  "adapter": "milsoft",
+  "match": [
+    "GULF COAST ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap.gcec.com",
+    "file": "boundaries.json",
+    "servedTotal": 23095,
+    "referer": "https://outagemap.gcec.com/",
+    "geocodeRegion": "Florida"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "an-electric-coop",
+  "name": "A&N Electric Cooperative (VA)",
+  "adapter": "kiuc",
+  "match": [
+    "A&N ELECTRIC",
+    "A & N ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/anecop/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "la-plata-ea-co",
+  "name": "La Plata Electric Association (CO)",
+  "adapter": "milsoft",
+  "match": [
+    "LA PLATA ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.lpea.coop",
+    "file": "boundaries.json",
+    "servedTotal": 47396,
+    "referer": "https://outage.lpea.coop/",
+    "geocodeRegion": "Colorado"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

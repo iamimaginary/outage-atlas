@@ -1,0 +1,18 @@
+{
+  "id": "southwest-tn-emc",
+  "name": "Southwest Tennessee EMC (TN)",
+  "adapter": "milsoft",
+  "match": [
+    "SOUTHWEST TENNESSEE"
+  ],
+  "config": {
+    "base": "https://map.stemc.com",
+    "file": "outages.json",
+    "servedTotal": 50000,
+    "referer": "https://map.stemc.com/",
+    "geocodeRegion": "Tennessee"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

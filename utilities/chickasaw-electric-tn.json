@@ -1,0 +1,16 @@
+{
+  "id": "chickasaw-electric-tn",
+  "name": "Chickasaw Electric Cooperative (TN)",
+  "adapter": "outageentry",
+  "match": [
+    "CHICKASAW ELECTRIC"
+  ],
+  "config": {
+    "client": "CHICKASAW",
+    "serviceIndex": 1,
+    "servedTotal": 23532
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

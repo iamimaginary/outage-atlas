@@ -1,0 +1,14 @@
+{
+  "id": "barc-electric",
+  "name": "BARC Electric Cooperative (VA)",
+  "adapter": "kiuc",
+  "match": [
+    "BARC ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/barcelectric/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

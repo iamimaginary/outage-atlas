@@ -1,0 +1,17 @@
+{
+  "id": "centerpoint-houston-tx",
+  "name": "CenterPoint Energy — Houston Electric (TX)",
+  "adapter": "datacapable",
+  "match": [
+    "CENTERPOINT",
+    "HOUSTON ELECTRIC"
+  ],
+  "config": {
+    "url": "https://centerpoint.datacapable.com/datacapable/v2/p/centerpoint/r/texas/map/events",
+    "servedTotal": 2600000,
+    "referer": "https://tracker.centerpointenergy.com/map/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "southern-pine-ec-ms",
+  "name": "Southern Pine Electric (MS)",
+  "adapter": "milsoft",
+  "match": [
+    "SOUTHERN PINE"
+  ],
+  "config": {
+    "base": "https://outages.southernpine.coop",
+    "file": "boundaries.json",
+    "servedTotal": 70877,
+    "referer": "https://outages.southernpine.coop/",
+    "geocodeRegion": "Mississippi"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

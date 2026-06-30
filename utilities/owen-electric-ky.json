@@ -1,0 +1,18 @@
+{
+  "id": "owen-electric-ky",
+  "name": "Owen Electric Cooperative (KY)",
+  "adapter": "milsoft",
+  "match": [
+    "OWEN ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.owenelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 68154,
+    "referer": "https://outage.owenelectric.com/",
+    "geocodeRegion": "Kentucky"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

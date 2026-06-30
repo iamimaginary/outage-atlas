@@ -1,0 +1,16 @@
+{
+  "id": "hingham-mlp",
+  "name": "Hingham Municipal Lighting Plant (MA)",
+  "adapter": "datacapable",
+  "match": [
+    "HINGHAM"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/hingham/map/events",
+    "servedTotal": 11000,
+    "referer": "https://hingham.datacapable.com/map/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "anderson-mlp-in",
+  "name": "Anderson Municipal Light & Power (IN)",
+  "adapter": "milsoft",
+  "match": [
+    "ANDERSON MUNICIPAL",
+    "ANDERSON LIGHT"
+  ],
+  "config": {
+    "base": "https://wov.cityofanderson.com",
+    "file": "outages.json",
+    "servedTotal": 37000,
+    "referer": "https://wov.cityofanderson.com/",
+    "geocodeRegion": "Indiana"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

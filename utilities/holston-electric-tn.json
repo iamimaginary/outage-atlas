@@ -1,0 +1,18 @@
+{
+  "id": "holston-electric-tn",
+  "name": "Holston Electric Cooperative (TN)",
+  "adapter": "milsoft",
+  "match": [
+    "HOLSTON ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.holstonelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 32272,
+    "referer": "https://outage.holstonelectric.com/",
+    "geocodeRegion": "Tennessee"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "orangeburg-dpu-sc",
+  "name": "City of Orangeburg DPU (SC)",
+  "adapter": "outageentry",
+  "match": [
+    "ORANGEBURG"
+  ],
+  "config": {
+    "client": "COORG",
+    "serviceIndex": 1,
+    "servedTotal": 25104
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

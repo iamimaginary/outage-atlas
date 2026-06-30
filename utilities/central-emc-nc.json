@@ -1,0 +1,18 @@
+{
+  "id": "central-emc-nc",
+  "name": "Central Electric Membership Corp (NC)",
+  "adapter": "milsoft",
+  "match": [
+    "CENTRAL ELECTRIC MEMBERSHIP"
+  ],
+  "config": {
+    "base": "https://outage.cemcpower.com",
+    "file": "boundaries.json",
+    "servedTotal": 25676,
+    "referer": "https://outage.cemcpower.com/",
+    "geocodeRegion": "North Carolina"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

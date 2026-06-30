@@ -1,0 +1,19 @@
+{
+  "id": "pee-dee-emc-nc",
+  "name": "Pee Dee Electric (NC)",
+  "adapter": "milsoft",
+  "match": [
+    "PEE DEE ELECTRIC",
+    "PEE DEE EMC"
+  ],
+  "config": {
+    "base": "https://omv.pdemc.com",
+    "file": "boundaries.json",
+    "servedTotal": 22109,
+    "referer": "https://omv.pdemc.com/",
+    "geocodeRegion": "North Carolina"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "pearl-river-valley-epa-ms",
+  "name": "Pearl River Valley EPA (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "PEARL RIVER VALLEY"
+  ],
+  "config": {
+    "client": "prvepa",
+    "serviceIndex": 1,
+    "servedTotal": 54444
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

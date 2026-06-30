@@ -1,0 +1,19 @@
+{
+  "id": "piedmont-emc-nc",
+  "name": "Piedmont EMC (NC)",
+  "adapter": "milsoft",
+  "match": [
+    "PIEDMONT ELECTRIC",
+    "PIEDMONT EMC"
+  ],
+  "config": {
+    "base": "https://outageviewer.pemc.coop",
+    "file": "boundaries.json",
+    "servedTotal": 34465,
+    "referer": "https://outageviewer.pemc.coop/",
+    "geocodeRegion": "North Carolina"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

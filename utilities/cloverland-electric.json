@@ -1,0 +1,14 @@
+{
+  "id": "cloverland-electric",
+  "name": "Cloverland Electric Cooperative (MI)",
+  "adapter": "kiuc",
+  "match": [
+    "CLOVERLAND ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/cloverland/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

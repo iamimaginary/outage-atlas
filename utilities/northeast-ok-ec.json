@@ -1,0 +1,14 @@
+{
+  "id": "northeast-ok-ec",
+  "name": "Northeast Oklahoma Electric Cooperative (OK)",
+  "adapter": "kiuc",
+  "match": [
+    "NORTHEAST OKLAHOMA"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/neelectric/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

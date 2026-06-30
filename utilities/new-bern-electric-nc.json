@@ -1,0 +1,16 @@
+{
+  "id": "new-bern-electric-nc",
+  "name": "New Bern Electric Department (NC)",
+  "adapter": "outageentry",
+  "match": [
+    "NEW BERN"
+  ],
+  "config": {
+    "client": "NEW_BERN",
+    "serviceIndex": 1,
+    "servedTotal": 25621
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

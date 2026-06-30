@@ -509,5 +509,5 @@ async function geocodeFill(areas, gcfg) {
   writeFileSync(idxPath, JSON.stringify(idx, null, 2));
 
   const subs = areas.reduce((a, c) => a + c.subs.length, 0);
-  console.log(`deep [${id}]: official ${official.out} out / ${official.served} served; ${areas.length} areas, ${subs} sub-areas; history ${hist.length} pts`);
+  console.log(`deep [${id}]: official ${official.out} out / ${official.served} served; ${areas.length} areas, ${subs} sub-areas; history ${total.length} pts`);
 })().catch((e) => { console.error(`collect_utility[${id}] FAILED:`, e.message); process.exit(1); });

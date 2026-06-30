@@ -1,0 +1,16 @@
+{
+  "id": "lus-lafayette",
+  "name": "Lafayette Utilities System (LA)",
+  "adapter": "datacapable",
+  "match": [
+    "LAFAYETTE UTILITIES"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/lus/map/events",
+    "servedTotal": 73000,
+    "referer": "https://lus.datacapable.com/map/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "woodruff-electric-ar",
+  "name": "Woodruff Electric Cooperative (AR)",
+  "adapter": "outageentry",
+  "match": [
+    "WOODRUFF"
+  ],
+  "config": {
+    "client": "WECC",
+    "serviceIndex": 1,
+    "servedTotal": 19579
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
