@@ -128,6 +128,14 @@ async function fetchAlerts() {
   }
   national.blended = { out: Math.max(0, national.out - supersededOut) + deepOut, odinOut: national.out, deepOut, supersededOut, deepUtilities: deepCount };
 
+  // --- national trend: a bounded out-over-time series of the blended headline, for the page's sparkline ---
+  // Read forward from the previous baseline.json (this run's history.json holds per-county, not national).
+  let prevTrend = [];
+  if (existsSync(`${OUT_DIR}/baseline.json`)) {
+    try { const pb = JSON.parse(readFileSync(`${OUT_DIR}/baseline.json`, "utf8")); prevTrend = (pb.national && pb.national.trend) || []; } catch {}
+  }
+  national.trend = prevTrend.concat([{ t: collectedAt, out: national.blended.out }]).slice(-96); // ~24h at 15-min cadence
+
   writeFileSync(`${OUT_DIR}/baseline.json`, JSON.stringify(baseline));
   writeFileSync(`${OUT_DIR}/index.json`, JSON.stringify(index, null, 2));
   writeFileSync(HIST_PATH, JSON.stringify(history));

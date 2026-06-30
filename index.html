@@ -45,6 +45,11 @@
   .stat .big { line-height:1.1; } .stat .small { color:var(--mut); }
   .states { columns:2; font-size:13px; } .states div { padding:1px 0; }
   a { color:var(--acc); }
+  .spark { vertical-align:middle; }
+  .trend { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .trend .small { color:var(--mut); }
+  .conf { font-size:11px; padding:1px 6px; border-radius:999px; border:1px solid var(--line); color:var(--mut); margin-left:6px; }
+  .conf.good { border-color:var(--ok); color:var(--ok); } .conf.low { border-color:var(--warn); color:var(--warn); }
   footer { color:var(--mut); font-size:12px; padding:18px 16px; border-top:1px solid var(--line); margin-top:20px; }
   .leaflet-popup-content { font-size:13px; }
 </style>
@@ -70,6 +75,7 @@
   <div class="panel" id="national">
     <div class="stats" id="nat-stats"><span class="muted">Loading…</span></div>
     <div id="nat-blend" class="small" style="margin-top:6px"></div>
+    <div id="nat-trend"></div>
     <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
     <div class="states" id="nat-states"></div>
   </div>
@@ -94,6 +100,7 @@ const REPO = "iamimaginary/outage-atlas";
 const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/baseline.json`;
 const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/index.json`;
 const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
+const HIST_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/history.json`;
 const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
@@ -102,7 +109,50 @@ const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
 // ETR strings vary by feed; some aren't Date-parseable (showed "Invalid Date"). Fall back to the raw string.
 const fmtEtr = (v) => { if (!v) return ""; const d = new Date(v); return isNaN(d.getTime()) ? String(v) : d.toLocaleString(); };
-let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null;
+let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null, HIST = null;
+
+// Inline-SVG sparkline from a numeric series (oldest→newest). Green when the trend is falling (recovering),
+// red when rising. Returns "" if there's too little history to be meaningful. Inline SVG = no CSP fetch.
+function sparkline(vals, w = 110, h = 26) {
+  const v = (vals || []).filter((n) => typeof n === "number" && isFinite(n));
+  if (v.length < 3) return "";
+  const min = Math.min(...v), max = Math.max(...v), span = max - min || 1;
+  const x = (i) => 1 + (i / (v.length - 1)) * (w - 2);
+  const y = (n) => h - 1 - ((n - min) / span) * (h - 2);
+  const d = v.map((n, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(n).toFixed(1)}`).join(" ");
+  const last = v[v.length - 1], col = last > v[0] ? "var(--bad)" : "var(--ok)";
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">`
+    + `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<circle cx="${x(v.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="2.2" fill="${col}"/></svg>`;
+}
+// lazy-load the per-county history series (fetched once, on the first county drill-down)
+async function loadHistory() {
+  if (HIST) return HIST;
+  try { const r = await fetch(HIST_URL, { cache: "no-store" }); if (r.ok) HIST = await r.json(); } catch {}
+  return HIST || {};
+}
+// the "out" series for one county's recent history (oldest→newest), or [] if not tracked
+function countySeries(fips) {
+  const h = HIST && fips ? HIST[fips] : null;
+  return h && Array.isArray(h.series) ? h.series.map((p) => p.out) : [];
+}
+// ETA block + a confidence tag; the per-county sparkline placeholder is filled async by injectCountyTrend()
+function etaBlock(c, fips) {
+  if (!c || !c.eta || c.eta.kind === "restored") return "";
+  const e = c.eta;
+  const conf = e.confidence ? `<span class="conf ${e.confidence === "good" ? "good" : e.confidence === "low" ? "low" : ""}">${e.confidence} confidence</span>` : "";
+  return `<div class="eta${e.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${e.label}${conf}`
+    + (fips ? `<div id="spark-${fips}"></div>` : "")
+    + `<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
+}
+// fetch history (once) and draw this county's recent out-trend into the placeholder etaBlock() left
+async function injectCountyTrend(fips) {
+  if (!fips) return;
+  await loadHistory();
+  const spark = sparkline(countySeries(fips), 130, 26);
+  const host = $(`spark-${fips}`);
+  if (host && spark) host.innerHTML = `<div class="trend" style="margin-top:6px">${spark}<span class="small">recent outage trend</span></div>`;
+}
 
 // ---- data load: prefer the published snapshot; refresh from live ODIN if it's stale or unavailable ----
 const STALE_MIN = 30; // if the collector isn't running, don't show a frozen baseline — ODIN is CORS-open
@@ -139,6 +189,12 @@ function renderNational(b) {
     <div class="stat"><div class="big">${fmt(b.national.utilities + (bl ? bl.deepUtilities : 0))}</div><div class="small">utilities reporting</div></div>`;
   $("nat-blend").innerHTML = bl
     ? `<span class="muted">${fmt(bl.odinOut)} from the ODIN baseline + ${fmt(bl.deepOut)} from ${fmt(bl.deepUtilities)} deep utility feeds${bl.supersededOut ? ` (−${fmt(bl.supersededOut)} de-duplicated)` : ""}.</span>`
+    : "";
+  // national trend sparkline: blended customers-out over the last ~24h (collector accumulates national.trend)
+  const trend = (b.national.trend || []).map((p) => p.out);
+  const spark = sparkline(trend, 140, 30);
+  $("nat-trend").innerHTML = spark
+    ? `<div class="trend">${spark}<span class="small">customers out, last ${trend.length < 8 ? trend.length * 15 + " min" : Math.round(trend.length / 4) + "h"} · ${trend[trend.length - 1] > trend[0] ? "rising" : "easing"}</span></div>`
     : "";
   const byState = {};
   for (const k in b.counties) { const c = b.counties[k]; byState[c.state] = (byState[c.state] || 0) + c.out; }
@@ -181,7 +237,7 @@ function showCounty(c, dm) {
   let html = `<div class="small muted">From the map</div>`;
   html += `<div style="margin-top:6px"><span class="big">${fmt(c.out)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
   html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
-  if (c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
+  html += etaBlock(c, c.fips);
   const alerts = (c.fips && BASELINE.alertsByFips && BASELINE.alertsByFips[c.fips]) || [];
   if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
   if (c.utilities && c.utilities.length) {
@@ -192,6 +248,7 @@ function showCounty(c, dm) {
     ? `<div style="margin-top:8px"><span class="chip deep">✓ deep detail — ${dm.name}</span></div>`
     : `<div style="margin-top:8px" class="small muted">Deep per-utility detail not available here — national baseline shown.</div>`;
   $("result").innerHTML = html;
+  injectCountyTrend(c.fips);
   const old = $("deepbox"); if (old) old.remove();
   if (dm) renderDeep(dm.id, { county: c.county, state: c.state }); else clearDeep();
   $("result").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -224,7 +281,7 @@ async function showLocation(lat, lon, label) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
     if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
     else html += `<div class="small muted">No active outages reported in this county.</div>`;
-    if (c && c.eta && c.eta.kind !== "restored") html += `<div class="eta${c.eta.kind === "rising" ? " bad" : ""}">⏱ <b>Est. recovery:</b> ${c.eta.label}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this county's outage trend.</div></div>`;
+    if (c) html += etaBlock(c, county.fips);
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
     if (c && c.utilities.length) {
       html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
@@ -243,6 +300,7 @@ async function showLocation(lat, lon, label) {
       : `<div style="margin-top:8px" class="small muted">Deep per-utility detail not yet available here — showing the national baseline.</div>`;
   }
   $("result").innerHTML = html;
+  if (county) injectCountyTrend(county.fips);
 
   if (locMarker) map.removeLayer(locMarker);
   locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out${c && c.eta && c.eta.label ? "<br>⏱ " + c.eta.label : ""}`).openPopup();

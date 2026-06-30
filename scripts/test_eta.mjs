@@ -1,7 +1,7 @@
 // Unit tests for the recovery-ETA estimator (scripts/lib/eta.mjs) — the universal "every ZIP gets a
 // recovery time" logic. Synthetic histories with explicit timestamps; asserts each trend class and the
 // ETA math (incl. the gated deceleration). Pure, no network. Exits non-zero on any failure.
-import { restorationRate, estimateRecovery, countyEta } from "./lib/eta.mjs";
+import { restorationRate, estimateRecovery, countyEta, etaConfidence } from "./lib/eta.mjs";
 
 let failed = 0;
 const ok = (c, m) => { if (c) console.log("✓ " + m); else { failed++; console.error("✗ " + m); } };
@@ -35,6 +35,13 @@ ok(restorationRate([{ t: t0, out: 5 }]) === null, "restorationRate null with <2 
 const ce = countyEta(ser([0, 1000], [2.5, 500]), 500, 1000);
 ok(ce.kind === "improving" && /to restore/.test(ce.label) && ce.etaHrs === 2.5, `countyEta returns label + rounded eta (got "${ce.label}", ${ce.etaHrs})`);
 ok(countyEta(ser([0, 0]), 0, 100).label === "power restored", "countyEta restored label");
+
+// confidence scales with how much history backs the estimate: <4 thin, <12 moderate, >=12 good
+ok(etaConfidence(ser([0, 1], [1, 2])) === "low", "etaConfidence low with 2 readings");
+ok(etaConfidence(Array.from({ length: 6 }, (_, i) => ({ t: t0 + i * H, out: 100 }))) === "moderate", "etaConfidence moderate with 6 readings");
+ok(etaConfidence(Array.from({ length: 14 }, (_, i) => ({ t: t0 + i * H, out: 100 }))) === "good", "etaConfidence good with 14 readings");
+// countyEta tags an improving estimate with its confidence
+ok(countyEta(ser([0, 1000], [2.5, 500]), 500, 1000).confidence === "low", "countyEta attaches confidence to an improving estimate");
 
 console.log(`\n${failed ? failed + " FAILED" : "all eta tests passed"}`);
 process.exit(failed ? 1 : 0);

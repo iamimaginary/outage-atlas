@@ -62,11 +62,21 @@ export function recoveryLabel(info) {
   return "";
 }
 
+// Confidence in a recovery estimate, from how much history backs it: more readings over a longer span
+// = more trustworthy. <4 readings (<~45min) is thin; >=12 (~3h at the 15-min cadence) is solid.
+export function etaConfidence(series) {
+  const n = series ? series.length : 0;
+  if (n < 4) return "low";
+  if (n < 12) return "moderate";
+  return "good";
+}
+
 // Build the stored eta object for a county (structured + a ready label).
 export function countyEta(series, out, peak) {
   const info = estimateRecovery(series, out, peak);
   const eta = { kind: info.kind, label: recoveryLabel(info) };
   if (info.perHour != null) eta.perHour = Math.round(info.perHour);
   if (info.etaHrs != null) eta.etaHrs = Math.round(info.etaHrs * 10) / 10;
+  if (info.kind === "improving" || info.kind === "rising") eta.confidence = etaConfidence(series);
   return eta;
 }
