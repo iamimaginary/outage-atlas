@@ -1,0 +1,19 @@
+{
+  "id": "georgetown-utility-tx",
+  "name": "Georgetown Utility Systems (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "GEORGETOWN UTILITY",
+    "GEORGETOWN"
+  ],
+  "config": {
+    "base": "https://electricoutage.georgetown.org",
+    "file": "outages.json",
+    "servedTotal": 33821,
+    "referer": "https://electricoutage.georgetown.org/",
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

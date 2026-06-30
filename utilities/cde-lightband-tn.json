@@ -1,0 +1,17 @@
+{
+  "id": "cde-lightband-tn",
+  "name": "CDE Lightband (Clarksville, TN)",
+  "adapter": "outageentry",
+  "match": [
+    "CLARKSVILLE",
+    "CDE LIGHTBAND"
+  ],
+  "config": {
+    "client": "CDE",
+    "serviceIndex": 1,
+    "servedTotal": 86943
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

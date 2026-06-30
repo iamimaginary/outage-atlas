@@ -1,0 +1,18 @@
+{
+  "id": "meade-county-recc-ky",
+  "name": "Meade County RECC (KY)",
+  "adapter": "milsoft",
+  "match": [
+    "MEADE COUNTY"
+  ],
+  "config": {
+    "base": "https://outage.mcrecc.com",
+    "file": "boundaries.json",
+    "servedTotal": 31834,
+    "referer": "https://outage.mcrecc.com/",
+    "geocodeRegion": "Kentucky"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

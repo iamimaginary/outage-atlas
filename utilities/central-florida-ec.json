@@ -1,0 +1,18 @@
+{
+  "id": "central-florida-ec",
+  "name": "Central Florida Electric Coop (FL)",
+  "adapter": "milsoft",
+  "match": [
+    "CENTRAL FLORIDA ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outages.cfec.com",
+    "file": "boundaries.json",
+    "servedTotal": 37330,
+    "referer": "https://outages.cfec.com/",
+    "geocodeRegion": "Florida"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

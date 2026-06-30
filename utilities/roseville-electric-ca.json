@@ -1,0 +1,16 @@
+{
+  "id": "roseville-electric-ca",
+  "name": "Roseville Electric Utility (CA)",
+  "adapter": "outageentry",
+  "match": [
+    "ROSEVILLE"
+  ],
+  "config": {
+    "client": "roseville",
+    "serviceIndex": 1,
+    "servedTotal": 73296
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

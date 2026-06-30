@@ -1,0 +1,16 @@
+{
+  "id": "bentonville-light-water-ar",
+  "name": "Bentonville Light & Water (AR)",
+  "adapter": "outageentry",
+  "match": [
+    "BENTONVILLE"
+  ],
+  "config": {
+    "client": "Bentar",
+    "serviceIndex": 1,
+    "servedTotal": 30316
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

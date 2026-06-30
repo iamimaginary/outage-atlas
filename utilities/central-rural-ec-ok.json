@@ -1,0 +1,18 @@
+{
+  "id": "central-rural-ec-ok",
+  "name": "Central Rural Electric Coop (OK)",
+  "adapter": "milsoft",
+  "match": [
+    "CENTRAL RURAL ELECTRIC"
+  ],
+  "config": {
+    "base": "https://crecoutageviewer.crec.coop",
+    "file": "outages.json",
+    "servedTotal": 25000,
+    "referer": "https://crecoutageviewer.crec.coop/",
+    "geocodeRegion": "Oklahoma"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

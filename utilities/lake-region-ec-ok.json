@@ -1,0 +1,14 @@
+{
+  "id": "lake-region-ec-ok",
+  "name": "Lake Region Electric Cooperative (OK)",
+  "adapter": "kiuc",
+  "match": [
+    "LAKE REGION ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/lrec/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

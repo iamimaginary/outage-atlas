@@ -1,0 +1,16 @@
+{
+  "id": "apex-electric-nc",
+  "name": "Town of Apex Electric Utilities (NC)",
+  "adapter": "outageentry",
+  "match": [
+    "APEX"
+  ],
+  "config": {
+    "client": "apex",
+    "serviceIndex": 1,
+    "servedTotal": 31571
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

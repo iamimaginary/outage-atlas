@@ -1,0 +1,18 @@
+{
+  "id": "west-kentucky-recc",
+  "name": "West Kentucky RECC (KY)",
+  "adapter": "milsoft",
+  "match": [
+    "WEST KENTUCKY"
+  ],
+  "config": {
+    "base": "https://outagemap.wkrecc.com",
+    "file": "boundaries.json",
+    "servedTotal": 40742,
+    "referer": "https://outagemap.wkrecc.com/",
+    "geocodeRegion": "Kentucky"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

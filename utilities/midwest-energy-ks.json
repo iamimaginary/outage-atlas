@@ -1,0 +1,18 @@
+{
+  "id": "midwest-energy-ks",
+  "name": "Midwest Energy (KS)",
+  "adapter": "milsoft",
+  "match": [
+    "MIDWEST ENERGY"
+  ],
+  "config": {
+    "base": "https://outageviewer.mwenergy.com",
+    "file": "outages.json",
+    "servedTotal": 50000,
+    "referer": "https://outageviewer.mwenergy.com/",
+    "geocodeRegion": "Kansas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "northeast-ms-epa",
+  "name": "Northeast Mississippi EPA (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "NORTHEAST MISSISSIPPI"
+  ],
+  "config": {
+    "client": "NEMEPA",
+    "serviceIndex": 1,
+    "servedTotal": 31382
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

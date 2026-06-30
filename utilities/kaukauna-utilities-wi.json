@@ -1,0 +1,16 @@
+{
+  "id": "kaukauna-utilities-wi",
+  "name": "Kaukauna Utilities (WI)",
+  "adapter": "outageentry",
+  "match": [
+    "KAUKAUNA"
+  ],
+  "config": {
+    "client": "kaukauna",
+    "serviceIndex": 1,
+    "servedTotal": 17299
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

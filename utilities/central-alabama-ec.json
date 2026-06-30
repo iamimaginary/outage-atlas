@@ -1,0 +1,18 @@
+{
+  "id": "central-alabama-ec",
+  "name": "Central Alabama Electric Coop (AL)",
+  "adapter": "milsoft",
+  "match": [
+    "CENTRAL ALABAMA ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.caec.com",
+    "file": "boundaries.json",
+    "servedTotal": 47168,
+    "referer": "https://outage.caec.com/",
+    "geocodeRegion": "Alabama"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "cuivre-river-ec-mo",
+  "name": "Cuivre River Electric Coop (MO)",
+  "adapter": "milsoft",
+  "match": [
+    "CUIVRE RIVER"
+  ],
+  "config": {
+    "base": "https://outage.cuivre.com",
+    "file": "boundaries.json",
+    "servedTotal": 76228,
+    "referer": "https://outage.cuivre.com/",
+    "geocodeRegion": "Missouri"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

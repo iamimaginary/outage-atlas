@@ -1,0 +1,16 @@
+{
+  "id": "east-ms-epa",
+  "name": "East Mississippi EPA (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "EAST MISSISSIPPI"
+  ],
+  "config": {
+    "client": "EMEPA",
+    "serviceIndex": 1,
+    "servedTotal": 37759
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

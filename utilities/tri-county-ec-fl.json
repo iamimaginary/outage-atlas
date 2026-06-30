@@ -1,0 +1,19 @@
+{
+  "id": "tri-county-ec-fl",
+  "name": "Tri-County Electric Cooperative (FL)",
+  "adapter": "milsoft",
+  "match": [
+    "TRI-COUNTY ELECTRIC",
+    "TRI-COUNTY EC"
+  ],
+  "config": {
+    "base": "https://outage.tcec.com",
+    "file": "boundaries.json",
+    "servedTotal": 20050,
+    "referer": "https://outage.tcec.com/",
+    "geocodeRegion": "Florida"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

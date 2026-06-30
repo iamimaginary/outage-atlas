@@ -1,0 +1,16 @@
+{
+  "id": "norwood-light",
+  "name": "Norwood Municipal Light Department (MA)",
+  "adapter": "datacapable",
+  "match": [
+    "NORWOOD"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/norwood/map/events",
+    "servedTotal": 15000,
+    "referer": "https://norwood.datacapable.com/map/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

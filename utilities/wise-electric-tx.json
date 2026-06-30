@@ -1,0 +1,16 @@
+{
+  "id": "wise-electric-tx",
+  "name": "Wise Electric Cooperative (TX)",
+  "adapter": "outageentry",
+  "match": [
+    "WISE ELECTRIC"
+  ],
+  "config": {
+    "client": "WISE",
+    "serviceIndex": 1,
+    "servedTotal": 27648
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

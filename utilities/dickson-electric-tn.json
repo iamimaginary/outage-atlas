@@ -1,0 +1,18 @@
+{
+  "id": "dickson-electric-tn",
+  "name": "Dickson Electric System (TN)",
+  "adapter": "milsoft",
+  "match": [
+    "DICKSON ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.dicksonelectric.com",
+    "file": "boundaries.json",
+    "servedTotal": 40669,
+    "referer": "https://outage.dicksonelectric.com/",
+    "geocodeRegion": "Tennessee"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

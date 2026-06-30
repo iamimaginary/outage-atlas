@@ -1,0 +1,18 @@
+{
+  "id": "win-energy-remc-in",
+  "name": "WIN Energy REMC (IN)",
+  "adapter": "milsoft",
+  "match": [
+    "WIN ENERGY"
+  ],
+  "config": {
+    "base": "https://outage.winenergyremc.com",
+    "file": "boundaries.json",
+    "servedTotal": 17092,
+    "referer": "https://outage.winenergyremc.com/",
+    "geocodeRegion": "Indiana"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

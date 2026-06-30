@@ -1,0 +1,19 @@
+{
+  "id": "tri-county-emc-tn",
+  "name": "Tri-County EMC (TN)",
+  "adapter": "milsoft",
+  "match": [
+    "TRI-COUNTY ELECTRIC MEMBERSHIP",
+    "TRI-COUNTY EMC"
+  ],
+  "config": {
+    "base": "https://outages.tcemc.org",
+    "file": "boundaries.json",
+    "servedTotal": 56921,
+    "referer": "https://outages.tcemc.org/",
+    "geocodeRegion": "Tennessee"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

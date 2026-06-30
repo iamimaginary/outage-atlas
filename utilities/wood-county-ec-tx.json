@@ -1,0 +1,18 @@
+{
+  "id": "wood-county-ec-tx",
+  "name": "Wood County Electric Cooperative (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "WOOD COUNTY ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap.wcec.org",
+    "file": "outages.json",
+    "servedTotal": 38000,
+    "referer": "https://outagemap.wcec.org/",
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

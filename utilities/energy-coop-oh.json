@@ -1,0 +1,15 @@
+{
+  "id": "energy-coop-oh",
+  "name": "The Energy Cooperative (OH)",
+  "adapter": "kiuc",
+  "match": [
+    "LICKING RURAL",
+    "ENERGY COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/theenergycoop/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

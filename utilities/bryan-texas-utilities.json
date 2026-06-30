@@ -1,0 +1,19 @@
+{
+  "id": "bryan-texas-utilities",
+  "name": "Bryan Texas Utilities (TX)",
+  "adapter": "milsoft",
+  "match": [
+    "BRYAN TEXAS UTILITIES",
+    "BRYAN TEXAS"
+  ],
+  "config": {
+    "base": "https://outages.btutilities.com",
+    "file": "boundaries.json",
+    "servedTotal": 70944,
+    "referer": "https://outages.btutilities.com/",
+    "geocodeRegion": "Texas"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "rock-hill-utilities-sc",
+  "name": "Rock Hill Utilities (SC)",
+  "adapter": "outageentry",
+  "match": [
+    "ROCK HILL"
+  ],
+  "config": {
+    "client": "ROCK",
+    "serviceIndex": 1,
+    "servedTotal": 41290
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

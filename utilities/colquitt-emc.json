@@ -1,0 +1,16 @@
+{
+  "id": "colquitt-emc",
+  "name": "Colquitt EMC (GA)",
+  "adapter": "datacapable",
+  "match": [
+    "COLQUITT"
+  ],
+  "config": {
+    "url": "https://utilisocial.io/datacapable/v2/p/colquitt/map/events",
+    "servedTotal": 73000,
+    "referer": "https://colquitt.datacapable.com/map/"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

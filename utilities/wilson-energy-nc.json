@@ -1,0 +1,17 @@
+{
+  "id": "wilson-energy-nc",
+  "name": "Wilson Energy (NC)",
+  "adapter": "outageentry",
+  "match": [
+    "WILSON ENERGY",
+    "CITY OF WILSON"
+  ],
+  "config": {
+    "client": "wilson",
+    "serviceIndex": 1,
+    "servedTotal": 38791
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

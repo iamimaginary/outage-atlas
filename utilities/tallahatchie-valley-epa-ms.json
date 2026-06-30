@@ -1,0 +1,16 @@
+{
+  "id": "tallahatchie-valley-epa-ms",
+  "name": "Tallahatchie Valley EPA (MS)",
+  "adapter": "outageentry",
+  "match": [
+    "TALLAHATCHIE VALLEY"
+  ],
+  "config": {
+    "client": "TALLAHATCHIE",
+    "serviceIndex": 1,
+    "servedTotal": 28705
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

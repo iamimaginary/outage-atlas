@@ -1,0 +1,18 @@
+{
+  "id": "craighead-ec-ar",
+  "name": "Craighead Electric Cooperative (AR)",
+  "adapter": "milsoft",
+  "match": [
+    "CRAIGHEAD ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagecraigheadelectriccoop.ecark.org",
+    "file": "boundaries.json",
+    "servedTotal": 33065,
+    "referer": "https://outagecraigheadelectriccoop.ecark.org/",
+    "geocodeRegion": "Arkansas"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

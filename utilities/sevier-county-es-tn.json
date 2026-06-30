@@ -1,0 +1,18 @@
+{
+  "id": "sevier-county-es-tn",
+  "name": "Sevier County Electric System (TN)",
+  "adapter": "milsoft",
+  "match": [
+    "SEVIER COUNTY ELECTRIC"
+  ],
+  "config": {
+    "base": "https://viewer.sces.net",
+    "file": "outages.json",
+    "servedTotal": 60000,
+    "referer": "https://viewer.sces.net/",
+    "geocodeRegion": "Tennessee"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

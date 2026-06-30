@@ -1,0 +1,18 @@
+{
+  "id": "south-alabama-ec",
+  "name": "South Alabama Electric Coop (AL)",
+  "adapter": "milsoft",
+  "match": [
+    "SOUTH ALABAMA ELECTRIC"
+  ],
+  "config": {
+    "base": "https://omsviewer.southaec.com",
+    "file": "boundaries.json",
+    "servedTotal": 17976,
+    "referer": "https://omsviewer.southaec.com/",
+    "geocodeRegion": "Alabama"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
