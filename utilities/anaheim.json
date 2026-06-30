@@ -1,1 +1,1 @@
-{"schema":1,"id":"anaheim","name":"Anaheim Public Utilities (CA)","adapter":"anaheim","collectedAt":1782840656547,"official":{"out":94,"served":122391,"nOut":1},"areas":[{"name":"Incident 290997","out":94,"served":94,"etr":null,"loc":[33.8459461270017,-117.95689702688],"subs":[]}]}
+{"schema":1,"id":"anaheim","name":"Anaheim Public Utilities (CA)","adapter":"anaheim","collectedAt":1782843157353,"official":{"out":94,"served":122391,"nOut":1},"areas":[{"name":"Incident 290997","out":94,"served":94,"etr":null,"loc":[33.8459461270017,-117.95689702688],"subs":[]}]}
