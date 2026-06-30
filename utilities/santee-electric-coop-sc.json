@@ -1,0 +1,18 @@
+{
+  "id": "santee-electric-coop-sc",
+  "name": "Santee Electric Cooperative (SC)",
+  "adapter": "milsoft",
+  "match": [
+    "SANTEE ELECTRIC COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://outageviewer.santee.org",
+    "file": "outages.json",
+    "servedTotal": 43000,
+    "referer": "https://outageviewer.santee.org/",
+    "geocodeRegion": "South Carolina"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

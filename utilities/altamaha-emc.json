@@ -1,0 +1,19 @@
+{
+  "id": "altamaha-emc",
+  "name": "Altamaha EMC (GA)",
+  "adapter": "milsoft",
+  "match": [
+    "ALTAMAHA EMC",
+    "ALTAMAHA ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.altamahaemc.com",
+    "file": "outages.json",
+    "servedTotal": 21300,
+    "referer": "https://outage.altamahaemc.com/",
+    "geocodeRegion": "Georgia"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

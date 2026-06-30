@@ -1,0 +1,25 @@
+{
+  "id": "leesburg-electric-fl",
+  "name": "City of Leesburg Electric (FL)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF LEESBURG",
+    "LEESBURG"
+  ],
+  "fips": [
+    "12069"
+  ],
+  "config": {
+    "base": "https://map.leesburgflorida.gov/arcgis/rest/services/Electric/PublicOutagePoints/MapServer",
+    "layer": 1,
+    "fields": {
+      "out": "CUSTOMER_COUNT",
+      "id": "INCIDENT_ID"
+    },
+    "referer": "https://www.leesburgflorida.gov/",
+    "servedTotal": 27747
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

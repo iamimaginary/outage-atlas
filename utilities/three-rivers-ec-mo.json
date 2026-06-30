@@ -1,0 +1,18 @@
+{
+  "id": "three-rivers-ec-mo",
+  "name": "Three Rivers Electric Coop (MO)",
+  "adapter": "milsoft",
+  "match": [
+    "THREE RIVERS ELECTRIC COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://outageviewer.threeriverselectric.com",
+    "file": "outages.json",
+    "servedTotal": 19000,
+    "referer": "https://outageviewer.threeriverselectric.com/",
+    "geocodeRegion": "Missouri"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

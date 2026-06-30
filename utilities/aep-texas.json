@@ -1,0 +1,18 @@
+{
+  "id": "aep-texas",
+  "name": "AEP Texas (TX)",
+  "adapter": "kubra",
+  "match": [
+    "AEP TEXAS",
+    "AEP TEXAS CENTRAL",
+    "AEP TEXAS NORTH"
+  ],
+  "config": {
+    "instance": "3ff6812b-90d8-40cd-97a6-76633226f27b",
+    "view": "6022fe09-5259-4763-892f-5f57463fa6a5",
+    "referer": "https://outagemap.aeptexas.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

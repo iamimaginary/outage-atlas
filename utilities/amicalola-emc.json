@@ -1,0 +1,19 @@
+{
+  "id": "amicalola-emc",
+  "name": "Amicalola EMC (GA)",
+  "adapter": "milsoft",
+  "match": [
+    "AMICALOLA EMC",
+    "AMICALOLA"
+  ],
+  "config": {
+    "base": "https://outages.amicalolaemc.com",
+    "file": "boundaries.json",
+    "servedTotal": 56900,
+    "referer": "https://outages.amicalolaemc.com/",
+    "geocodeRegion": "Georgia"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

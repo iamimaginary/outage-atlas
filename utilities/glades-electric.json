@@ -1,0 +1,14 @@
+{
+  "id": "glades-electric",
+  "name": "Glades Electric Cooperative (FL)",
+  "adapter": "kiuc",
+  "match": [
+    "GLADES ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/gladesec/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

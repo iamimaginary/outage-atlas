@@ -1,0 +1,19 @@
+{
+  "id": "dixie-ec",
+  "name": "Dixie EC (AL)",
+  "adapter": "milsoft",
+  "match": [
+    "DIXIE ELECTRIC COOPERATIVE",
+    "DIXIE EC"
+  ],
+  "config": {
+    "base": "https://outagemap.dixie.coop",
+    "file": "outages.json",
+    "servedTotal": 21000,
+    "referer": "https://outagemap.dixie.coop/",
+    "geocodeRegion": "Alabama"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

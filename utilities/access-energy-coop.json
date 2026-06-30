@@ -1,0 +1,14 @@
+{
+  "id": "access-energy-coop",
+  "name": "Access Energy Cooperative (IA)",
+  "adapter": "kiuc",
+  "match": [
+    "ACCESS ENERGY"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/accessenergycoop/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

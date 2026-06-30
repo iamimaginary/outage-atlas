@@ -1,0 +1,18 @@
+{
+  "id": "firstenergy-mdwv",
+  "name": "FirstEnergy MD & WV (Mon Power / Potomac Edison)",
+  "adapter": "kubra",
+  "match": [
+    "MONONGAHELA POWER",
+    "POTOMAC EDISON",
+    "MON POWER"
+  ],
+  "config": {
+    "instance": "6c715f0e-bbec-465f-98cc-0b81623744be",
+    "view": "5ed3ddf1-3a6f-4cfd-8957-eba54b5baaad",
+    "referer": "https://outages-mdwv.firstenergycorp.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

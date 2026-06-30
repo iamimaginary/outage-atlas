@@ -1,0 +1,25 @@
+{
+  "id": "fort-pierce-fpua",
+  "name": "Fort Pierce Utilities Authority (FL)",
+  "adapter": "arcgis",
+  "match": [
+    "FORT PIERCE UTILITIES",
+    "FORT PIERCE"
+  ],
+  "fips": [
+    "12111"
+  ],
+  "config": {
+    "base": "https://services2.arcgis.com/ZDnnC765XuXgYLyD/arcgis/rest/services/ResponderWebPublicDisplay_Hosted/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "CUSTOMER_COUNT",
+      "etr": "TIMERESTORED_EST_UTC"
+    },
+    "referer": "https://fpua.com/",
+    "servedTotal": 28000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

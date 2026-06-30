@@ -1,0 +1,14 @@
+{
+  "id": "eau-claire-energy",
+  "name": "Eau Claire Energy Cooperative (WI)",
+  "adapter": "kiuc",
+  "match": [
+    "EAU CLAIRE ENERGY"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/ecec/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

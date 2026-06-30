@@ -1,0 +1,24 @@
+{
+  "id": "muscatine-power-water",
+  "name": "Muscatine Power and Water (IA)",
+  "adapter": "arcgis",
+  "match": [
+    "MUSCATINE POWER",
+    "MUSCATINE POWER AND WATER"
+  ],
+  "fips": [
+    "19139"
+  ],
+  "config": {
+    "base": "https://services.arcgis.com/YKu9KTHe0ln1JUmf/arcgis/rest/services/PublicElectricalOutages/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "CUSTCOUNT"
+    },
+    "referer": "https://www.mpw.org/",
+    "servedTotal": 12000
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

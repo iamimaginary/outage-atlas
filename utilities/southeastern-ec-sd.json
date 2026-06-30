@@ -1,0 +1,18 @@
+{
+  "id": "southeastern-ec-sd",
+  "name": "Southeastern Electric Coop (SD)",
+  "adapter": "milsoft",
+  "match": [
+    "SOUTHEASTERN ELECTRIC COOPERATIVE"
+  ],
+  "config": {
+    "base": "https://outage.sec.coop:8181",
+    "file": "outages.json",
+    "servedTotal": 20000,
+    "referer": "https://outage.sec.coop:8181/",
+    "geocodeRegion": "South Dakota"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

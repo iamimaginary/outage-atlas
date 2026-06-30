@@ -5,10 +5,12 @@ your standing brief: what it is, the contracts you must not break, the recurring
 guardrails, and when to STOP. Read it before touching anything.
 
 > Status: LIVE. Phases −1→4 complete; Phase 5 expansion well underway. **Deep precision coverage
-> ≈ 77% of US electricity customers (estimate — configs don't store customer counts, so it isn't
-> recomputable from the repo) across ~146 wired utilities** (148 configs; CMP parked-disabled), on top
-> of the ~99.5% ODIN national baseline. ~33 adapter families (see "Adapter families" below). The
-> remaining tail is small sub-threshold co-ops + a documented gated/deferred set (re-triaged 2026-06-30).
+> ≈ 78% of US electricity customers (estimate — configs don't store customer counts, so it isn't
+> recomputable from the repo) across ~265 wired utilities** (267 configs; CMP parked-disabled), on top
+> of the ~99.5% ODIN national baseline. ~33 adapter families (see "Adapter families" below). A large
+> sub-90k co-op/muni sweep (NISC cloud.coop, Milsoft, OutageEntry, DataCapable, self-hosted ArcGIS) plus
+> a few late IOUs (AEP Texas, TNMP, FirstEnergy MD&WV, Dominion SC, CenterPoint Houston) landed
+> 2026-06-30. The remaining tail is smaller co-ops + a documented gated/deferred set.
 
 ## What this is
 

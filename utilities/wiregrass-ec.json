@@ -1,0 +1,18 @@
+{
+  "id": "wiregrass-ec",
+  "name": "Wiregrass Electric Cooperative (AL)",
+  "adapter": "milsoft",
+  "match": [
+    "WIREGRASS ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outage.wiregrass.coop",
+    "file": "boundaries.json",
+    "servedTotal": 26356,
+    "referer": "https://outage.wiregrass.coop/",
+    "geocodeRegion": "Alabama"
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "farmers-electric-nm",
+  "name": "Farmers' Electric Cooperative of New Mexico (NM)",
+  "adapter": "kiuc",
+  "match": [
+    "FARMERS ELECTRIC",
+    "FARMERS' ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/fecnm/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

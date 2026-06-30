@@ -1,0 +1,17 @@
+{
+  "id": "tnmp",
+  "name": "Texas-New Mexico Power (TX)",
+  "adapter": "kubra",
+  "match": [
+    "TEXAS-NEW MEXICO POWER",
+    "TEXAS NEW MEXICO POWER"
+  ],
+  "config": {
+    "instance": "6f00c909-0ab9-46c1-94c5-c07435d5baf6",
+    "view": "5bb75bf1-56fa-4d46-ac74-dd9b2106611a",
+    "referer": "https://outagemap.tnmp.com/"
+  },
+  "reconciliation": {
+    "tolerancePct": 10
+  }
+}

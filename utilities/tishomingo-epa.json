@@ -1,0 +1,18 @@
+{
+  "id": "tishomingo-epa",
+  "name": "Tishomingo County EPA (MS)",
+  "adapter": "milsoft",
+  "match": [
+    "TISHOMINGO COUNTY"
+  ],
+  "config": {
+    "base": "https://outages.tcepa.com:7576",
+    "file": "outages.json",
+    "servedTotal": 12000,
+    "referer": "https://outages.tcepa.com:7576/",
+    "geocodeRegion": "Mississippi"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

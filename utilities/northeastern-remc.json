@@ -1,0 +1,18 @@
+{
+  "id": "northeastern-remc",
+  "name": "Northeastern REMC (IN)",
+  "adapter": "milsoft",
+  "match": [
+    "NORTHEASTERN REMC"
+  ],
+  "config": {
+    "base": "https://outage.nremc.com",
+    "file": "outages.json",
+    "servedTotal": 30000,
+    "referer": "https://outage.nremc.com/",
+    "geocodeRegion": "Indiana"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

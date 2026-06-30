@@ -1,0 +1,14 @@
+{
+  "id": "oklahoma-electric-coop",
+  "name": "Oklahoma Electric Cooperative (OK)",
+  "adapter": "kiuc",
+  "match": [
+    "OKLAHOMA ELECTRIC COOP"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/okcoop/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

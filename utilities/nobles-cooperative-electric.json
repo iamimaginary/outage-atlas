@@ -1,0 +1,14 @@
+{
+  "id": "nobles-cooperative-electric",
+  "name": "Nobles Cooperative Electric (MN)",
+  "adapter": "kiuc",
+  "match": [
+    "NOBLES COOPERATIVE ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/noblesce/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

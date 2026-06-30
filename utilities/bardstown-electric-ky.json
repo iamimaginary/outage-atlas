@@ -1,0 +1,26 @@
+{
+  "id": "bardstown-electric-ky",
+  "name": "City of Bardstown Electric (KY)",
+  "adapter": "arcgis",
+  "match": [
+    "CITY OF BARDSTOWN",
+    "BARDSTOWN"
+  ],
+  "fips": [
+    "21179"
+  ],
+  "config": {
+    "base": "https://services5.arcgis.com/mHbONuBRVDkclONv/arcgis/rest/services/Electric_Outage_Area/FeatureServer",
+    "layer": 0,
+    "fields": {
+      "out": "CustomersEffected",
+      "etr": "EstimatedRestoration",
+      "id": "OBJECTID"
+    },
+    "referer": "https://www.cityofbardstown.org/",
+    "servedTotal": 4600
+  },
+  "reconciliation": {
+    "tolerancePct": 12
+  }
+}
