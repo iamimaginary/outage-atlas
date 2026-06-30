@@ -1,1 +1,1 @@
-{"schema":1,"id":"connexus","name":"Connexus Energy (MN)","adapter":"arcgis","collectedAt":1782835632731,"official":{"out":2,"served":142316,"nOut":1},"areas":[{"name":"outage #0","out":2,"served":2,"etr":null,"loc":[45.55822,-94.0361],"subs":[]}]}
+{"schema":1,"id":"connexus","name":"Connexus Energy (MN)","adapter":"arcgis","collectedAt":1782840663956,"official":{"out":1,"served":142316,"nOut":1},"areas":[{"name":"outage #0","out":1,"served":1,"etr":null,"loc":[45.48955,-93.24167],"subs":[]}]}
