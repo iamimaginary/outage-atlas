@@ -14,6 +14,7 @@ import { detectEvents, selectToPost, commitPost } from "./detect.mjs";
 import { renderPost } from "./templates.mjs";
 import { makeBluesky } from "./platforms/bluesky.mjs";
 import { makeThreads } from "./platforms/threads.mjs";
+import { makeX } from "./platforms/x.mjs";
 import { matchSubscribers, deliverAlerts } from "./notify.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,6 +69,7 @@ function enrich(e) {
   const platforms = [];
   if (process.env.BLUESKY_HANDLE && process.env.BLUESKY_APP_PASSWORD) platforms.push(makeBluesky({ handle: process.env.BLUESKY_HANDLE, appPassword: process.env.BLUESKY_APP_PASSWORD }));
   if (process.env.THREADS_USER_ID && process.env.THREADS_ACCESS_TOKEN) platforms.push(makeThreads({ userId: process.env.THREADS_USER_ID, accessToken: process.env.THREADS_ACCESS_TOKEN }));
+  if (process.env.X_API_KEY && process.env.X_API_SECRET && process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_SECRET) platforms.push(makeX({ apiKey: process.env.X_API_KEY, apiSecret: process.env.X_API_SECRET, accessToken: process.env.X_ACCESS_TOKEN, accessSecret: process.env.X_ACCESS_SECRET }));
 
   const enabled = process.env.POSTER_ENABLED === "1";
   const dryRun = !enabled || process.env.POSTER_DRY_RUN === "1" || platforms.length === 0;

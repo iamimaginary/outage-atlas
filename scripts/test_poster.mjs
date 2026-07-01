@@ -4,6 +4,7 @@
 import { detectEvents, selectToPost, commitPost } from "../poster/detect.mjs";
 import { renderPost } from "../poster/templates.mjs";
 import { detectFacets, graphemeLen } from "../poster/facets.mjs";
+import { trimForX } from "../poster/platforms/x.mjs";
 
 let fails = 0;
 const ok = (cond, msg) => { if (cond) console.log("  ✓ " + msg); else { console.error("  ✗ " + msg); fails++; } };
@@ -48,6 +49,14 @@ console.log("templates:");
   // a pathologically long name must still clamp to <=300
   const long = renderPost({ type: "onset", name: "X".repeat(400), state: "OH", out: 1, at: "now" }, { url: "https://x/y" });
   ok(graphemeLen(long.text) <= 300, "over-long post is hard-clamped");
+}
+
+console.log("X char limit:");
+{
+  ok(trimForX("short post") === "short post", "leaves a normal post unchanged");
+  const long = "y".repeat(400);
+  ok(graphemeLen(trimForX(long)) === 280, `trims to X's 280 limit (got ${graphemeLen(trimForX(long))})`);
+  ok(trimForX(long).endsWith("…"), "adds an ellipsis when trimmed");
 }
 
 console.log("detect — latching & significance:");
