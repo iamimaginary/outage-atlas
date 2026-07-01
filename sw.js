@@ -7,7 +7,12 @@
 // the network — caching them would serve stale locations/answers.
 //
 // Bump VERSION on any shell change to roll caches cleanly (old caches are dropped on activate).
-const VERSION = "v1";
+//
+// v2: fix "Response served by service worker has redirections" (Safari/WebKit). Cloudflare Pages
+// 308-redirects /index.html -> /, so a cached/redirected Response can't fulfill a navigation in Safari.
+// We now strip the redirect flag (rebuild the Response) on precache + navigation, and take over
+// immediately (skipWaiting) so a poisoned v1 client self-heals on the next load.
+const VERSION = "v2";
 const SHELL = `atlas-shell-${VERSION}`;
 const DATA = `atlas-data-${VERSION}`;
 const LIB = `atlas-lib-${VERSION}`;
@@ -17,16 +22,35 @@ const OURS = new Set([SHELL, DATA, LIB, TILES]);
 // Same-origin runtime graph (verified: geo.mjs + odin.mjs are self-contained, no further imports).
 const SHELL_ASSETS = [
   "./", "./index.html", "./manifest.json",
-  "./web/geo.mjs", "./adapters/odin.mjs",
+  "./web/geo.mjs", "./adapters/odin.mjs", "./web/leadgen.mjs", "./config.js",
   "./icons/icon-192.png", "./icons/icon-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png",
 ];
 
 const TILE_CAP = 300; // bound the tile cache so a lot of panning can't grow it without limit
 
+// A Response with .redirected=true breaks navigations in Safari. Rebuild it as a plain Response.
+async function clean(res) {
+  if (!res || !res.redirected) return res;
+  const body = await res.clone().arrayBuffer();
+  return new Response(body, { status: res.status, statusText: res.statusText, headers: res.headers });
+}
+
+async function precache() {
+  const cache = await caches.open(SHELL);
+  // Manual (not addAll) so one redirecting/missing asset can't fail the whole install, and so we can
+  // store a de-redirected copy.
+  await Promise.all(SHELL_ASSETS.map(async (url) => {
+    try {
+      const res = await fetch(new Request(url, { cache: "reload", redirect: "follow" }));
+      if (res && res.ok) await cache.put(url, await clean(res));
+    } catch { /* best effort */ }
+  }));
+}
+
 self.addEventListener("install", (e) => {
-  // addAll is atomic: if any shell asset 404s, install fails loudly rather than half-caching.
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(SHELL_ASSETS)));
+  self.skipWaiting(); // take over ASAP so a broken v1 self-heals
+  e.waitUntil(precache());
 });
 
 self.addEventListener("activate", (e) => {
@@ -36,7 +60,6 @@ self.addEventListener("activate", (e) => {
   })());
 });
 
-// The page posts {type:"SKIP_WAITING"} when the user accepts a "new version" prompt.
 self.addEventListener("message", (e) => { if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting(); });
 
 const isData = (u) => u.hostname === "raw.githubusercontent.com" && u.pathname.includes("/tracker-data/");
@@ -85,9 +108,13 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return; // never touch POSTs (e.g. OutageEntry-style feeds)
   const url = new URL(req.url);
 
-  // App navigations: serve the cached shell, fall back to network (SPA-style resilience).
+  // App navigations: serve the cached shell (de-redirected), fall back to a cleaned network response.
   if (req.mode === "navigate") {
-    e.respondWith((async () => (await caches.match("./index.html")) || (await caches.match("./")) || fetch(req))());
+    e.respondWith((async () => {
+      const cached = (await caches.match("./index.html")) || (await caches.match("./"));
+      if (cached) return cached;
+      try { return await clean(await fetch(req)); } catch { return (await caches.match("./index.html")) || Response.error(); }
+    })());
     return;
   }
   if (isData(url)) return e.respondWith(networkFirst(req, DATA));
