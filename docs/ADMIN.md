@@ -47,10 +47,12 @@ cross-site trackers **unless an operator turns on display ads** (see below).
 ## One-time operator setup (Cloudflare dashboard — an agent can't toggle these)
 
 1. **Create the D1 database + binding.**
-   - Cloudflare dashboard → Workers & Pages → **D1** → *Create database* (e.g. `outage-atlas-analytics`).
-     Or CLI: `npx wrangler d1 create outage-atlas-analytics`.
-   - Pages project → **Settings → Functions → D1 database bindings** → add binding
-     **Variable name `ANALYTICS_DB`** → the database above. (No manual schema step — it self-creates.)
+   - Cloudflare dashboard → left sidebar **Storage & databases → D1** → *Create database*
+     (e.g. `outage-atlas-analytics`). Or CLI: `npx wrangler d1 create outage-atlas-analytics`.
+   - Pages project → **Settings** → the **Bindings** section ("Define the set of resources available to
+     your Pages Functions") → **+ Add** → **D1 database** → Variable name **`ANALYTICS_DB`** → the
+     database above. (Dashboard note: there is no separate "Functions" page anymore — D1/KV live under
+     **Bindings**; the KV `SUBS_KV` binding lives here too. No manual schema step — it self-creates.)
 2. **Add the admin subdomain.**
    - Pages project → **Custom domains** → *Set up a custom domain* → `admin.outageatlas.com`.
      (Same project as `outageatlas.com`; the middleware routes `/` there to the portal.)
@@ -60,7 +62,7 @@ cross-site trackers **unless an operator turns on display ads** (see below).
    - Add a **policy**: Action *Allow*, include your email / a Google/GitHub group.
    - Copy the application's **Application Audience (AUD)** tag and your **team domain**
      (`<team>.cloudflareaccess.com`).
-4. **Set env vars** (Pages → Settings → Environment variables, Production):
+4. **Set env vars** (Pages → Settings → **Variables and secrets**, Production):
    - `ACCESS_TEAM_DOMAIN` = `<team>.cloudflareaccess.com`
    - `ACCESS_AUD` = the AUD tag from step 3
    - `ACCESS_EMAILS` *(optional)* = comma-separated allowlist, belt-and-braces on top of the Access policy
