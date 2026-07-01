@@ -1,0 +1,1 @@
+{"schema":1,"id":"cde-lightband-tn","name":"CDE Lightband (Clarksville, TN)","adapter":"outageentry","collectedAt":1782865203587,"official":{"out":47,"served":86943,"nOut":1},"areas":[{"name":"D1019695","out":47,"served":47,"etr":null,"loc":[36.50591144104243,-87.26097230488661],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}
