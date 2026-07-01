@@ -379,7 +379,9 @@ function initMap(b) {
     .filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
   for (const c of pts) {
     const dm = deepMatch(c.utilities || []);
-    const m = L.circleMarker(c.loc, { radius: Math.min(22, 3 + Math.sqrt(c.out)), color: sev(c.out), weight: 1, fillOpacity: 0.35 }).addTo(map);
+    // crisp discs: a thin dark outline + a mostly-opaque severity fill so overlapping counties read as
+    // distinct circles (not a merged translucent blob). Size still encodes customers out (see legend).
+    const m = L.circleMarker(c.loc, { radius: Math.min(18, 3 + Math.sqrt(c.out)), color: "#0d1117", weight: 1, fillColor: sev(c.out), fillOpacity: 0.8 }).addTo(map);
     m._county = c; m._dm = dm;
     m.bindPopup(popupHtml(c, dm));
   }
@@ -500,7 +502,7 @@ function plotDeep(snap) {
   const shown = pts.slice(0, 400);
   deepLayer = L.layerGroup();
   for (const p of shown) {
-    L.circleMarker(p.loc, { radius: Math.min(20, 4 + Math.sqrt(p.out)), color: sev(p.out), weight: 2, fillColor: sev(p.out), fillOpacity: 0.7 })
+    L.circleMarker(p.loc, { radius: Math.min(18, 4 + Math.sqrt(p.out)), color: "#0d1117", weight: 1, fillColor: sev(p.out), fillOpacity: 0.9 })
       .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${etaBr(p)}<br><span class="small muted">${snap.name} · deep</span>`)
       .addTo(deepLayer);
   }
