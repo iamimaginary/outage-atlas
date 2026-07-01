@@ -58,6 +58,8 @@ ok(s.affiliates.ecoflow === "", "sanitize: non-https affiliate link dropped (no 
 ok(s.affiliates.jackery === "https://go.jackery.com/x", "sanitize: https affiliate link kept");
 ok(!("other" in s.affiliates), "sanitize: unknown affiliate key dropped");
 ok(s.leadEndpoint === SETTINGS_DEFAULTS.leadEndpoint, "sanitize: non-path leadEndpoint → default");
+ok(sanitizeSettings({}).leadEndpoint === "/api/lead", "sanitize: empty leadEndpoint → default (not '')");
+ok(sanitizeSettings({ leadEndpoint: "/custom/lead" }).leadEndpoint === "/custom/lead", "sanitize: valid path leadEndpoint kept");
 ok(s.flags.leadgen === false && s.flags.alerts === true && s.flags.deepView === false, "sanitize: flags coerced to bool");
 ok(!("secret" in s.flags), "sanitize: unknown flag dropped");
 ok(s.banner.level === "info", "sanitize: unknown banner level → info");

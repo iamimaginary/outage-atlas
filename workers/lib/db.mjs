@@ -92,7 +92,7 @@ export function sanitizeSettings(input = {}) {
       ecoflow: httpsOnly(clampStr(affIn.ecoflow, 400)),
       jackery: httpsOnly(clampStr(affIn.jackery, 400)),
     },
-    leadEndpoint: clampStr(i.leadEndpoint || d.leadEndpoint, 200).startsWith("/") ? clampStr(i.leadEndpoint, 200) : d.leadEndpoint,
+    leadEndpoint: (() => { const v = clampStr(i.leadEndpoint, 200); return v.startsWith("/") ? v : d.leadEndpoint; })(), // path only, else default
     flags: {
       leadgen: fl.leadgen === undefined ? d.flags.leadgen : bool(fl.leadgen),
       alerts: fl.alerts === undefined ? d.flags.alerts : bool(fl.alerts),
