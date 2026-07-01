@@ -34,6 +34,26 @@ denominator. **ODIN carries none**, so the poster applies the **absolute floor o
 county exposes `served` (deep feeds do). A future task can bundle a FIPS→customers/population table to
 restore the % gate; the code already uses `county.served` when present.
 
+## Phase 3 — email capture + subscriber alerts (shipped)
+
+The owned-list asset. Reuses the SAME detection as the poster so an onset that posts also emails the
+people watching that county.
+
+| File | Role |
+|---|---|
+| `index.html` (`#alerts` panel) | "Alert me when {area} loses power" — email + honeypot, submits `{email, zip, fips}` to `/api/subscribe`. Appears once a location resolves; `fips` comes from the existing geo pipeline so matching is a pure FIPS join later. |
+| `workers/subscribe.mjs` | Serverless intake: validates, honeypot, optional KV rate-limit, hands off to the email provider with **double opt-in** (provider owns confirmation + unsubscribe → CAN-SPAM). Stores nothing here (no PII in the repo). |
+| `poster/notify.mjs` | PURE `matchSubscribers(areaEvents, subs)` (FIPS join) + `renderAlert` + env-gated `deliverAlerts` (DRY-RUN by default). Wired into `poster/post.mjs`, independent of the social gate. Alerts on onset + restored by default (`NOTIFY_TYPES`). |
+
+### Going live (operator)
+1. Pick a provider (Buttondown recommended — native double opt-in). Enable double opt-in on the account.
+2. Deploy `workers/subscribe.mjs` at **`https://<site>/api/subscribe`** (same-origin keeps the page
+   CSP at `connect-src 'self'`). Set worker env `EMAIL_PROVIDER=buttondown`, `EMAIL_API_KEY=…`
+   (+ optional `SUBS_KV` binding for rate-limiting, `ALLOW_ORIGIN`).
+3. To send outage alerts (not just collect the list): set collector env `NOTIFY_ENABLED=1`,
+   `EMAIL_PROVIDER`, `EMAIL_API_KEY`, and `SUBSCRIBERS_URL` (a JSON endpoint returning
+   `[{email,fips}]`). Until then the alerts step DRY-RUNs. **SMS is deferred** (TCPA/10DLC) per the handoff.
+
 ## Platform-abstraction plan (§2.6)
 
 ## The interface (§2.6)

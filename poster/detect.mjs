@@ -83,7 +83,10 @@ export function detectEvents(prevState, snapshot, now, cfg = CONFIG) {
   }
 
   state._global = globalKeep;
-  return { events, state };
+  // events   = the SOCIAL post list (individual onsets collapsed into a roll-up when many fire at once).
+  // areaEvents = the raw PER-AREA events (onset/escalation/restored), NOT collapsed — this is the feed
+  //   for subscriber alerts (a subscriber opted into THEIR county, so they get it even during a roll-up).
+  return { events, areaEvents: raw, state };
 }
 
 const inQuietHours = (hour, cfg) => (cfg.QUIET_START > cfg.QUIET_END ? hour >= cfg.QUIET_START || hour < cfg.QUIET_END : hour >= cfg.QUIET_START && hour < cfg.QUIET_END);

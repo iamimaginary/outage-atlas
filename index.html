@@ -97,6 +97,17 @@
 
   <div class="panel hide" id="result"></div>
 
+  <div class="panel hide" id="alerts">
+    <div><b>🔔 Alert me when <span id="alert-area">my area</span> loses power</b></div>
+    <div class="small muted" style="margin-top:4px">Free email alerts when an outage is detected near you — and an all-clear when it's over. No tracking; unsubscribe any time.</div>
+    <div class="search" style="margin-top:8px">
+      <input id="alert-email" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email" />
+      <button class="primary" id="alert-send">Alert me</button>
+    </div>
+    <input id="alert-hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
+    <div class="small" id="alert-msg" style="margin-top:6px"></div>
+  </div>
+
   <div id="map"></div>
 
   <div class="panel" id="national">
@@ -148,6 +159,9 @@ const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/nation
 const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
 const HIST_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/history.json`;
 const ISSUE_NEW = `https://github.com/${REPO}/issues/new`; // feedback opens a pre-filled issue (user submits)
+// Email-capture endpoint (Phase 3). Same-origin by default so the page CSP stays `connect-src 'self'`;
+// deploy workers/subscribe.mjs at this path (e.g. a Cloudflare route on the site domain).
+const SUBSCRIBE_ENDPOINT = "/api/subscribe";
 const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
@@ -333,6 +347,7 @@ async function showLocation(lat, lon, label) {
   const out = c ? c.out : 0;
   const alerts = (county && BASELINE.alertsByFips && BASELINE.alertsByFips[county.fips]) || [];
   CTX = { view: "search", query: label || `${lat.toFixed(3)},${lon.toFixed(3)}`, county: county ? `${county.county}, ${county.state}` : null, fips: county ? county.fips : null, out, utilities: utilities.map((u) => u.name).join("; ") || null, deep: null };
+  if (county) showAlerts(`${county.county}, ${county.state}`);
 
   let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
@@ -485,6 +500,32 @@ function toggleFeedback(show) {
 $("fb-open").onclick = (e) => { e.preventDefault(); toggleFeedback(); };
 $("fb-send").onclick = sendFeedback;
 $("fb-cancel").onclick = () => toggleFeedback(false);
+
+// ---- alerts: capture an owned email opt-in for the resolved area (Phase 3) ----
+// Reveal the form once we know the user's area; submit email + ZIP + resolved FIPS to the same-origin
+// intake worker, which hands off to the email provider for double opt-in + unsubscribe.
+function showAlerts(areaLabel) {
+  $("alert-area").textContent = areaLabel || "my area";
+  $("alerts").classList.remove("hide");
+  $("alert-msg").textContent = "";
+}
+async function subscribe() {
+  const email = $("alert-email").value.trim();
+  const msg = $("alert-msg");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.style.color = "var(--warn)"; msg.textContent = "Enter a valid email address."; return; }
+  const zip = (CTX.query && /^\d{5}$/.test(CTX.query.trim())) ? CTX.query.trim() : "";
+  const payload = { email, zip, fips: CTX.fips || "", hp: $("alert-hp").value };
+  $("alert-send").disabled = true; msg.style.color = "var(--mut)"; msg.textContent = "Signing you up…";
+  try {
+    const r = await fetch(SUBSCRIBE_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    if (r.ok) { const d = await r.json().catch(() => ({})); msg.style.color = "var(--ok)"; msg.textContent = d.already ? "You're already on the list." : "Almost there — check your inbox to confirm."; $("alert-email").value = ""; }
+    else if (r.status === 503) { msg.style.color = "var(--warn)"; msg.textContent = "Alerts aren't enabled yet — check back soon."; }
+    else { msg.style.color = "var(--warn)"; msg.textContent = "Couldn't sign you up right now. Please try again later."; }
+  } catch { msg.style.color = "var(--warn)"; msg.textContent = "Couldn't reach the server. Please try again later."; }
+  finally { $("alert-send").disabled = false; }
+}
+$("alert-send").onclick = subscribe;
+$("alert-email").addEventListener("keydown", (e) => { if (e.key === "Enter") subscribe(); });
 
 // ---- boot ----
 (async () => {

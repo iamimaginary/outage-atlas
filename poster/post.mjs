@@ -13,6 +13,7 @@ import { dirname, join } from "node:path";
 import { detectEvents, selectToPost, commitPost } from "./detect.mjs";
 import { renderPost } from "./templates.mjs";
 import { makeBluesky } from "./platforms/bluesky.mjs";
+import { matchSubscribers, deliverAlerts } from "./notify.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA = process.env.POSTER_DATA_DIR || join(ROOT, "data");
@@ -44,8 +45,23 @@ function enrich(e) {
   if (!snapshot || !snapshot.counties) { console.error("poster: no baseline snapshot at", SNAP_PATH, "— nothing to do"); return; }
   const prevState = readJson(STATE_PATH, {});
 
-  const { events, state } = detectEvents(prevState, snapshot, now);
+  const { events, areaEvents, state } = detectEvents(prevState, snapshot, now);
   const selected = selectToPost(events, state, now, localHour(now));
+
+  // --- subscriber alerts (Phase 3): reuse the per-area detection to email people watching an area.
+  // Independent of the social gate; DRY-RUN unless NOTIFY_ENABLED + provider + SUBSCRIBERS_URL. ---
+  try {
+    let subscribers = [];
+    if (process.env.SUBSCRIBERS_URL) {
+      const rs = await fetch(process.env.SUBSCRIBERS_URL, { signal: AbortSignal.timeout(20000) });
+      if (rs.ok) subscribers = await rs.json();
+    }
+    const matches = matchSubscribers(areaEvents, subscribers);
+    if (matches.length || subscribers.length) {
+      const res = await deliverAlerts(matches, { urlFor });
+      console.log(`alerts: ${matches.length} match(es) across ${subscribers.length} subscriber(s) — ${res.dryRun ? "DRY-RUN" : `sent ${res.sent}`}`);
+    }
+  } catch (e) { console.error("alerts step failed (non-fatal):", e.message); }
 
   const enabled = process.env.POSTER_ENABLED === "1";
   const dryRun = !enabled || process.env.POSTER_DRY_RUN === "1" || !process.env.BLUESKY_HANDLE || !process.env.BLUESKY_APP_PASSWORD;
