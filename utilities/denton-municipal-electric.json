@@ -1,0 +1,1 @@
+{"schema":1,"id":"denton-municipal-electric","name":"Denton Municipal Electric (TX)","adapter":"arcgis","collectedAt":1782915418133,"official":{"out":10,"served":68000,"nOut":1},"areas":[{"name":"outage #114875","out":10,"served":10,"etr":null,"loc":[53.77258,21.47587],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

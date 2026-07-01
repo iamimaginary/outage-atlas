@@ -1,0 +1,1 @@
+{"schema":1,"id":"three-rivers-ec-mo","name":"Three Rivers Electric Coop (MO)","adapter":"milsoft","collectedAt":1782915808132,"official":{"out":14,"served":19000,"nOut":1},"areas":[{"name":"OCD11359","out":14,"served":14,"etr":null,"loc":[38.49516566892398,-92.025456907861],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}

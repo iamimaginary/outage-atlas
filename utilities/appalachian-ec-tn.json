@@ -1,1 +1,1 @@
-{"schema":1,"id":"appalachian-ec-tn","name":"Appalachian Electric Cooperative (TN)","adapter":"kiuc","collectedAt":1782906850223,"official":{"out":0,"served":52680,"nOut":0},"areas":[{"name":"AEC Service Territory","out":0,"served":51952,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"appalachian-ec-tn","name":"Appalachian Electric Cooperative (TN)","adapter":"kiuc","collectedAt":1782915262769,"official":{"out":0,"served":52680,"nOut":0},"areas":[{"name":"AEC Service Territory","out":0,"served":51952,"etr":null,"loc":null,"subs":[]}]}
