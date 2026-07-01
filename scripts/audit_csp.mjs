@@ -13,7 +13,7 @@ const html = readFileSync(join(ROOT, "index.html"), "utf8");
 // Only scan executable JS for runtime fetch/tile hosts: the imported modules + the inline module script
 // (NOT the footer <a href> links or comments — those aren't network requests the CSP governs).
 const inlineModule = (html.match(/<script type="module">([\s\S]*?)<\/script>/) || [])[1] || "";
-const jsSources = ["web/geo.mjs", "adapters/odin.mjs"].filter((p) => existsSync(join(ROOT, p)))
+const jsSources = ["web/geo.mjs", "adapters/odin.mjs", "web/ads.mjs"].filter((p) => existsSync(join(ROOT, p)))
   .map((p) => readFileSync(join(ROOT, p), "utf8")).join("\n") + "\n" + inlineModule;
 
 const errs = [];
@@ -33,8 +33,14 @@ const covers = (host, dir) => {
 };
 
 // quoted https:// literals that the JS actually loads (skips bare URLs in comments)
+const AD_HOST_RE = /googlesyndication\.com|doubleclick\.net|googleadservices\.com/; // display-ad vendor (web/ads.mjs)
 const usedHosts = [...new Set([...jsSources.matchAll(/["'`]https:\/\/([a-z0-9.*{}-]+)/gi)].map((m) => m[1]))];
 for (const h of usedHosts) {
+  if (AD_HOST_RE.test(h)) { // ad vendors span script/frame/img/connect — require presence in ≥1
+    if (!["script-src", "frame-src", "img-src", "connect-src"].some((d) => covers(h, d)))
+      errs.push(`ad host "${h}" loaded but not in CSP (script/frame/img/connect-src)`);
+    continue;
+  }
   const dir = /basemaps\.cartocdn\.com/.test(h) ? "img-src" : "connect-src"; // tiles are images; everything else is fetch
   if (!covers(h, dir)) errs.push(`host "${h}" loaded by the page but not in ${dir}`);
 }

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Admin is same-origin only + Cloudflare Access-protected. Lock everything to 'self'. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  connect-src 'self';
+" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Outage Atlas — Admin</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --fg:#e6edf3; --mut:#9da7b3; --acc:#58a6ff; --good:#3fb950; --warn:#d29922; --bad:#f85149; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  header { padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:18px; } header h1 span { color:var(--acc); }
+  header .who { margin-left:auto; color:var(--mut); font-size:13px; }
+  main { max-width:1040px; margin:0 auto; padding:18px; }
+  .tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .tab { padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); cursor:pointer; font-size:14px; }
+  .tab.active { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:600; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  .hide { display:none; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media (max-width:640px){ .kpis { grid-template-columns:1fr 1fr; } }
+  .kpi { background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px; }
+  .kpi .n { font-size:26px; font-weight:700; } .kpi .l { color:var(--mut); font-size:12px; }
+  .row { display:flex; gap:16px; flex-wrap:wrap; }
+  .col { flex:1 1 300px; }
+  h3 { font-size:14px; color:var(--mut); margin:0 0 8px; text-transform:uppercase; letter-spacing:.04em; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  td { padding:5px 4px; border-bottom:1px solid var(--line); }
+  td.n { text-align:right; color:var(--mut); font-variant-numeric:tabular-nums; }
+  .bar { height:6px; background:var(--acc); border-radius:3px; opacity:.55; }
+  .ctrl { display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+  select, input[type=text], input[type=url] { padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); font:inherit; }
+  label { display:block; margin:10px 0 4px; font-size:13px; color:var(--mut); }
+  .field { margin-bottom:6px; }
+  .inline { display:flex; gap:10px; align-items:center; }
+  .inline input[type=text], .inline input[type=url] { flex:1; }
+  button.primary { padding:10px 16px; border:1px solid var(--acc); border-radius:8px; background:var(--acc); color:#04101f; font-weight:600; cursor:pointer; }
+  .msg { font-size:13px; margin-top:10px; min-height:18px; }
+  .muted { color:var(--mut); } .small { font-size:12px; }
+  fieldset { border:1px solid var(--line); border-radius:10px; margin:0 0 14px; padding:12px 14px; }
+  legend { color:var(--acc); font-size:13px; padding:0 6px; }
+  svg { display:block; width:100%; height:120px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>outage<span>·</span>atlas <span class="muted" style="color:var(--mut);font-weight:400">admin</span></h1>
+  <div class="who" id="who"></div>
+</header>
+<main>
+  <div class="tabs">
+    <div class="tab active" data-tab="stats" id="tab-stats">Analytics</div>
+    <div class="tab" data-tab="settings" id="tab-settings">Settings</div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <section id="view-stats">
+    <div class="ctrl">
+      <span class="muted small">Range:</span>
+      <select id="range">
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <span class="muted small" id="range-note"></span>
+    </div>
+    <div class="panel">
+      <div class="kpis" id="kpis"></div>
+      <div style="margin-top:14px">
+        <h3>Pageviews per day</h3>
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col panel"><h3>Top pages</h3><table id="t-pages"></table></div>
+      <div class="col panel"><h3>Top searches (ZIP / state)</h3><table id="t-searches"></table></div>
+    </div>
+    <div class="row">
+      <div class="col panel"><h3>Referrers</h3><table id="t-refs"></table></div>
+      <div class="col panel"><h3>Countries</h3><table id="t-countries"></table></div>
+    </div>
+    <div class="row">
+      <div class="col panel"><h3>Devices</h3><table id="t-devices"></table></div>
+      <div class="col panel"><h3>Event types</h3><table id="t-types"></table></div>
+    </div>
+    <div class="small muted">Cookieless &amp; PII-free: no IPs, cookies, or user-agents are stored. Uniques use a one-way, daily-rotating token — no cross-day or cross-site tracking.</div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" class="hide">
+    <div class="panel">
+      <form id="settings-form">
+        <fieldset>
+          <legend>Display ads</legend>
+          <div class="field"><label>Provider</label>
+            <select id="ads-provider">
+              <option value="none">None</option>
+              <option value="adsense">Google AdSense</option>
+            </select>
+          </div>
+          <div class="field"><label>Publisher / client ID <span class="muted small">(e.g. ca-pub-XXXXXXXXXXXXXXXX)</span></label>
+            <input type="text" id="ads-clientId" placeholder="ca-pub-..." /></div>
+          <div class="field"><label>Ad slot ID</label><input type="text" id="ads-slot" placeholder="1234567890" /></div>
+          <div class="field inline"><input type="checkbox" id="ads-enabled" /> <label style="margin:0">Ads enabled</label></div>
+          <div class="small muted">Enabling AdSense injects a third-party script; the public page's CSP already allowlists Google's ad origins. Leave provider = None to keep zero third-party scripts.</div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Affiliate links</legend>
+          <div class="field"><label>EcoFlow tracking URL</label><input type="url" id="aff-ecoflow" placeholder="https://..." /></div>
+          <div class="field"><label>Jackery tracking URL</label><input type="url" id="aff-jackery" placeholder="https://..." /></div>
+          <div class="field"><label>Lead endpoint path</label><input type="text" id="lead-endpoint" placeholder="/api/lead" /></div>
+          <div class="small muted">Only absolute https:// links are accepted; anything else is dropped on save.</div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Feature flags</legend>
+          <div class="field inline"><input type="checkbox" id="flag-leadgen" /> <label style="margin:0">Lead-gen CTA</label></div>
+          <div class="field inline"><input type="checkbox" id="flag-alerts" /> <label style="margin:0">Email-alert widget</label></div>
+          <div class="field inline"><input type="checkbox" id="flag-deepView" /> <label style="margin:0">Deep per-utility view</label></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Announcement banner</legend>
+          <div class="field inline"><input type="checkbox" id="banner-enabled" /> <label style="margin:0">Show banner</label></div>
+          <div class="field"><label>Text</label><input type="text" id="banner-text" placeholder="Short message shown site-wide" /></div>
+          <div class="field"><label>Level</label>
+            <select id="banner-level"><option value="info">Info</option><option value="warn">Warning</option><option value="alert">Alert</option></select></div>
+          <div class="field"><label>Link (optional, https)</label><input type="url" id="banner-href" placeholder="https://..." /></div>
+        </fieldset>
+
+        <button type="submit" class="primary">Save settings</button>
+        <div class="msg" id="save-msg"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n ?? 0).toLocaleString();
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  if (r.status === 403) { throw new Error("Access session expired — reload the page to sign in again."); }
+  if (!r.ok) throw new Error(`${path} → ${r.status}`);
+  return r.json();
+}
+
+// ---- tabs ----
+for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
+  for (const x of document.querySelectorAll(".tab")) x.classList.toggle("active", x === t);
+  $("view-stats").classList.toggle("hide", t.dataset.tab !== "stats");
+  $("view-settings").classList.toggle("hide", t.dataset.tab !== "settings");
+};
+
+// ---- analytics ----
+function renderTable(el, rows, { label = "k", pct = true } = {}) {
+  const max = Math.max(1, ...rows.map((r) => r.n));
+  el.innerHTML = rows.length ? rows.map((r) => `<tr>
+      <td>${esc(r.k || "(none)")}${pct ? `<div class="bar" style="width:${Math.round((r.n / max) * 100)}%"></div>` : ""}</td>
+      <td class="n">${fmt(r.n)}</td></tr>`).join("") : `<tr><td class="muted">No data yet.</td></tr>`;
+}
+
+function chart(series) {
+  const w = 720, h = 120, pad = 4;
+  const max = Math.max(1, ...series.map((d) => d.views));
+  const bw = series.length ? (w - pad * 2) / series.length : 0;
+  const bars = series.map((d, i) => {
+    const bh = Math.round((d.views / max) * (h - 20));
+    const x = pad + i * bw;
+    return `<rect x="${x.toFixed(1)}" y="${h - bh}" width="${Math.max(1, bw - 1).toFixed(1)}" height="${bh}" fill="#58a6ff" opacity="0.7"><title>${d.day}: ${d.views} views, ${d.uniques} uniques</title></rect>`;
+  }).join("");
+  // uniques polyline
+  const umax = Math.max(1, ...series.map((d) => d.uniques));
+  const pts = series.map((d, i) => `${(pad + i * bw + bw / 2).toFixed(1)},${(h - Math.round((d.uniques / umax) * (h - 20))).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Pageviews per day">
+    ${bars}<polyline points="${pts}" fill="none" stroke="#3fb950" stroke-width="1.5" opacity="0.9"/></svg>`;
+}
+
+async function loadStats() {
+  const days = Number($("range").value);
+  $("range-note").textContent = "loading…";
+  let s;
+  try { s = await api(`/admin/api/stats?days=${days}`); }
+  catch (e) { $("range-note").textContent = e.message; return; }
+  $("range-note").textContent = `${s.range.start} → ${s.range.end}`;
+
+  const uniqs = s.timeseries.map((d) => d.uniques);
+  const avgU = uniqs.length ? Math.round(uniqs.reduce((a, b) => a + b, 0) / uniqs.length) : 0;
+  const peak = s.timeseries.reduce((m, d) => (d.views > m.views ? d : m), { views: 0, day: "—" });
+  $("kpis").innerHTML = [
+    ["Pageviews", fmt(s.totals.pageviews)],
+    ["Unique visitor-days", fmt(s.totals.uniques)],
+    ["Avg uniques / day", fmt(avgU)],
+    ["Busiest day", `${fmt(peak.views)}<div class="l">${peak.day}</div>`],
+  ].map(([l, n]) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+
+  $("chart").innerHTML = chart(s.timeseries);
+  renderTable($("t-pages"), s.topPaths);
+  renderTable($("t-searches"), s.topSearches);
+  renderTable($("t-refs"), s.topReferrers);
+  renderTable($("t-countries"), s.topCountries);
+  renderTable($("t-devices"), s.devices);
+  renderTable($("t-types"), s.eventTypes);
+}
+$("range").onchange = loadStats;
+
+// ---- settings ----
+function fillSettings(s) {
+  $("ads-provider").value = s.ads.provider;
+  $("ads-clientId").value = s.ads.clientId;
+  $("ads-slot").value = s.ads.slot;
+  $("ads-enabled").checked = !!s.ads.enabled;
+  $("aff-ecoflow").value = s.affiliates.ecoflow;
+  $("aff-jackery").value = s.affiliates.jackery;
+  $("lead-endpoint").value = s.leadEndpoint;
+  $("flag-leadgen").checked = !!s.flags.leadgen;
+  $("flag-alerts").checked = !!s.flags.alerts;
+  $("flag-deepView").checked = !!s.flags.deepView;
+  $("banner-enabled").checked = !!s.banner.enabled;
+  $("banner-text").value = s.banner.text;
+  $("banner-level").value = s.banner.level;
+  $("banner-href").value = s.banner.href;
+}
+function readSettings() {
+  return {
+    ads: { provider: $("ads-provider").value, clientId: $("ads-clientId").value, slot: $("ads-slot").value, enabled: $("ads-enabled").checked },
+    affiliates: { ecoflow: $("aff-ecoflow").value, jackery: $("aff-jackery").value },
+    leadEndpoint: $("lead-endpoint").value,
+    flags: { leadgen: $("flag-leadgen").checked, alerts: $("flag-alerts").checked, deepView: $("flag-deepView").checked },
+    banner: { enabled: $("banner-enabled").checked, text: $("banner-text").value, level: $("banner-level").value, href: $("banner-href").value },
+  };
+}
+async function loadSettings() {
+  try { fillSettings(await api("/admin/api/settings")); }
+  catch (e) { $("save-msg").textContent = e.message; }
+}
+$("settings-form").onsubmit = async (e) => {
+  e.preventDefault();
+  $("save-msg").textContent = "Saving…";
+  try {
+    const out = await api("/admin/api/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(readSettings()) });
+    fillSettings(out.settings); // reflect what was actually stored (post-sanitize)
+    $("save-msg").style.color = "var(--good)"; $("save-msg").textContent = "Saved. Live within ~60s (public config cache).";
+  } catch (err) { $("save-msg").style.color = "var(--bad)"; $("save-msg").textContent = err.message; }
+};
+
+// ---- boot ----
+(async () => {
+  try { const me = await api("/admin/api/whoami"); $("who").textContent = "Signed in: " + (me.email || "admin"); }
+  catch (e) { $("who").textContent = e.message; }
+  loadStats();
+  loadSettings();
+})();
+</script>
+</body>
+</html>

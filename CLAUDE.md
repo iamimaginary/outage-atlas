@@ -155,6 +155,26 @@ data (`.github/workflows/audits.yml`) and auto-file issues — they can't run on
 **Reconciliation is the net against a fix that passes its golden test but mis-parses live data — trust
 it over the golden test when they disagree** (it caught the Kübra multi-state bug in the spike).
 
+(The gate also runs the monetization/ops tests: `test_leadgen`, `test_poster`, `test_notify`,
+`audit_seo`, and `test_admin` — the admin-portal analytics/settings/Access logic, below.)
+
+## Admin portal + analytics (`admin.outageatlas.com`) — see `docs/ADMIN.md`
+
+An Access-protected operator console on the **same Cloudflare Pages project**, on the `admin.` subdomain:
+- **Analytics** — a cookieless, **PII-free** visit beacon (`/api/track` → `workers/track.mjs`) writes to
+  Cloudflare **D1** (binding `ANALYTICS_DB`). Uniqueness uses a **daily-rotating one-way** token
+  (`hashVid` = SHA-256 of ip+ua+day+salt) — never an IP/cookie/UA/persistent id. The dashboard reads
+  aggregates via the Access-gated `/admin/api/stats`.
+- **Runtime settings** — ad provider / affiliate links / feature flags / announcement banner, editable in
+  the portal and served to the public page via `/api/config` (no code deploy). Every write passes the
+  `sanitizeSettings` **allowlist** (drops unknown keys, non-https links, unknown ad providers).
+- **Auth is fail-closed:** `workers/lib/access.mjs` verifies the Cloudflare Access JWT (aud + signature +
+  expiry) inside every admin request, so the API is safe even if hit directly. Needs `ACCESS_TEAM_DOMAIN`
+  + `ACCESS_AUD` env.
+- **Guardrails:** the ingest path stores **no PII** (guardrail); the *only* privacy-posture change is if
+  an operator turns on display ads (AdSense), which loads Google's ad scripts — the CSP allowlists those
+  origins but nothing loads until enabled. `docs/ADMIN.md` documents the tradeoff + one-time CF setup.
+
 ## The embedded maintenance / audit-agent system
 
 The platform self-monitors so agents can maintain it safely. Two loops:
@@ -257,6 +277,17 @@ scripts/lib/eta.mjs            algorithmic recovery-ETA estimator (per-county; p
 scripts/test_eta.mjs           recovery-ETA unit tests
 scripts/lib/load.mjs           path-or-URL JSON loader
 scripts/lib/file_issue.mjs     GitHub issue create/dedupe + PII sanitize
+admin/index.html               Access-protected operator portal (analytics dashboard + settings editor)
+functions/_middleware.js       host routing (admin.* → portal; hide /admin* on the public host)
+functions/admin/api/[[route]].js  admin API (Access-gated) -> workers/admin.mjs
+functions/api/{track,config}.js   public beacon + runtime-config endpoints (-> workers/{track,config}.mjs)
+workers/admin.mjs              admin stats + settings handlers (requireAdmin)
+workers/{track,config}.mjs     cookieless analytics ingest + public runtime-config read
+workers/lib/db.mjs             D1 layer + PURE helpers (hashVid, sanitizeSettings, stats shaping)
+workers/lib/access.mjs         Cloudflare Access JWT verification (fail-closed auth boundary)
+web/ads.mjs                    display-ad (AdSense) injection, isolated so its origins live in one place
+scripts/test_admin.mjs         admin unit tests (privacy token, settings allowlist, JWT claims) — in the gate
+docs/ADMIN.md                  admin-portal runbook (D1/Access/env setup, privacy model, ads tradeoff)
 docs/FEEDBACK.md               feedback + audit-issue triage rules
 .github/workflows/             checks (PR gate), audits (scheduled detectors), collect-baseline, labels
 spikes/                        Phase-(-1) validated-assumption evidence (raw captures, not goldens)

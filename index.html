@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' https://unpkg.com 'unsafe-inline';
+  script-src 'self' https://unpkg.com https://pagead2.googlesyndication.com 'unsafe-inline';
   style-src 'self' https://unpkg.com 'unsafe-inline';
-  img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
-  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com;
+  img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://googleads.g.doubleclick.net;
+  frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com;
+  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net;
 " />
 <title>Outage Atlas — find power outages near you</title>
 <meta name="description" content="Find power outages near you: a free national baseline for every location, plus deep per-utility detail and a recovery-time estimate where available." />
@@ -100,6 +101,14 @@
     .big { font-size:26px; }
     footer { overflow-wrap:break-word; }
   }
+  /* operator-editable announcement banner (admin portal → Settings) */
+  .announce { border-radius:10px; padding:10px 14px; margin:0 0 12px; font-size:14px; border:1px solid var(--line); background:var(--panel); }
+  .announce a { color:inherit; text-decoration:underline; }
+  .announce.warn { border-color:var(--warn); background:rgba(210,153,34,.12); }
+  .announce.alert { border-color:var(--bad); background:rgba(248,81,73,.12); }
+  /* ad slot: reserved, non-intrusive, below the content — hidden unless an ad provider is enabled */
+  #ads-slot { margin-top:14px; min-height:0; text-align:center; }
+  #ads-slot .ad-note { color:var(--mut); font-size:10px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:4px; }
 </style>
 </head>
 <body>
@@ -109,6 +118,7 @@
 </header>
 
 <main>
+  <div id="announce" class="hide"></div>
   <div class="search">
     <input id="q" placeholder="ZIP, city, address, county, or lat,lon" autocomplete="off" />
     <button id="go">Check</button>
@@ -120,7 +130,7 @@
 
   <div class="panel hide" id="alerts">
     <div><b>🔔 Alert me when <span id="alert-area">my area</span> loses power</b></div>
-    <div class="small muted" style="margin-top:4px">Free email alerts when an outage is detected near you — and an all-clear when it's over. No tracking; unsubscribe any time.</div>
+    <div class="small muted" style="margin-top:4px">Free email alerts when an outage is detected near you — and an all-clear when it's over. No spam; unsubscribe any time.</div>
     <div class="search" style="margin-top:8px">
       <input id="alert-email" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email" />
       <button class="primary" id="alert-send">Alert me</button>
@@ -140,6 +150,8 @@
     <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
     <div class="states" id="nat-states"></div>
   </div>
+
+  <div id="ads-slot" class="hide"></div>
 
   <div class="panel hide" id="fb">
     <div><b>Send feedback</b></div>
@@ -178,6 +190,7 @@
 import { geocode, resolvePoint } from "./web/geo.mjs";
 import { parseOdinRecords } from "./adapters/odin.mjs";
 import { renderCTA } from "./web/leadgen.mjs";
+import { mountAds } from "./web/ads.mjs";
 
 const REPO = "iamimaginary/outage-atlas";
 const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/baseline.json`;
@@ -188,6 +201,49 @@ const ISSUE_NEW = `https://github.com/${REPO}/issues/new`; // feedback opens a p
 // Email-capture endpoint (Phase 3). Same-origin by default so the page CSP stays `connect-src 'self'`;
 // deploy workers/subscribe.mjs at this path (e.g. a Cloudflare route on the site domain).
 const SUBSCRIBE_ENDPOINT = "/api/subscribe";
+const TRACK_ENDPOINT = "/api/track";   // cookieless, PII-free aggregate analytics (see workers/track.mjs)
+const CONFIG_ENDPOINT = "/api/config"; // operator-editable runtime config (admin portal → Settings)
+
+// Runtime, operator-editable config + feature flags (fetched from CONFIG_ENDPOINT; safe defaults if off).
+let RUNTIME = {};
+let FLAGS = { leadgen: true, alerts: true, deepView: true };
+
+// Cookieless analytics beacon. Sends NO cookie/id; the server derives a daily-rotating anon token and
+// stores no PII. Best-effort + non-blocking; failures are swallowed. type ∈ pageview|search|deep|alert.
+function track(type, path, meta) {
+  try {
+    const body = JSON.stringify({ type, path: path == null ? location.pathname : String(path), ref: document.referrer || "", meta: meta || {} });
+    if (navigator.sendBeacon) navigator.sendBeacon(TRACK_ENDPOINT, new Blob([body], { type: "application/json" }));
+    else fetch(TRACK_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+  } catch (e) { /* analytics is best-effort */ }
+}
+
+// Announcement banner (operator-editable). Rendered into #announce; hidden unless enabled + has text.
+function renderBanner(b) {
+  const el = $("announce");
+  if (!el) return;
+  if (!b || !b.enabled || !b.text) { el.className = "hide"; el.innerHTML = ""; return; }
+  const safe = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  el.className = "announce" + (b.level && b.level !== "info" ? " " + b.level : "");
+  el.innerHTML = b.href ? `<a href="${safe(b.href)}" target="_blank" rel="noopener">${safe(b.text)}</a>` : safe(b.text);
+}
+
+// Fetch + apply the operator's runtime config: merges affiliate/lead settings into window.OUTAGE_CONFIG
+// (read by web/leadgen.mjs), toggles feature flags, renders the banner, and mounts ads if enabled.
+async function loadRuntimeConfig() {
+  try {
+    const r = await fetch(CONFIG_ENDPOINT, { cache: "no-store" });
+    if (r.ok) RUNTIME = await r.json();
+  } catch (e) { RUNTIME = {}; }
+  if (RUNTIME.flags) FLAGS = Object.assign({ leadgen: true, alerts: true, deepView: true }, RUNTIME.flags);
+  const base = window.OUTAGE_CONFIG || {};
+  window.OUTAGE_CONFIG = Object.assign({}, base, {
+    leadEndpoint: RUNTIME.leadEndpoint || base.leadEndpoint || "/api/lead",
+    affiliates: Object.assign({}, base.affiliates, RUNTIME.affiliates || {}),
+  });
+  renderBanner(RUNTIME.banner);
+  try { mountAds(RUNTIME.ads, $("ads-slot")); } catch (e) {}
+}
 const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
@@ -368,6 +424,7 @@ function showCounty(c, dm) {
 
 // ---- which serving utility (HIFLD) has a deep feed in our index? ----
 function deepMatch(utilities) {
+  if (FLAGS.deepView === false) return null; // operator disabled the deep per-utility view
   const deep = INDEX.deep || {};
   for (const id in deep) {
     const d = deep[id];
@@ -390,7 +447,8 @@ async function showLocation(lat, lon, label) {
   CTX = { view: "search", query: label || `${lat.toFixed(3)},${lon.toFixed(3)}`, county: county ? `${county.county}, ${county.state}` : null, fips: county ? county.fips : null, out, utilities: utilities.map((u) => u.name).join("; ") || null, deep: null };
   if (county) showAlerts(`${county.county}, ${county.state}`);
   // monetization CTA (Phase 6): acute (storm outage) → power affiliate; chronic/blue-sky → backup quote.
-  renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
+  if (FLAGS.leadgen === false) { $("leadgen").hidden = true; $("leadgen").innerHTML = ""; }
+  else renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
 
   let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
@@ -454,6 +512,7 @@ function plotDeep(snap) {
 // ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
 async function renderDeep(id, county) {
   CTX.deep = id;
+  track("deep", id);
   let host = $("deepbox");
   // insert the deep panel AFTER the map so the order reads result → map → deep detail: the affected
   // areas are plotted on the map directly above this panel (matches the "mapped above" copy below).
@@ -495,11 +554,13 @@ async function renderDeep(id, county) {
 // ---- events ----
 async function onGo() {
   const q = $("q").value.trim(); if (!q) return;
+  track("search", q, { kind: "query" });
   try { const g = await geocode(q); await showLocation(g.lat, g.lon, g.label); }
   catch (e) { $("result").classList.remove("hide"); $("result").innerHTML = `<div style="color:var(--bad)">${e.message}</div>`; }
 }
 function onGeo() {
   if (!navigator.geolocation) return setStatus("Geolocation not supported.");
+  track("search", "geolocation", { kind: "geo" });
   navigator.geolocation.getCurrentPosition(
     (p) => showLocation(p.coords.latitude, p.coords.longitude, "My location"),
     () => setStatus("Couldn't get your location — enter a ZIP instead."));
@@ -548,6 +609,7 @@ $("fb-cancel").onclick = () => toggleFeedback(false);
 // Reveal the form once we know the user's area; submit email + ZIP + resolved FIPS to the same-origin
 // intake worker, which hands off to the email provider for double opt-in + unsubscribe.
 function showAlerts(areaLabel) {
+  if (FLAGS.alerts === false) return; // operator disabled the alerts widget
   $("alert-area").textContent = areaLabel || "my area";
   $("alerts").classList.remove("hide");
   $("alert-msg").textContent = "";
@@ -561,7 +623,7 @@ async function subscribe() {
   $("alert-send").disabled = true; msg.style.color = "var(--mut)"; msg.textContent = "Signing you up…";
   try {
     const r = await fetch(SUBSCRIBE_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    if (r.ok) { const d = await r.json().catch(() => ({})); msg.style.color = "var(--ok)"; msg.textContent = d.already ? "You're already on the list." : "Almost there — check your inbox to confirm."; $("alert-email").value = ""; }
+    if (r.ok) { const d = await r.json().catch(() => ({})); track("alert", "subscribe"); msg.style.color = "var(--ok)"; msg.textContent = d.already ? "You're already on the list." : "Almost there — check your inbox to confirm."; $("alert-email").value = ""; }
     else if (r.status === 503) { msg.style.color = "var(--warn)"; msg.textContent = "Alerts aren't enabled yet — check back soon."; }
     else { msg.style.color = "var(--warn)"; msg.textContent = "Couldn't sign you up right now. Please try again later."; }
   } catch { msg.style.color = "var(--warn)"; msg.textContent = "Couldn't reach the server. Please try again later."; }
@@ -572,7 +634,10 @@ $("alert-email").addEventListener("keydown", (e) => { if (e.key === "Enter") sub
 
 // ---- boot ----
 (async () => {
+  const cfgP = loadRuntimeConfig();     // flags/banner/ads + affiliate config (parallel with baseline)
   BASELINE = await loadBaseline();
+  await cfgP;                            // ensure flags are applied before deep chips render
+  track("pageview");
   renderNational(BASELINE);
   initMap(BASELINE);
 })();
