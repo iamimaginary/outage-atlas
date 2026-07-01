@@ -25,7 +25,7 @@ jobs:
 
       - name: All scripts/adapters parse
         run: |
-          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs poster/*.mjs poster/platforms/*.mjs; do
+          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs poster/*.mjs poster/platforms/*.mjs workers/*.mjs functions/api/*.js web/*.mjs; do
             [ -e "$f" ] || continue
             node --check "$f" && echo "ok $f"
           done
@@ -54,7 +54,10 @@ jobs:
       - name: Auto-poster tests (detection/throttle replay + facets)
         run: node scripts/test_poster.mjs
 
-      - name: Subscriber-alert matcher tests
+      - name: Web Push VAPID crypto tests
+        run: node scripts/test_webpush.mjs
+
+      - name: Push-alert matcher tests
         run: node scripts/test_notify.mjs
 
       - name: SEO area-page audit (unique titles/canonicals, sitemap sync)

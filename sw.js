@@ -12,7 +12,7 @@
 // 308-redirects /index.html -> /, so a cached/redirected Response can't fulfill a navigation in Safari.
 // We now strip the redirect flag (rebuild the Response) on precache + navigation, and take over
 // immediately (skipWaiting) so a poisoned v1 client self-heals on the next load.
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL = `atlas-shell-${VERSION}`;
 const DATA = `atlas-data-${VERSION}`;
 const LIB = `atlas-lib-${VERSION}`;
@@ -22,7 +22,7 @@ const OURS = new Set([SHELL, DATA, LIB, TILES]);
 // Same-origin runtime graph (verified: geo.mjs + odin.mjs are self-contained, no further imports).
 const SHELL_ASSETS = [
   "./", "./index.html", "./manifest.json",
-  "./web/geo.mjs", "./adapters/odin.mjs", "./web/leadgen.mjs", "./config.js",
+  "./web/geo.mjs", "./adapters/odin.mjs", "./web/leadgen.mjs", "./web/push.mjs", "./config.js",
   "./icons/icon-192.png", "./icons/icon-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png",
 ];
@@ -61,6 +61,41 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("message", (e) => { if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting(); });
+
+// --- Web Push (payload-less): the push carries no data, so we read the user's saved area from IndexedDB
+// and infer the event from the live baseline — out>0 => outage, 0/absent => restored. Tagged per county
+// so it updates in place and the all-clear replaces the outage banner. ALWAYS ends in showNotification
+// (the userVisibleOnly contract). ---
+const PUSH_DATA_URL = "https://raw.githubusercontent.com/iamimaginary/outage-atlas/tracker-data/national/baseline.json";
+function idbGet(key) {
+  return new Promise((resolve) => {
+    const r = indexedDB.open("outage-atlas", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onerror = () => resolve(null);
+    r.onsuccess = () => { try { const t = r.result.transaction("kv", "readonly").objectStore("kv").get(key); t.onsuccess = () => resolve(t.result || null); t.onerror = () => resolve(null); } catch { resolve(null); } };
+  });
+}
+async function handlePush() {
+  const prefs = (await idbGet("alertPrefs")) || {};
+  const fips = prefs.fips, area = prefs.area || "your area", url = prefs.areaPath || "/";
+  let out = null;
+  try { if (fips) { const r = await fetch(PUSH_DATA_URL, { cache: "no-store" }); if (r.ok) { const b = await r.json(); const c = b.counties && b.counties[fips]; out = c ? (c.out || 0) : 0; } } } catch { /* fall through to generic */ }
+  let title, body;
+  if (out > 0) { title = `⚡ Power outage in ${area}`; body = `About ${out.toLocaleString()} customers without power. Tap for live status.`; }
+  else if (out === 0) { title = `✅ Power restored in ${area}`; body = `Power is mostly back. Tap for details.`; }
+  else { title = `⚡ Outage update — ${area}`; body = `Tap for live status.`; }
+  await self.registration.showNotification(title, { body, tag: fips ? `outage-${fips}` : "outage", renotify: true, data: { url }, icon: "/icons/icon-192.png", badge: "/icons/favicon-32.png" });
+}
+self.addEventListener("push", (e) => e.waitUntil(handlePush()));
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || "/";
+  e.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const c of wins) if ("focus" in c) { try { await c.navigate(url); } catch {} return c.focus(); }
+    return self.clients.openWindow(url);
+  })());
+});
 
 const isData = (u) => u.hostname === "raw.githubusercontent.com" && u.pathname.includes("/tracker-data/");
 const isLib = (u) => u.hostname === "unpkg.com";
