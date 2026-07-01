@@ -55,7 +55,10 @@ jobs:
       - name: Auto-poster tests (detection/throttle replay + facets)
         run: node scripts/test_poster.mjs
 
-      - name: Subscriber-alert matcher tests
+      - name: Web Push VAPID crypto tests
+        run: node scripts/test_webpush.mjs
+
+      - name: Push-alert matcher tests
         run: node scripts/test_notify.mjs
 
       - name: SEO area-page audit (unique titles/canonicals, sitemap sync)

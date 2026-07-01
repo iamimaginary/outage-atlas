@@ -15,7 +15,7 @@ import { renderPost } from "./templates.mjs";
 import { makeBluesky } from "./platforms/bluesky.mjs";
 import { makeThreads } from "./platforms/threads.mjs";
 import { makeX } from "./platforms/x.mjs";
-import { matchSubscribers, deliverAlerts } from "./notify.mjs";
+import { matchSubscribers, deliverPush } from "./notify.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA = process.env.POSTER_DATA_DIR || join(ROOT, "data");
@@ -50,20 +50,25 @@ function enrich(e) {
   const { events, areaEvents, state } = detectEvents(prevState, snapshot, now);
   const selected = selectToPost(events, state, now, localHour(now));
 
-  // --- subscriber alerts (Phase 3): reuse the per-area detection to email people watching an area.
-  // Independent of the social gate; DRY-RUN unless NOTIFY_ENABLED + provider + SUBSCRIBERS_URL. ---
+  // --- subscriber alerts (Phase 3): reuse the per-area detection to PUSH to devices watching an area.
+  // Independent of the social gate; DRY-RUN unless PUSH_ENABLED=1 + VAPID keys. Reads the subscriber
+  // list from the bearer-gated /api/push-subscribers, and prunes dead subs (404/410) back through it. ---
   try {
     let subscribers = [];
-    if (process.env.SUBSCRIBERS_URL) {
-      const rs = await fetch(process.env.SUBSCRIBERS_URL, { signal: AbortSignal.timeout(20000) });
-      if (rs.ok) subscribers = await rs.json();
+    if (process.env.PUSH_SUBSCRIBERS_URL && process.env.PUSH_READ_TOKEN) {
+      const rs = await fetch(process.env.PUSH_SUBSCRIBERS_URL, { headers: { Authorization: `Bearer ${process.env.PUSH_READ_TOKEN}` }, signal: AbortSignal.timeout(20000) });
+      if (rs.ok) subscribers = (await rs.json()).subscribers || [];
     }
     const matches = matchSubscribers(areaEvents, subscribers);
-    if (matches.length || subscribers.length) {
-      const res = await deliverAlerts(matches, { urlFor });
-      console.log(`alerts: ${matches.length} match(es) across ${subscribers.length} subscriber(s) — ${res.dryRun ? "DRY-RUN" : `sent ${res.sent}`}`);
+    if (matches.length) {
+      const res = await deliverPush(matches, {
+        subject: process.env.VAPID_SUBJECT || "https://outageatlas.com",
+        publicKey: process.env.VAPID_PUBLIC_KEY, privateKey: process.env.VAPID_PRIVATE_KEY,
+        pruneUrl: process.env.PUSH_SUBSCRIBERS_URL, pruneToken: process.env.PUSH_READ_TOKEN,
+      });
+      console.log(`push alerts: ${matches.length} match(es) / ${subscribers.length} sub(s) — ${res.dryRun ? "DRY-RUN" : `sent ${res.sent}, pruned ${res.pruned}`}`);
     }
-  } catch (e) { console.error("alerts step failed (non-fatal):", e.message); }
+  } catch (e) { console.error("push alerts step failed (non-fatal):", e.message); }
 
   // Build every platform whose creds are present (handoff §2.6 — post to all enabled).
   const platforms = [];
