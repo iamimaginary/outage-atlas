@@ -5,7 +5,7 @@
   "type": "module",
   "description": "National, location-first US power-outage atlas: a free ODIN+NWS baseline for every location plus on-demand deep per-utility detail. Self-maintained by embedded agents behind copious audit gates.",
   "scripts": {
-    "test": "node scripts/test_adapters.mjs && node scripts/validate_configs.mjs && node scripts/test_geo.mjs && node scripts/test_eta.mjs && node scripts/audit_csp.mjs && node scripts/audit_tos.mjs && node scripts/test_audits.mjs",
+    "test": "node scripts/test_adapters.mjs && node scripts/validate_configs.mjs && node scripts/test_geo.mjs && node scripts/test_eta.mjs && node scripts/audit_csp.mjs && node scripts/audit_tos.mjs && node scripts/test_audits.mjs && node scripts/test_poster.mjs",
     "test:adapters": "node scripts/test_adapters.mjs",
     "test:geo": "node scripts/test_geo.mjs",
     "test:audits": "node scripts/test_audits.mjs",

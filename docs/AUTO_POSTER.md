@@ -1,7 +1,40 @@
-# Auto-poster — platform abstraction notes (Phase 2 planning)
+# Auto-poster — platform abstraction notes (Phase 2)
 
-Planning notes for the Phase 2 acquisition engine (handoff v2 §2). Detection/throttle logic lives in
-the handoff; this file tracks the **multi-platform publish layer** (§2.6) so it's designed to grow.
+Notes for the Phase 2 acquisition engine (handoff v2 §2). The **multi-platform publish layer** (§2.6)
+plan is below; the **detection/throttle core is now built** (see "Implementation" at the bottom).
+
+## Implementation (shipped)
+
+All under `poster/`, dependency-free + unit/replay-tested (`scripts/test_poster.mjs`, in the PR gate):
+
+| File | Role |
+|---|---|
+| `poster/detect.mjs` | PURE `detectEvents` / `selectToPost` / `commitPost` — onset/escalation/restored/rollup, latch, per-area interval, global cap, dedup ledger, quiet hours. No IO/clock. |
+| `poster/config.mjs` | Every threshold, env-overridable (`POSTER_ABS_FLOOR`, `POSTER_GLOBAL_CAP`, …). |
+| `poster/templates.mjs` | PURE post copy (§2.4), ≤300 graphemes, derived `#<st>wx` hashtag. |
+| `poster/facets.mjs` | PURE Bluesky rich-text facets (byte-range links + hashtags) — hand-rolled to stay dependency-free. |
+| `poster/platforms/bluesky.mjs` | Bluesky XRPC client behind `publish(text, link)` (createSession + createRecord + external embed). |
+| `poster/post.mjs` | Orchestrator (only IO/clock/network): load snapshot + state → detect → select → render → publish → persist `data/poster_state.json`. |
+
+**Runs** as the `Auto-post outage events` step in `collect-baseline.yml`, after the snapshot is written
+and before publish (so `poster_state.json` is committed to `tracker-data`).
+
+### Going live (operator)
+1. Create a Bluesky bot account + an **App Password** (Settings → App Passwords).
+2. Repo → Settings → Secrets and variables → Actions: add secrets `BLUESKY_HANDLE`,
+   `BLUESKY_APP_PASSWORD`; add variable `POSTER_ENABLED=1` (and optionally `POSTER_URL_BASE`,
+   `POSTER_TZ`, or `POSTER_DRY_RUN=1` to force a rehearsal). Put "unofficial / not affiliated" in the
+   **bot bio** to save post characters.
+3. Until `POSTER_ENABLED=1` **and** both secrets exist, the step runs **dry-run** (logs would-be posts,
+   writes nothing). Kill switch: set `POSTER_ENABLED` to anything but `1`.
+
+### Known data limitation (from the Phase-1 finding)
+The onset **percentage floor** (§2.2, "≥2% of the area's customers") needs a per-county customer
+denominator. **ODIN carries none**, so the poster applies the **absolute floor only** unless a snapshot
+county exposes `served` (deep feeds do). A future task can bundle a FIPS→customers/population table to
+restore the % gate; the code already uses `county.served` when present.
+
+## Platform-abstraction plan (§2.6)
 
 ## The interface (§2.6)
 

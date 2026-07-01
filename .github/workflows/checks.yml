@@ -25,7 +25,7 @@ jobs:
 
       - name: All scripts/adapters parse
         run: |
-          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs; do
+          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs poster/*.mjs poster/platforms/*.mjs; do
             [ -e "$f" ] || continue
             node --check "$f" && echo "ok $f"
           done
@@ -50,3 +50,6 @@ jobs:
 
       - name: Audit the auditors
         run: node scripts/test_audits.mjs
+
+      - name: Auto-poster tests (detection/throttle replay + facets)
+        run: node scripts/test_poster.mjs
