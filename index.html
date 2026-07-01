@@ -24,7 +24,7 @@
   main { max-width:920px; margin:0 auto; padding:16px; }
   .search { display:flex; gap:8px; flex-wrap:wrap; }
   .search input { flex:1 1 200px; min-width:0; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:16px; }
-  button { padding:10px 14px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:14px; cursor:pointer; }
+  button { padding:12px 16px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:14px; cursor:pointer; }
   button.primary { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:600; }
   button:active { transform:translateY(1px); }
   .status { color:var(--mut); font-size:12px; margin:8px 2px; }
@@ -41,9 +41,13 @@
   .eta { margin-top:8px; font-size:15px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:#0b1f17; }
   .eta.bad { background:#1f0f0b; } .eta b { color:var(--ok); } .eta.bad b { color:var(--bad); }
   #map { height:46vh; min-height:300px; border:1px solid var(--line); border-radius:12px; margin-top:14px; }
-  .stats { display:flex; gap:18px; flex-wrap:wrap; }
+  .stats { display:grid; grid-template-columns:repeat(4,auto); gap:14px 22px; justify-content:start; }
   .stat .big { line-height:1.1; } .stat .small { color:var(--mut); }
-  .states { columns:2; font-size:13px; } .states div { padding:1px 0; }
+  .states { columns:2; column-gap:22px; font-size:13px; }
+  .states .st { position:relative; display:flex; justify-content:space-between; gap:8px; padding:3px 7px; break-inside:avoid; border-radius:4px; }
+  .states .st-bar { position:absolute; inset:0 auto 0 0; background:rgba(88,166,255,.16); border-radius:4px; z-index:0; }
+  .states .st-name, .states .st-num { position:relative; z-index:1; }
+  .states .st-num { color:var(--mut); }
   a { color:var(--acc); }
   .spark { vertical-align:middle; }
   .trend { display:flex; align-items:center; gap:8px; margin-top:8px; }
@@ -54,6 +58,20 @@
   #fb textarea { min-height:90px; resize:vertical; } #fb .actions { display:flex; gap:8px; margin-top:8px; }
   footer { color:var(--mut); font-size:12px; padding:18px 16px; border-top:1px solid var(--line); margin-top:20px; }
   .leaflet-popup-content { font-size:13px; }
+  /* map legend: decodes marker color (severity) + size (scale) */
+  .map-legend { background:rgba(22,27,34,.92); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11px; color:var(--fg); line-height:1.5; }
+  .map-legend .ml-row { display:flex; align-items:center; gap:6px; }
+  .map-legend .ml-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .map-legend .ml-size { display:flex; align-items:center; gap:5px; margin-top:5px; padding-top:5px; border-top:1px solid var(--line); color:var(--mut); }
+  .map-legend .ml-c { display:inline-block; border-radius:50%; background:var(--mut); }
+  .map-legend .ml-c1 { width:5px; height:5px; } .map-legend .ml-c2 { width:8px; height:8px; } .map-legend .ml-c3 { width:12px; height:12px; }
+  /* keep the page from ever scrolling sideways on phones */
+  html, body { overflow-x:hidden; }
+  @media (max-width:520px){
+    .stats { grid-template-columns:1fr 1fr; gap:12px 16px; }
+    .big { font-size:26px; }
+    footer { overflow-wrap:break-word; }
+  }
 </style>
 </head>
 <body>
@@ -65,14 +83,14 @@
 <main>
   <div class="search">
     <input id="q" placeholder="ZIP, city, address, county, or lat,lon" autocomplete="off" />
-    <button class="primary" id="go">Check</button>
-    <button id="geo">📍 My location</button>
+    <button id="go">Check</button>
+    <button class="primary" id="geo">📍 Use my location</button>
   </div>
   <div class="status" id="status">Loading national baseline…</div>
 
   <div class="panel hide" id="result"></div>
 
-  <div id="map"></div>
+  <div id="map" role="region" aria-label="Map of active US power outages"></div>
 
   <div class="panel" id="national">
     <div class="stats" id="nat-stats"><span class="muted">Loading…</span></div>
@@ -201,7 +219,8 @@ async function loadBaseline() {
     try { const ri = await fetch(INDEX_URL, { cache: "no-store" }); if (ri.ok) INDEX = await ri.json(); } catch {}
     const age = Math.round((Date.now() - b.collectedAt) / 60000);
     if (age > STALE_MIN) { setStatus(`Published snapshot ${age} min old — refreshing from live ODIN…`); return liveOdin(b.alertsByFips || {}, b.alerts || []); }
-    setStatus(`National baseline: ${fmt(b.national.out)} out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN+NWS).`);
+    const headline = (b.national.blended && b.national.blended.out) || b.national.out;
+    setStatus(`Live now: ${fmt(headline)} customers out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN + deep utility feeds).`);
     return b;
   } catch (e) {
     setStatus("Published snapshot unavailable — fetching live ODIN…");
@@ -223,14 +242,17 @@ function renderNational(b) {
     : "";
   // national trend sparkline: blended customers-out over the last ~24h (collector accumulates national.trend)
   const trend = (b.national.trend || []).map((p) => p.out);
-  const spark = sparkline(trend, 140, 30);
+  const spark = sparkline(trend, 240, 40);
   $("nat-trend").innerHTML = spark
     ? `<div class="trend">${spark}<span class="small">customers out, last ${trend.length < 8 ? trend.length * 15 + " min" : Math.round(trend.length / 4) + "h"} · ${trend[trend.length - 1] > trend[0] ? "rising" : "easing"}</span></div>`
     : "";
   const byState = {};
   for (const k in b.counties) { const c = b.counties[k]; byState[c.state] = (byState[c.state] || 0) + c.out; }
-  $("nat-states").innerHTML = Object.entries(byState).sort((a, z) => z[1] - a[1])
-    .map(([s, o]) => `<div>${s} <span class="muted">${fmt(o)}</span></div>`).join("");
+  const stEntries = Object.entries(byState).sort((a, z) => z[1] - a[1]);
+  const stMax = stEntries.length ? stEntries[0][1] : 1;
+  $("nat-states").innerHTML = stEntries
+    .map(([s, o]) => `<div class="st"><span class="st-bar" style="width:${Math.max(3, Math.round((o / stMax) * 100))}%"></span>`
+      + `<span class="st-name">${s}</span><span class="st-num">${fmt(o)}</span></div>`).join("");
 }
 
 // ---- map ----
@@ -238,6 +260,17 @@ function initMap(b) {
   map = L.map("map", { worldCopyJump: true }).setView([39.5, -98.35], 4);
   L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
     { attribution: "© OpenStreetMap, © CARTO", maxZoom: 18 }).addTo(map);
+  const legend = L.control({ position: "bottomleft" });
+  legend.onAdd = () => {
+    const d = L.DomUtil.create("div", "map-legend");
+    d.innerHTML =
+      `<div class="ml-row"><span class="ml-dot" style="background:#58a6ff"></span>under 100 out</div>`
+      + `<div class="ml-row"><span class="ml-dot" style="background:#d29922"></span>100–1,000</div>`
+      + `<div class="ml-row"><span class="ml-dot" style="background:#f85149"></span>1,000+</div>`
+      + `<div class="ml-size"><span class="ml-c ml-c1"></span><span class="ml-c ml-c2"></span><span class="ml-c ml-c3"></span>larger = more customers</div>`;
+    return d;
+  };
+  legend.addTo(map);
   const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
   const pts = Object.entries(b.counties).map(([fips, c]) => ({ ...c, fips }))
     .filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
@@ -313,7 +346,7 @@ async function showLocation(lat, lon, label) {
   if (county) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
     if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
-    else html += `<div class="small muted">No active outages reported in this county.</div>`;
+    else html += `<div class="eta" style="margin-top:8px">✓ <b>Power looks on.</b> No active outages reported in ${county.county} County right now.</div>`;
     if (c) html += etaBlock(c, county.fips);
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
     if (c && c.utilities.length) {
@@ -347,7 +380,7 @@ async function showLocation(lat, lon, label) {
 function clearDeep() { if (deepLayer) { map.removeLayer(deepLayer); deepLayer = null; } }
 function plotDeep(snap) {
   clearDeep();
-  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#3fb950");
+  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
   const pts = [];
   for (const a of (snap.areas || [])) {
     const subs = (a.subs || []).filter((s) => Array.isArray(s.loc) && s.out > 0);
