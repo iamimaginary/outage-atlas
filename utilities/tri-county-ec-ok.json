@@ -1,0 +1,15 @@
+{
+  "id": "tri-county-ec-ok",
+  "name": "Tri-County Electric Coop (OK)",
+  "adapter": "kiuc",
+  "match": [
+    "TRI-COUNTY ELECTRIC",
+    "HOOKER"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/tcec/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

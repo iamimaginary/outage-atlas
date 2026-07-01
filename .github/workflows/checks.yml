@@ -25,7 +25,8 @@ jobs:
 
       - name: All scripts/adapters parse
         run: |
-          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs poster/*.mjs poster/platforms/*.mjs workers/*.mjs functions/api/*.js web/*.mjs; do
+          for f in scripts/*.mjs scripts/lib/*.mjs adapters/*.mjs poster/*.mjs poster/platforms/*.mjs \
+                   workers/*.mjs workers/lib/*.mjs web/*.mjs functions/*.js functions/api/*.js functions/admin/api/*.js; do
             [ -e "$f" ] || continue
             node --check "$f" && echo "ok $f"
           done
@@ -65,3 +66,6 @@ jobs:
 
       - name: Lead-gen classifier tests
         run: node scripts/test_leadgen.mjs
+
+      - name: Admin portal tests (analytics + settings allowlist + Access JWT)
+        run: node scripts/test_admin.mjs

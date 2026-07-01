@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' https://unpkg.com 'unsafe-inline';
+  script-src 'self' https://unpkg.com https://pagead2.googlesyndication.com 'unsafe-inline';
   style-src 'self' https://unpkg.com 'unsafe-inline';
-  img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
-  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com;
+  img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://googleads.g.doubleclick.net;
+  frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com;
+  connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net;
 " />
 <title>Outage Atlas — find power outages near you</title>
 <meta name="description" content="Find power outages near you: a free national baseline for every location, plus deep per-utility detail and a recovery-time estimate where available." />
@@ -49,9 +50,9 @@
   main { max-width:920px; margin:0 auto; padding:16px; }
   .search { display:flex; gap:8px; flex-wrap:wrap; }
   .search input { flex:1 1 200px; min-width:0; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:16px; }
-  button { padding:10px 14px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:14px; cursor:pointer; }
+  button { padding:12px 16px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); font-size:14px; cursor:pointer; }
   button.primary { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:600; }
-  .lg-btn { display:inline-block; padding:9px 14px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); text-decoration:none; font-size:14px; cursor:pointer; }
+  .lg-btn { display:inline-block; padding:12px 16px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); text-decoration:none; font-size:14px; cursor:pointer; }
   .lg-btn.primary { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:600; }
   .lg-form input, .lg-form select { padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); font:inherit; }
   button:active { transform:translateY(1px); }
@@ -69,9 +70,13 @@
   .eta { margin-top:8px; font-size:15px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:#0b1f17; }
   .eta.bad { background:#1f0f0b; } .eta b { color:var(--ok); } .eta.bad b { color:var(--bad); }
   #map { height:46vh; min-height:300px; border:1px solid var(--line); border-radius:12px; margin-top:14px; }
-  .stats { display:flex; gap:18px; flex-wrap:wrap; }
+  .stats { display:grid; grid-template-columns:repeat(4,auto); gap:14px 22px; justify-content:start; }
   .stat .big { line-height:1.1; } .stat .small { color:var(--mut); }
-  .states { columns:2; font-size:13px; } .states div { padding:1px 0; }
+  .states { columns:2; column-gap:22px; font-size:13px; }
+  .states .st { position:relative; display:flex; justify-content:space-between; gap:8px; padding:3px 7px; break-inside:avoid; border-radius:4px; }
+  .states .st-bar { position:absolute; inset:0 auto 0 0; background:rgba(88,166,255,.16); border-radius:4px; z-index:0; }
+  .states .st-name, .states .st-num { position:relative; z-index:1; }
+  .states .st-num { color:var(--mut); }
   a { color:var(--acc); }
   .spark { vertical-align:middle; }
   .trend { display:flex; align-items:center; gap:8px; margin-top:8px; }
@@ -82,6 +87,28 @@
   #fb textarea { min-height:90px; resize:vertical; } #fb .actions { display:flex; gap:8px; margin-top:8px; }
   footer { color:var(--mut); font-size:12px; padding:18px 16px; border-top:1px solid var(--line); margin-top:20px; }
   .leaflet-popup-content { font-size:13px; }
+  /* map legend: decodes marker color (severity) + size (scale) */
+  .map-legend { background:rgba(22,27,34,.92); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11px; color:var(--fg); line-height:1.5; }
+  .map-legend .ml-row { display:flex; align-items:center; gap:6px; }
+  .map-legend .ml-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .map-legend .ml-size { display:flex; align-items:center; gap:5px; margin-top:5px; padding-top:5px; border-top:1px solid var(--line); color:var(--mut); }
+  .map-legend .ml-c { display:inline-block; border-radius:50%; background:var(--mut); }
+  .map-legend .ml-c1 { width:5px; height:5px; } .map-legend .ml-c2 { width:8px; height:8px; } .map-legend .ml-c3 { width:12px; height:12px; }
+  /* keep the page from ever scrolling sideways on phones */
+  html, body { overflow-x:hidden; }
+  @media (max-width:520px){
+    .stats { grid-template-columns:1fr 1fr; gap:12px 16px; }
+    .big { font-size:26px; }
+    footer { overflow-wrap:break-word; }
+  }
+  /* operator-editable announcement banner (admin portal → Settings) */
+  .announce { border-radius:10px; padding:10px 14px; margin:0 0 12px; font-size:14px; border:1px solid var(--line); background:var(--panel); }
+  .announce a { color:inherit; text-decoration:underline; }
+  .announce.warn { border-color:var(--warn); background:rgba(210,153,34,.12); }
+  .announce.alert { border-color:var(--bad); background:rgba(248,81,73,.12); }
+  /* ad slot: reserved, non-intrusive, below the content — hidden unless an ad provider is enabled */
+  #ads-slot { margin-top:14px; min-height:0; text-align:center; }
+  #ads-slot .ad-note { color:var(--mut); font-size:10px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:4px; }
 </style>
 </head>
 <body>
@@ -91,10 +118,11 @@
 </header>
 
 <main>
+  <div id="announce" class="hide"></div>
   <div class="search">
     <input id="q" placeholder="ZIP, city, address, county, or lat,lon" autocomplete="off" />
-    <button class="primary" id="go">Check</button>
-    <button id="geo">📍 My location</button>
+    <button id="go">Check</button>
+    <button class="primary" id="geo">📍 Use my location</button>
   </div>
   <div class="status" id="status">Loading national baseline…</div>
 
@@ -104,7 +132,7 @@
 
   <div id="leadgen" hidden></div>
 
-  <div id="map"></div>
+  <div id="map" role="region" aria-label="Map of active US power outages"></div>
 
   <div class="panel" id="national">
     <div class="stats" id="nat-stats"><span class="muted">Loading…</span></div>
@@ -113,6 +141,8 @@
     <div style="margin-top:12px" class="small muted">States with active outages (by customers out):</div>
     <div class="states" id="nat-states"></div>
   </div>
+
+  <div id="ads-slot" class="hide"></div>
 
   <div class="panel hide" id="fb">
     <div><b>Send feedback</b></div>
@@ -152,6 +182,7 @@ import { geocode, resolvePoint } from "./web/geo.mjs";
 import { parseOdinRecords } from "./adapters/odin.mjs";
 import { renderCTA } from "./web/leadgen.mjs";
 import { renderPushControl } from "./web/push.mjs";
+import { mountAds } from "./web/ads.mjs";
 
 const REPO = "iamimaginary/outage-atlas";
 const BASELINE_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/baseline.json`;
@@ -159,6 +190,49 @@ const INDEX_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/nation
 const DEEP_URL = (id) => `https://raw.githubusercontent.com/${REPO}/tracker-data/utilities/${id}.json`;
 const HIST_URL = `https://raw.githubusercontent.com/${REPO}/tracker-data/national/history.json`;
 const ISSUE_NEW = `https://github.com/${REPO}/issues/new`; // feedback opens a pre-filled issue (user submits)
+const TRACK_ENDPOINT = "/api/track";   // cookieless, PII-free aggregate analytics (see workers/track.mjs)
+const CONFIG_ENDPOINT = "/api/config"; // operator-editable runtime config (admin portal → Settings)
+
+// Runtime, operator-editable config + feature flags (fetched from CONFIG_ENDPOINT; safe defaults if off).
+let RUNTIME = {};
+let FLAGS = { leadgen: true, alerts: true, deepView: true };
+
+// Cookieless analytics beacon. Sends NO cookie/id; the server derives a daily-rotating anon token and
+// stores no PII. Best-effort + non-blocking; failures are swallowed. type ∈ pageview|search|deep|alert.
+function track(type, path, meta) {
+  try {
+    const body = JSON.stringify({ type, path: path == null ? location.pathname : String(path), ref: document.referrer || "", meta: meta || {} });
+    if (navigator.sendBeacon) navigator.sendBeacon(TRACK_ENDPOINT, new Blob([body], { type: "application/json" }));
+    else fetch(TRACK_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+  } catch (e) { /* analytics is best-effort */ }
+}
+
+// Announcement banner (operator-editable). Rendered into #announce; hidden unless enabled + has text.
+function renderBanner(b) {
+  const el = $("announce");
+  if (!el) return;
+  if (!b || !b.enabled || !b.text) { el.className = "hide"; el.innerHTML = ""; return; }
+  const safe = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  el.className = "announce" + (b.level && b.level !== "info" ? " " + b.level : "");
+  el.innerHTML = b.href ? `<a href="${safe(b.href)}" target="_blank" rel="noopener">${safe(b.text)}</a>` : safe(b.text);
+}
+
+// Fetch + apply the operator's runtime config: merges affiliate/lead settings into window.OUTAGE_CONFIG
+// (read by web/leadgen.mjs), toggles feature flags, renders the banner, and mounts ads if enabled.
+async function loadRuntimeConfig() {
+  try {
+    const r = await fetch(CONFIG_ENDPOINT, { cache: "no-store" });
+    if (r.ok) RUNTIME = await r.json();
+  } catch (e) { RUNTIME = {}; }
+  if (RUNTIME.flags) FLAGS = Object.assign({ leadgen: true, alerts: true, deepView: true }, RUNTIME.flags);
+  const base = window.OUTAGE_CONFIG || {};
+  window.OUTAGE_CONFIG = Object.assign({}, base, {
+    leadEndpoint: RUNTIME.leadEndpoint || base.leadEndpoint || "/api/lead",
+    affiliates: Object.assign({}, base.affiliates, RUNTIME.affiliates || {}),
+  });
+  renderBanner(RUNTIME.banner);
+  try { mountAds(RUNTIME.ads, $("ads-slot")); } catch (e) {}
+}
 const normCounty = (s) => String(s || "").toUpperCase().replace(/\s+COUNTY$/, "").trim();
 const ODIN_EXPORT = "https://ornl.opendatasoft.com/api/explore/v2.1/catalog/datasets/odin-real-time-outages-county/exports/json?select=communitydescriptor,county,state,utility_id,name,metersaffected,estimatedrestorationtime,geo_point_2d";
 
@@ -237,7 +311,8 @@ async function loadBaseline() {
     try { const ri = await fetch(INDEX_URL, { cache: "no-store" }); if (ri.ok) INDEX = await ri.json(); } catch {}
     const age = Math.round((Date.now() - b.collectedAt) / 60000);
     if (age > STALE_MIN) { setStatus(`Published snapshot ${age} min old — refreshing from live ODIN…`); return liveOdin(b.alertsByFips || {}, b.alerts || []); }
-    setStatus(`National baseline: ${fmt(b.national.out)} out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN+NWS).`);
+    const headline = (b.national.blended && b.national.blended.out) || b.national.out;
+    setStatus(`Live now: ${fmt(headline)} customers out across ${fmt(b.national.counties)} counties · updated ${age} min ago (ODIN + deep utility feeds).`);
     return b;
   } catch (e) {
     setStatus("Published snapshot unavailable — fetching live ODIN…");
@@ -259,14 +334,17 @@ function renderNational(b) {
     : "";
   // national trend sparkline: blended customers-out over the last ~24h (collector accumulates national.trend)
   const trend = (b.national.trend || []).map((p) => p.out);
-  const spark = sparkline(trend, 140, 30);
+  const spark = sparkline(trend, 240, 40);
   $("nat-trend").innerHTML = spark
     ? `<div class="trend">${spark}<span class="small">customers out, last ${trend.length < 8 ? trend.length * 15 + " min" : Math.round(trend.length / 4) + "h"} · ${trend[trend.length - 1] > trend[0] ? "rising" : "easing"}</span></div>`
     : "";
   const byState = {};
   for (const k in b.counties) { const c = b.counties[k]; byState[c.state] = (byState[c.state] || 0) + c.out; }
-  $("nat-states").innerHTML = Object.entries(byState).sort((a, z) => z[1] - a[1])
-    .map(([s, o]) => `<div>${s} <span class="muted">${fmt(o)}</span></div>`).join("");
+  const stEntries = Object.entries(byState).sort((a, z) => z[1] - a[1]);
+  const stMax = stEntries.length ? stEntries[0][1] : 1;
+  $("nat-states").innerHTML = stEntries
+    .map(([s, o]) => `<div class="st"><span class="st-bar" style="width:${Math.max(3, Math.round((o / stMax) * 100))}%"></span>`
+      + `<span class="st-name">${s}</span><span class="st-num">${fmt(o)}</span></div>`).join("");
 }
 
 // ---- map ----
@@ -274,12 +352,25 @@ function initMap(b) {
   map = L.map("map", { worldCopyJump: true }).setView([39.5, -98.35], 4);
   L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
     { attribution: "© OpenStreetMap, © CARTO", maxZoom: 18 }).addTo(map);
+  const legend = L.control({ position: "bottomleft" });
+  legend.onAdd = () => {
+    const d = L.DomUtil.create("div", "map-legend");
+    d.innerHTML =
+      `<div class="ml-row"><span class="ml-dot" style="background:#58a6ff"></span>under 100 out</div>`
+      + `<div class="ml-row"><span class="ml-dot" style="background:#d29922"></span>100–1,000</div>`
+      + `<div class="ml-row"><span class="ml-dot" style="background:#f85149"></span>1,000+</div>`
+      + `<div class="ml-size"><span class="ml-c ml-c1"></span><span class="ml-c ml-c2"></span><span class="ml-c ml-c3"></span>larger = more customers</div>`;
+    return d;
+  };
+  legend.addTo(map);
   const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
   const pts = Object.entries(b.counties).map(([fips, c]) => ({ ...c, fips }))
     .filter((c) => c.loc && c.out > 0).sort((a, z) => z.out - a.out).slice(0, 500);
   for (const c of pts) {
     const dm = deepMatch(c.utilities || []);
-    const m = L.circleMarker(c.loc, { radius: Math.min(22, 3 + Math.sqrt(c.out)), color: sev(c.out), weight: 1, fillOpacity: 0.35 }).addTo(map);
+    // crisp discs: a thin dark outline + a mostly-opaque severity fill so overlapping counties read as
+    // distinct circles (not a merged translucent blob). Size still encodes customers out (see legend).
+    const m = L.circleMarker(c.loc, { radius: Math.min(18, 3 + Math.sqrt(c.out)), color: "#0d1117", weight: 1, fillColor: sev(c.out), fillOpacity: 0.8 }).addTo(map);
     m._county = c; m._dm = dm;
     m.bindPopup(popupHtml(c, dm));
   }
@@ -324,6 +415,7 @@ function showCounty(c, dm) {
 
 // ---- which serving utility (HIFLD) has a deep feed in our index? ----
 function deepMatch(utilities) {
+  if (FLAGS.deepView === false) return null; // operator disabled the deep per-utility view
   const deep = INDEX.deep || {};
   for (const id in deep) {
     const d = deep[id];
@@ -344,16 +436,17 @@ async function showLocation(lat, lon, label) {
   const out = c ? c.out : 0;
   const alerts = (county && BASELINE.alertsByFips && BASELINE.alertsByFips[county.fips]) || [];
   CTX = { view: "search", query: label || `${lat.toFixed(3)},${lon.toFixed(3)}`, county: county ? `${county.county}, ${county.state}` : null, fips: county ? county.fips : null, out, utilities: utilities.map((u) => u.name).join("; ") || null, deep: null };
-  if (county) { const _sl = county.county.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); renderPushControl($("alerts"), { fips: county.fips, area: `${county.county}, ${county.state}`, areaPath: `/outage/${county.state.toLowerCase()}/${_sl}` }); }
+  if (county && FLAGS.alerts !== false) { const _sl = county.county.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); renderPushControl($("alerts"), { fips: county.fips, area: `${county.county}, ${county.state}`, areaPath: `/outage/${county.state.toLowerCase()}/${_sl}` }); }
   else $("alerts").hidden = true;
   // monetization CTA (Phase 6): acute (storm outage) → power affiliate; chronic/blue-sky → backup quote.
-  renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
+  if (FLAGS.leadgen === false) { $("leadgen").hidden = true; $("leadgen").innerHTML = ""; }
+  else renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
 
   let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
     if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
-    else html += `<div class="small muted">No active outages reported in this county.</div>`;
+    else html += `<div class="eta" style="margin-top:8px">✓ <b>Power looks on.</b> No active outages reported in ${county.county} County right now.</div>`;
     if (c) html += etaBlock(c, county.fips);
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
     if (c && c.utilities.length) {
@@ -387,7 +480,7 @@ async function showLocation(lat, lon, label) {
 function clearDeep() { if (deepLayer) { map.removeLayer(deepLayer); deepLayer = null; } }
 function plotDeep(snap) {
   clearDeep();
-  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#3fb950");
+  const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
   const pts = [];
   for (const a of (snap.areas || [])) {
     const subs = (a.subs || []).filter((s) => Array.isArray(s.loc) && s.out > 0);
@@ -399,7 +492,7 @@ function plotDeep(snap) {
   const shown = pts.slice(0, 400);
   deepLayer = L.layerGroup();
   for (const p of shown) {
-    L.circleMarker(p.loc, { radius: Math.min(20, 4 + Math.sqrt(p.out)), color: sev(p.out), weight: 2, fillColor: sev(p.out), fillOpacity: 0.7 })
+    L.circleMarker(p.loc, { radius: Math.min(18, 4 + Math.sqrt(p.out)), color: "#0d1117", weight: 1, fillColor: sev(p.out), fillOpacity: 0.9 })
       .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${etaBr(p)}<br><span class="small muted">${snap.name} · deep</span>`)
       .addTo(deepLayer);
   }
@@ -411,6 +504,7 @@ function plotDeep(snap) {
 // ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
 async function renderDeep(id, county) {
   CTX.deep = id;
+  track("deep", id);
   let host = $("deepbox");
   // insert the deep panel AFTER the map so the order reads result → map → deep detail: the affected
   // areas are plotted on the map directly above this panel (matches the "mapped above" copy below).
@@ -452,11 +546,13 @@ async function renderDeep(id, county) {
 // ---- events ----
 async function onGo() {
   const q = $("q").value.trim(); if (!q) return;
+  track("search", q, { kind: "query" });
   try { const g = await geocode(q); await showLocation(g.lat, g.lon, g.label); }
   catch (e) { $("result").classList.remove("hide"); $("result").innerHTML = `<div style="color:var(--bad)">${e.message}</div>`; }
 }
 function onGeo() {
   if (!navigator.geolocation) return setStatus("Geolocation not supported.");
+  track("search", "geolocation", { kind: "geo" });
   navigator.geolocation.getCurrentPosition(
     (p) => showLocation(p.coords.latitude, p.coords.longitude, "My location"),
     () => setStatus("Couldn't get your location — enter a ZIP instead."));
@@ -503,7 +599,10 @@ $("fb-cancel").onclick = () => toggleFeedback(false);
 
 // ---- boot ----
 (async () => {
+  const cfgP = loadRuntimeConfig();     // flags/banner/ads + affiliate config (parallel with baseline)
   BASELINE = await loadBaseline();
+  await cfgP;                            // ensure flags are applied before deep chips render
+  track("pageview");
   renderNational(BASELINE);
   initMap(BASELINE);
 })();

@@ -1,0 +1,14 @@
+{
+  "id": "coastal-ec-sc",
+  "name": "Coastal Electric Coop (SC)",
+  "adapter": "kiuc",
+  "match": [
+    "COASTAL ELECTRIC"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/coastal/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

@@ -33,6 +33,14 @@ gating it.
 - **Never interstitial / never gates outage info** — the CTA is a panel below the status, hidden when `none`.
 - **PII**: the lead worker forwards to the operator webhook and neither stores nor logs the payload.
 
+## Runtime editing (admin portal)
+
+`config.js` is the **static fallback**. In production these same fields — affiliate URLs, `leadEndpoint`,
+plus a **display-ad provider** (AdSense), **feature flags**, and an **announcement banner** — are editable
+live from the admin portal (`admin.outageatlas.com` → Settings) and served to the page via `/api/config`,
+so changes go live without a deploy. See **`docs/ADMIN.md`**. Note: enabling display ads is a deliberate
+privacy-posture change (loads Google's ad scripts) — off by default.
+
 ## Going live (operator)
 
 1. Join EcoFlow + Jackery affiliate programs → put your tracking URLs in `config.js` `affiliates`
