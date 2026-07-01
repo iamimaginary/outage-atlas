@@ -1,0 +1,14 @@
+{
+  "id": "poudre-valley-rea",
+  "name": "Poudre Valley REA (CO)",
+  "adapter": "kiuc",
+  "match": [
+    "POUDRE VALLEY"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/pvrea/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}

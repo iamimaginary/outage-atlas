@@ -1,0 +1,14 @@
+{
+  "id": "harriman-utility-tn",
+  "name": "Harriman Utility Board (TN)",
+  "adapter": "kiuc",
+  "match": [
+    "HARRIMAN"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/hubtn/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
