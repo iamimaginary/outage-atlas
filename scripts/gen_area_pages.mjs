@@ -91,12 +91,15 @@ const subscribeForm = (fips) => `<div class="panel">
   </script>
 </div>`;
 
-function areaPage({ fips, county, state }, siblings) {
-  const canonical = `${SITE}/outage/${state.toLowerCase()}/${slug(county)}`;
+function areaPage({ fips, county, state, _slug }, siblings) {
+  const sl = _slug || slug(county);
+  const canonical = `${SITE}/outage/${state.toLowerCase()}/${sl}`;
+  // per-area OG card if it was generated (metros), else the site-wide default (long tail).
+  const ogImage = existsSync(join(ROOT, "og", state.toLowerCase(), `${sl}.png`)) ? `/og/${state.toLowerCase()}/${sl}.png` : "/og/og-default.png";
   const title = `Power outage in ${county}, ${state} — live status, customers affected, ETA | Outage Atlas`;
   const desc = `Live power-outage status for ${county}, ${state}: how many customers are without power right now, active weather alerts, and an estimated recovery time. Free, updated ~every 15 minutes.`;
   const nearby = siblings.filter((s) => s.fips !== fips).slice(0, 8)
-    .map((s) => `<a href="/outage/${s.state.toLowerCase()}/${slug(s.county)}">${esc(s.county)}</a>`).join(" · ");
+    .map((s) => `<a href="/outage/${s.state.toLowerCase()}/${s._slug || slug(s.county)}">${esc(s.county)}</a>`).join(" · ");
   const body = `<body>
 <header><a href="/">← Outage Atlas</a></header>
 <main>
@@ -133,7 +136,7 @@ fetch('${DATA_BASE}',{cache:'no-store'}).then(function(r){return r.json();}).the
 }).catch(function(){document.getElementById('status').innerHTML='<div class="muted">Live data temporarily unavailable — see the <a href="/?q=${encodeURIComponent(county + ", " + state)}">full map</a>.</div>';});
 </script>
 </body></html>`;
-  return head({ title, desc, canonical, ogImage: `/og/${state.toLowerCase()}/${slug(county)}.png` }) + body;
+  return head({ title, desc, canonical, ogImage }) + body;
 }
 
 function stateIndex(state, areas) {
@@ -141,7 +144,7 @@ function stateIndex(state, areas) {
   const title = `Power outages in ${stName(state)} — live status by county | Outage Atlas`;
   const desc = `Live power-outage status by county across ${stName(state)}. Free, updated ~every 15 minutes from public ODIN + NWS data.`;
   const list = areas.sort((a, b) => a.county.localeCompare(b.county))
-    .map((a) => `<li><a href="/outage/${state.toLowerCase()}/${slug(a.county)}">${esc(a.county)} County</a></li>`).join("");
+    .map((a) => `<li><a href="/outage/${state.toLowerCase()}/${a._slug || slug(a.county)}">${esc(a.county)}</a></li>`).join("");
   return head({ title, desc, canonical }) + `<body><header><a href="/">← Outage Atlas</a></header><main>
 <h1>Power outages in ${esc(stName(state))}</h1>
 <div class="muted small">Live outage status by county · updated ~every 15 minutes</div>
@@ -174,6 +177,13 @@ function writeSitemap(urls) {
   const byState = {};
   for (const c of counties) (byState[c.state] = byState[c.state] || []).push(c);
 
+  // assign a unique per-state slug up front (belt-and-suspenders against rare name collisions), so
+  // file path, canonical, sitemap, and cross-links all agree.
+  for (const st of Object.keys(byState)) {
+    const used = new Set();
+    for (const c of byState[st]) { let s = slug(c.county); if (used.has(s)) s = `${s}-${c.fips}`; used.add(s); c._slug = s; }
+  }
+
   const urls = [`${SITE}/`, `${SITE}/outage/`];
   for (const st of Object.keys(byState)) {
     const dir = join(OUT_DIR, st.toLowerCase());
@@ -181,8 +191,8 @@ function writeSitemap(urls) {
     writeFileSync(join(dir, "index.html"), stateIndex(st, byState[st]));
     urls.push(`${SITE}/outage/${st.toLowerCase()}/`);
     for (const c of byState[st]) {
-      writeFileSync(join(dir, `${slug(c.county)}.html`), areaPage(c, byState[st]));
-      urls.push(`${SITE}/outage/${st.toLowerCase()}/${slug(c.county)}`);
+      writeFileSync(join(dir, `${c._slug}.html`), areaPage(c, byState[st]));
+      urls.push(`${SITE}/outage/${st.toLowerCase()}/${c._slug}`);
     }
   }
   writeFileSync(join(OUT_DIR, "index.html"), nationalIndex(byState));

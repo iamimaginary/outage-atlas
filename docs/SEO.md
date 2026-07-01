@@ -32,6 +32,15 @@ County source, first that exists:
 2. `data/national/baseline.json` — every county in the current snapshot (at collect time).
 3. `scripts/data/seed-counties.json` — the committed seed (NE Ohio + major metros) that ships today.
 
-**To generate the full national set** (~3,143 counties): point `AREA_SOURCE` at a Census county
-gazetteer converted to `[{fips,county,state}]`, run the generator, and commit. The audit + template
-scale as-is. `SITE_BASE` overrides the domain (default `https://outageatlas.com`).
+**Full national set — SHIPPED.** `npm run gen:national` builds the whole country:
+1. `scripts/gen_us_counties.mjs` fetches the Census county code file → `scripts/data/us-counties.json`
+   (~3,221 counties; names normalized, independent cities keep " city" to avoid slug collisions).
+2. `scripts/gen_og_cards.mjs` renders per-area OG cards for the **metros** (the seed list).
+3. `gen_area_pages.mjs` (with `AREA_SOURCE=scripts/data/us-counties.json`) writes a page per county +
+   state/national indexes + sitemap. Pages reference their per-area OG card **if it exists**, else the
+   site-wide default — so the metro cards render richly and the long tail still unfurls.
+
+The committed set is ~3,274 pages (every US county + DC + PR). Re-run `gen:national` when Census updates
+the county list. `SITE_BASE` overrides the domain (default `https://outageatlas.com`). Per-state slug
+collisions (e.g. VA "Fairfax" county vs "Fairfax city") are auto-disambiguated and kept in sync across
+file path, canonical, sitemap, and cross-links.
