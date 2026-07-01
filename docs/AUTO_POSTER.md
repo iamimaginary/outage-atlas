@@ -45,25 +45,34 @@ denominator. **ODIN carries none**, so the poster applies the **absolute floor o
 county exposes `served` (deep feeds do). A future task can bundle a FIPS→customers/population table to
 restore the % gate; the code already uses `county.served` when present.
 
-## Phase 3 — email capture + subscriber alerts (shipped)
+## Phase 3 — Web Push alerts (shipped; replaced email)
 
-The owned-list asset. Reuses the SAME detection as the poster so an onset that posts also emails the
-people watching that county.
+Direct push notifications keyed to the user's county — no vendor, no cookies, no email provider.
+Payload-less Web Push (VAPID): the push carries no body, so the only crypto is the VAPID ES256 JWT;
+the service worker builds the notification text from the public baseline on receipt. Design + protocol
+were verified by an adversarial multi-agent pass before implementation.
 
 | File | Role |
 |---|---|
-| `index.html` (`#alerts` panel) | "Alert me when {area} loses power" — email + honeypot, submits `{email, zip, fips}` to `/api/subscribe`. Appears once a location resolves; `fips` comes from the existing geo pipeline so matching is a pure FIPS join later. |
-| `workers/subscribe.mjs` | Serverless intake: validates, honeypot, optional KV rate-limit, hands off to the email provider with **double opt-in** (provider owns confirmation + unsubscribe → CAN-SPAM). Stores nothing here (no PII in the repo). |
-| `poster/notify.mjs` | PURE `matchSubscribers(areaEvents, subs)` (FIPS join) + `renderAlert` + env-gated `deliverAlerts` (DRY-RUN by default). Wired into `poster/post.mjs`, independent of the social gate. Alerts on onset + restored by default (`NOTIFY_TYPES`). |
+| `web/push.mjs` | Client "Notify me" control: permission → `pushManager.subscribe({userVisibleOnly, applicationServerKey})` → stash `{fips,area,areaPath}` in IndexedDB → POST `{subscription, fips}` to `/api/push-subscribe`. iOS "Add to Home Screen" hint when unsupported. |
+| `sw.js` (v4) | `push` handler (payload-less): reads IndexedDB prefs, fetches the baseline, infers **out>0 → "⚡ outage" / 0 → "✅ restored"**, `tag: outage-<fips>` so it updates in place + clears on resolve. `notificationclick` opens the area page. |
+| `workers/push-subscribe.mjs` → `/api/push-subscribe` | Stores `{endpoint, fips}` in Cloudflare KV (private). Push-service origin allowlist, honeypot, per-IP rate limit. DELETE = unsubscribe. |
+| `workers/push-subscribers.mjs` → `/api/push-subscribers` | Bearer-gated (`PUSH_READ_TOKEN`) read-only list for the collector (cursor-paginated) + DELETE prune. |
+| `poster/webpush.mjs` | Pure `node:crypto` VAPID ES256 signer (`dsaEncoding:'ieee-p1363'` → raw 64-byte sig) + payload-less sender. Golden-tested (`scripts/test_webpush.mjs`). |
+| `poster/notify.mjs` | PURE `matchSubscribers` (FIPS join) + env-gated `deliverPush` (DRY-RUN by default; prunes on 404/410). Alerts on onset + escalation + restored (`NOTIFY_TYPES`). |
 
 ### Going live (operator)
-1. Pick a provider (Buttondown recommended — native double opt-in). Enable double opt-in on the account.
-2. Deploy `workers/subscribe.mjs` at **`https://<site>/api/subscribe`** (same-origin keeps the page
-   CSP at `connect-src 'self'`). Set worker env `EMAIL_PROVIDER=buttondown`, `EMAIL_API_KEY=…`
-   (+ optional `SUBS_KV` binding for rate-limiting, `ALLOW_ORIGIN`).
-3. To send outage alerts (not just collect the list): set collector env `NOTIFY_ENABLED=1`,
-   `EMAIL_PROVIDER`, `EMAIL_API_KEY`, and `SUBSCRIBERS_URL` (a JSON endpoint returning
-   `[{email,fips}]`). Until then the alerts step DRY-RUNs. **SMS is deferred** (TCPA/10DLC) per the handoff.
+1. `node scripts/gen_vapid.mjs` → paste `VAPID_PUBLIC_KEY` into `config.js` (public) + a GH var; put
+   `VAPID_PRIVATE_KEY` (PKCS8 PEM) in a **GitHub Actions secret**; set `VAPID_SUBJECT=https://outageatlas.com`.
+2. Cloudflare Pages project: bind a **KV namespace** as `SUBS_KV`; add secret `PUSH_READ_TOKEN`.
+3. GitHub Actions: add vars `PUSH_ENABLED=1`, `PUSH_SUBSCRIBERS_URL=https://outageatlas.com/api/push-subscribers`,
+   `VAPID_PUBLIC_KEY`, `VAPID_SUBJECT`; secrets `PUSH_READ_TOKEN`, `VAPID_PRIVATE_KEY`.
+   Until `PUSH_ENABLED=1` + keys exist, the alerts step DRY-RUNs (logs, sends nothing).
+
+**Caveats (verified):** iOS/iPadOS only delivers Web Push to a **home-screen-installed PWA** (Safari-tab
+iOS users can't get it — the tradeoff vs email). Firefox payload-less delivery to live-verify on first
+send. Subscriptions are per-device records in **private KV, never the repo**. **SMS remains deferred**
+(TCPA/10DLC).
 
 ## Platform-abstraction plan (§2.6)
 

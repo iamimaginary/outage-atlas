@@ -89,6 +89,13 @@ jobs:
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          # Web Push alerts (DRY-RUN unless PUSH_ENABLED=1 + VAPID keys present)
+          PUSH_ENABLED: ${{ vars.PUSH_ENABLED }}
+          PUSH_SUBSCRIBERS_URL: ${{ vars.PUSH_SUBSCRIBERS_URL }}
+          PUSH_READ_TOKEN: ${{ secrets.PUSH_READ_TOKEN }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
         run: node poster/post.mjs
 
       - name: Publish to tracker-data

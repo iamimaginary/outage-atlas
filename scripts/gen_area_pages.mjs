@@ -69,28 +69,6 @@ button.primary,.lg-btn.primary{background:var(--acc);color:#04101f;border-color:
 footer{color:var(--mut);font-size:12px;padding:18px 16px;border-top:1px solid var(--line);margin-top:22px}</style>
 </head>`;
 
-const subscribeForm = (fips) => `<div class="panel">
-  <div><b>🔔 Alert me when this area loses power</b></div>
-  <div class="small muted" style="margin-top:4px">Free email alerts on an outage here — and an all-clear when it's over. No tracking; unsubscribe any time.</div>
-  <div class="row" style="margin-top:8px"><input id="e" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email"><button class="primary" id="s">Alert me</button></div>
-  <input id="hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-  <div class="small" id="m" style="margin-top:6px"></div>
-  <script>
-  var FIPS=${JSON.stringify(fips)};
-  function sub(){var em=document.getElementById('e').value.trim(),m=document.getElementById('m');
-    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(em)){m.style.color='#d29922';m.textContent='Enter a valid email address.';return;}
-    var b=document.getElementById('s');b.disabled=true;m.style.color='#9da7b3';m.textContent='Signing you up…';
-    fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,fips:FIPS,hp:document.getElementById('hp').value})})
-      .then(function(r){if(r.ok){m.style.color='#3fb950';m.textContent='Almost there — check your inbox to confirm.';document.getElementById('e').value='';}
-        else if(r.status===503){m.style.color='#d29922';m.textContent="Alerts aren't enabled yet — check back soon.";}
-        else{m.style.color='#d29922';m.textContent='Could not sign you up right now. Please try again later.';}})
-      .catch(function(){m.style.color='#d29922';m.textContent='Could not reach the server. Please try again later.';})
-      .then(function(){b.disabled=false;});}
-  document.getElementById('s').onclick=sub;
-  document.getElementById('e').addEventListener('keydown',function(ev){if(ev.key==='Enter')sub();});
-  </script>
-</div>`;
-
 function areaPage({ fips, county, state, _slug }, siblings) {
   const sl = _slug || slug(county);
   const canonical = `${SITE}/outage/${state.toLowerCase()}/${sl}`;
@@ -111,7 +89,7 @@ function areaPage({ fips, county, state, _slug }, siblings) {
     weather alerts, refreshed about every 15 minutes. It shows how many customers are currently without power in the county,
     any active weather alerts, and an algorithmic recovery estimate that every ZIP code in ${esc(county)} inherits. For
     address- or ZIP-level detail and your specific serving utility, open the <a href="/?q=${encodeURIComponent(county + ", " + state)}">full Outage Atlas map</a>.</p>
-  ${subscribeForm(fips)}
+  <div id="push"></div>
   <div id="lg" hidden></div>
   <div class="panel">
     <div class="small muted">Nearby & related areas</div>
@@ -123,7 +101,9 @@ function areaPage({ fips, county, state, _slug }, siblings) {
 <script src="/config.js"></script>
 <script type="module">
 import { renderCTA } from "/web/leadgen.mjs";
+import { renderPushControl } from "/web/push.mjs";
 var FIPS=${JSON.stringify(fips)}, NAME=${JSON.stringify(`${county}, ${state}`)};
+renderPushControl(document.getElementById('push'),{fips:FIPS,area:NAME,areaPath:location.pathname});
 fetch('${DATA_BASE}',{cache:'no-store'}).then(function(r){return r.json();}).then(function(b){
   var c=b.counties&&b.counties[FIPS];var el=document.getElementById('status');
   if(!c||!c.out){el.innerHTML='<div class="big">0</div><div class="muted">No active outages reported in ${esc(county)} right now.</div>';}
