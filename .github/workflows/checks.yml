@@ -56,3 +56,6 @@ jobs:
 
       - name: Subscriber-alert matcher tests
         run: node scripts/test_notify.mjs
+
+      - name: SEO area-page audit (unique titles/canonicals, sitemap sync)
+        run: node scripts/audit_seo.mjs
