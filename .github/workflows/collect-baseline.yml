@@ -70,6 +70,27 @@ jobs:
         continue-on-error: true
         run: node scripts/audit_baseline_deep.mjs
 
+      # --- audience engine: auto-post outage EVENTS to social (handoff Phase 2) ---
+      # DRY-RUN by default: publishes only when POSTER_ENABLED=1 AND the Bluesky secrets are set.
+      # continue-on-error so a poster hiccup never blocks the national data publish. Runs BEFORE the
+      # publish step so poster_state.json (dedupe/throttle memory) is committed to tracker-data.
+      - name: Auto-post outage events
+        continue-on-error: true
+        env:
+          POSTER_ENABLED: ${{ vars.POSTER_ENABLED }}
+          POSTER_DRY_RUN: ${{ vars.POSTER_DRY_RUN }}
+          POSTER_URL_BASE: ${{ vars.POSTER_URL_BASE }}
+          POSTER_TZ: ${{ vars.POSTER_TZ }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        run: node poster/post.mjs
+
       - name: Publish to tracker-data
         working-directory: data
         run: |

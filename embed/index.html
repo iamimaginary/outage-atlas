@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'unsafe-inline';">
+<meta name="robots" content="noindex">
+<title>Outage Atlas — live area status embed</title>
+<!--
+  Embeddable live-status widget (handoff Phase 5). One file serves ANY area via query params, so a TV/
+  weather/news site embeds it once and it tracks every storm hands-off:
+    <iframe src="https://outageatlas.com/embed/?fips=39035&name=Cuyahoga,%20OH"
+            width="320" height="150" style="border:0" title="Live outage status"></iframe>
+  Params: fips (5-digit county FIPS, required), name (optional label), theme=dark|light.
+-->
+<style>
+  :root{--bg:#0d1117;--fg:#e6edf3;--mut:#9da7b3;--acc:#58a6ff;--ok:#3fb950;--bad:#f85149;--line:#30363d}
+  [data-theme=light]{--bg:#ffffff;--fg:#0d1117;--mut:#57606a;--acc:#0969da;--line:#d0d7de}
+  html,body{margin:0}
+  .w{font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .a{font-weight:600}.big{font-size:26px;font-weight:700;line-height:1.1}
+  .mut{color:var(--mut);font-size:12px}.ok{color:var(--ok)}.bad{color:var(--bad)}
+  a{color:var(--acc);text-decoration:none}.eta{margin-top:6px;font-size:13px}
+</style>
+</head><body>
+<div class="w" id="w"><div class="mut">Loading live outage status…</div></div>
+<script>
+(function(){
+  var P=new URLSearchParams(location.search);
+  var fips=(P.get("fips")||"").replace(/[^0-9]/g,"").slice(0,5);
+  var name=P.get("name")||("FIPS "+fips);
+  if(P.get("theme")==="light")document.documentElement.setAttribute("data-theme","light");
+  var W=document.getElementById("w");
+  var DATA="https://raw.githubusercontent.com/iamimaginary/outage-atlas/tracker-data/national/baseline.json";
+  function slug(s){return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+  function link(){var m=/,\s*([A-Za-z]{2})\s*$/.exec(name);if(m){var st=m[1].toLowerCase(),area=slug(name.split(",")[0]);return "https://outageatlas.com/outage/"+st+"/"+area;}return "https://outageatlas.com/?q="+encodeURIComponent(name);}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function render(c){
+    var href=link();
+    if(!c||!c.out){W.innerHTML='<div class="a">'+esc(name)+'</div><div class="big ok">0</div><div class="mut">No active outages reported · <a target="_blank" href="'+href+'">Outage Atlas</a></div>';return;}
+    var eta=c.eta&&c.eta.label?'<div class="eta">Recovery: <b>'+esc(c.eta.label)+'</b></div>':'';
+    W.innerHTML='<div class="a">'+esc(name)+'</div><div class="big'+(c.out?' bad':'')+'">'+c.out.toLocaleString()+'</div>'
+      +'<div class="mut">customers without power</div>'+eta
+      +'<div class="mut" style="margin-top:6px"><a target="_blank" href="'+href+'">Live map ›</a> · unofficial</div>';
+  }
+  function load(){if(!fips){W.innerHTML='<div class="mut">Set a ?fips= parameter.</div>';return;}
+    fetch(DATA,{cache:"no-store"}).then(function(r){return r.json();}).then(function(b){render(b.counties&&b.counties[fips]);})
+      .catch(function(){W.innerHTML='<div class="mut"><a target="_blank" href="'+link()+'">Outage Atlas — live map ›</a></div>';});}
+  load(); setInterval(load, 5*60*1000); // refresh every 5 min
+})();
+</script>
+</body></html>

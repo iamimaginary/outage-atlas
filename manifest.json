@@ -1,0 +1,18 @@
+{
+  "name": "Outage Atlas — power outages near you",
+  "short_name": "Outage Atlas",
+  "description": "Find power outages near you: a free national baseline for every location, plus deep per-utility detail and a recovery-time estimate where available.",
+  "id": "/",
+  "start_url": "./?src=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "categories": ["utilities", "weather", "news"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
