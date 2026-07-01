@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Homepage only for now. Phase 4 (programmatic SEO area pages) will generate one <url> per
+     city/county/ZIP here at collect time. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://outageatlas.com/</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>always</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

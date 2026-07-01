@@ -10,7 +10,32 @@
   img-src 'self' data: https://*.basemaps.cartocdn.com https://unpkg.com;
   connect-src 'self' https://api.zippopotam.us https://nominatim.openstreetmap.org https://geo.fcc.gov https://services3.arcgis.com https://api.weather.gov https://ornl.opendatasoft.com https://kubra.io https://raw.githubusercontent.com https://github.com;
 " />
-<title>outage-atlas — find outages near you</title>
+<title>Outage Atlas — find power outages near you</title>
+<meta name="description" content="Find power outages near you: a free national baseline for every location, plus deep per-utility detail and a recovery-time estimate where available." />
+<link rel="canonical" href="https://outageatlas.com/" />
+<meta name="theme-color" content="#0d1117" />
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Outage Atlas" />
+
+<!-- Open Graph / Twitter: so auto-posted + shared links unfurl with a card -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Outage Atlas" />
+<meta property="og:title" content="Outage Atlas — find power outages near you" />
+<meta property="og:description" content="A free national outage baseline for every location, plus deep per-utility detail and a recovery-time estimate where available." />
+<meta property="og:url" content="https://outageatlas.com/" />
+<meta property="og:image" content="https://outageatlas.com/og/og-default.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Outage Atlas — find power outages near you" />
+<meta name="twitter:description" content="A free national outage baseline for every location, plus deep per-utility detail and a recovery-time estimate where available." />
+<meta name="twitter:image" content="https://outageatlas.com/og/og-default.png" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="" />
 <style>
@@ -467,6 +492,36 @@ $("fb-cancel").onclick = () => toggleFeedback(false);
   renderNational(BASELINE);
   initMap(BASELINE);
 })();
+
+// ---- PWA: register the service worker + offer a clean update when a new version ships ----
+// Built via createElement (not getElementById) so no extra markup/ids are needed — keeps the
+// CSP/structure audit green. skipWaiting + controllerchange give a one-tap refresh to the new build.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("./sw.js");
+      const notify = (worker) => {
+        // only prompt for an UPDATE (a controller already exists); first install stays silent
+        if (!navigator.serviceWorker.controller) return;
+        const bar = document.createElement("div");
+        bar.setAttribute("role", "status");
+        bar.style.cssText = "position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9999;background:#161b22;border:1px solid #30363d;border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.4);font:14px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e6edf3";
+        const txt = document.createElement("span"); txt.textContent = "New version available";
+        const btn = document.createElement("button"); btn.textContent = "Refresh";
+        btn.style.cssText = "padding:6px 12px;border:1px solid #58a6ff;border-radius:8px;background:#58a6ff;color:#04101f;font-weight:600;cursor:pointer";
+        btn.onclick = () => worker.postMessage({ type: "SKIP_WAITING" });
+        bar.append(txt, btn); document.body.appendChild(bar);
+      };
+      if (reg.waiting) notify(reg.waiting);
+      reg.addEventListener("updatefound", () => {
+        const w = reg.installing;
+        if (w) w.addEventListener("statechange", () => { if (w.state === "installed") notify(w); });
+      });
+      let reloading = false; // guard against reload loops
+      navigator.serviceWorker.addEventListener("controllerchange", () => { if (!reloading) { reloading = true; location.reload(); } });
+    } catch { /* SW is a progressive enhancement — the app works without it */ }
+  });
+}
 </script>
 </body>
 </html>
