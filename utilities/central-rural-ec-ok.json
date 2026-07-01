@@ -1,0 +1,1 @@
+{"schema":1,"id":"central-rural-ec-ok","name":"Central Rural Electric Coop (OK)","adapter":"milsoft","collectedAt":1782906862021,"official":{"out":14,"served":25000,"nOut":1},"areas":[{"name":"57 07 SW","out":14,"served":14,"etr":null,"loc":[35.80392846139276,-97.15258186417145],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}
