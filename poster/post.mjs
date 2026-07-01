@@ -13,6 +13,7 @@ import { dirname, join } from "node:path";
 import { detectEvents, selectToPost, commitPost } from "./detect.mjs";
 import { renderPost } from "./templates.mjs";
 import { makeBluesky } from "./platforms/bluesky.mjs";
+import { makeThreads } from "./platforms/threads.mjs";
 import { matchSubscribers, deliverAlerts } from "./notify.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -63,10 +64,15 @@ function enrich(e) {
     }
   } catch (e) { console.error("alerts step failed (non-fatal):", e.message); }
 
-  const enabled = process.env.POSTER_ENABLED === "1";
-  const dryRun = !enabled || process.env.POSTER_DRY_RUN === "1" || !process.env.BLUESKY_HANDLE || !process.env.BLUESKY_APP_PASSWORD;
+  // Build every platform whose creds are present (handoff §2.6 — post to all enabled).
+  const platforms = [];
+  if (process.env.BLUESKY_HANDLE && process.env.BLUESKY_APP_PASSWORD) platforms.push(makeBluesky({ handle: process.env.BLUESKY_HANDLE, appPassword: process.env.BLUESKY_APP_PASSWORD }));
+  if (process.env.THREADS_USER_ID && process.env.THREADS_ACCESS_TOKEN) platforms.push(makeThreads({ userId: process.env.THREADS_USER_ID, accessToken: process.env.THREADS_ACCESS_TOKEN }));
 
-  console.log(`poster: ${events.length} event(s) detected, ${selected.length} to post ${dryRun ? "(DRY-RUN — nothing published, no state written)" : "(LIVE)"}`);
+  const enabled = process.env.POSTER_ENABLED === "1";
+  const dryRun = !enabled || process.env.POSTER_DRY_RUN === "1" || platforms.length === 0;
+
+  console.log(`poster: ${events.length} event(s) detected, ${selected.length} to post ${dryRun ? "(DRY-RUN — nothing published, no state written)" : `(LIVE → ${platforms.map((p) => p.name).join(", ")})`}`);
   for (const e of events) console.log(`  · ${e.type} ${e.fips} ${e.name || ""} out=${e.out ?? e.sumOut ?? ""}${selected.includes(e) ? "  → POST" : "  (held)"}`);
 
   if (dryRun) {
@@ -74,20 +80,18 @@ function enrich(e) {
     return; // dry-run is fully side-effect-free
   }
 
-  // LIVE: publish each selected post; commit only what actually went out (a failed post retries next run).
-  const bsky = makeBluesky({ handle: process.env.BLUESKY_HANDLE, appPassword: process.env.BLUESKY_APP_PASSWORD });
+  // LIVE: publish each selected post to every platform; commit an event once at least one platform
+  // accepted it (a fully-failed post keeps its dedup key free, so it retries next run).
   let liveState = state, posted = 0;
   for (const e of selected) {
     const { text, link } = renderPost(enrich(e), { url: urlFor(e) });
-    try {
-      const res = await bsky.publish({ text, link }, { createdAt: new Date(now).toISOString() });
-      liveState = commitPost(liveState, e, now);
-      posted++;
-      console.log(`  posted ${e.type} ${e.fips} -> ${res.uri}`);
-    } catch (err) {
-      console.error(`  ::warning:: publish failed for ${e.type} ${e.fips}: ${err.message}`);
+    let anyOk = false;
+    for (const p of platforms) {
+      try { const res = await p.publish({ text, link }, { createdAt: new Date(now).toISOString() }); anyOk = true; console.log(`  posted ${e.type} ${e.fips} -> ${p.name} ${res.uri || res.id || ""}`); }
+      catch (err) { console.error(`  ::warning:: ${p.name} publish failed for ${e.type} ${e.fips}: ${err.message}`); }
     }
+    if (anyOk) { liveState = commitPost(liveState, e, now); posted++; }
   }
   writeFileSync(STATE_PATH, JSON.stringify(liveState)); // persist latches + commits
-  console.log(`poster: published ${posted}/${selected.length}; state written to ${STATE_PATH}`);
+  console.log(`poster: published ${posted}/${selected.length} across ${platforms.length} platform(s); state written to ${STATE_PATH}`);
 })().catch((e) => { console.error("poster FAILED (non-fatal to the collector):", e.message); process.exit(0); });
