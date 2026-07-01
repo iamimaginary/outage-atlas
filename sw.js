@@ -12,7 +12,7 @@
 // 308-redirects /index.html -> /, so a cached/redirected Response can't fulfill a navigation in Safari.
 // We now strip the redirect flag (rebuild the Response) on precache + navigation, and take over
 // immediately (skipWaiting) so a poisoned v1 client self-heals on the next load.
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = `atlas-shell-${VERSION}`;
 const DATA = `atlas-data-${VERSION}`;
 const LIB = `atlas-lib-${VERSION}`;
@@ -108,12 +108,13 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return; // never touch POSTs (e.g. OutageEntry-style feeds)
   const url = new URL(req.url);
 
-  // App navigations: serve the cached shell (de-redirected), fall back to a cleaned network response.
+  // App navigations: NETWORK-FIRST with a de-redirected response, so an online load never gets a cached
+  // redirected response (the Safari "Response served by service worker has redirections" bug). Only fall
+  // back to the cached shell when the network is unavailable (offline last-known page).
   if (req.mode === "navigate") {
     e.respondWith((async () => {
-      const cached = (await caches.match("./index.html")) || (await caches.match("./"));
-      if (cached) return cached;
-      try { return await clean(await fetch(req)); } catch { return (await caches.match("./index.html")) || Response.error(); }
+      try { return await clean(await fetch(req)); }
+      catch { return (await caches.match("./index.html")) || (await caches.match("./")) || Response.error(); }
     })());
     return;
   }
