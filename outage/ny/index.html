@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
 <meta name="robots" content="index,follow">
 <title>Power outages in New York — live status by county | Outage Atlas</title>
 <meta name="description" content="Live power-outage status by county across New York. Free, updated ~every 15 minutes from public ODIN + NWS data.">
@@ -17,8 +17,9 @@ header{padding:16px;border-bottom:1px solid var(--line)}a{color:var(--acc)}main{
 h1{font-size:22px;margin:0 0 4px}.big{font-size:34px;font-weight:700}.muted{color:var(--mut)}.small{font-size:13px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
 .eta{margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#0b1f17}.eta.bad{background:#1f0f0b}
-input,button{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
-button.primary{background:var(--acc);color:#04101f;border-color:var(--acc);font-weight:600;cursor:pointer}
+input,button,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+button.primary,.lg-btn.primary{background:var(--acc);color:#04101f;border-color:var(--acc);font-weight:600;cursor:pointer}
+.lg-btn{display:inline-block;padding:9px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);text-decoration:none;font-size:14px;cursor:pointer}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row input{flex:1 1 200px}.links a{margin-right:12px;display:inline-block}
 footer{color:var(--mut);font-size:12px;padding:18px 16px;border-top:1px solid var(--line);margin-top:22px}</style>
 </head><body><header><a href="/">← Outage Atlas</a></header><main>

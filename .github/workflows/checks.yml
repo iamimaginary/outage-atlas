@@ -59,3 +59,6 @@ jobs:
 
       - name: SEO area-page audit (unique titles/canonicals, sitemap sync)
         run: node scripts/audit_seo.mjs
+
+      - name: Lead-gen classifier tests
+        run: node scripts/test_leadgen.mjs

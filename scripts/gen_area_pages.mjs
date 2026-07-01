@@ -45,7 +45,7 @@ function loadCounties() {
 // shared minimal shell (dark brand, no external deps) — no map/leaflet on area pages, so a tight CSP.
 const head = ({ title, desc, canonical, robots = "index,follow", ogImage = "/og/og-default.png" }) => `<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
 <meta name="robots" content="${robots}">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
@@ -62,8 +62,9 @@ header{padding:16px;border-bottom:1px solid var(--line)}a{color:var(--acc)}main{
 h1{font-size:22px;margin:0 0 4px}.big{font-size:34px;font-weight:700}.muted{color:var(--mut)}.small{font-size:13px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
 .eta{margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#0b1f17}.eta.bad{background:#1f0f0b}
-input,button{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
-button.primary{background:var(--acc);color:#04101f;border-color:var(--acc);font-weight:600;cursor:pointer}
+input,button,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+button.primary,.lg-btn.primary{background:var(--acc);color:#04101f;border-color:var(--acc);font-weight:600;cursor:pointer}
+.lg-btn{display:inline-block;padding:9px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);text-decoration:none;font-size:14px;cursor:pointer}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row input{flex:1 1 200px}.links a{margin-right:12px;display:inline-block}
 footer{color:var(--mut);font-size:12px;padding:18px 16px;border-top:1px solid var(--line);margin-top:22px}</style>
 </head>`;
@@ -108,6 +109,7 @@ function areaPage({ fips, county, state }, siblings) {
     any active weather alerts, and an algorithmic recovery estimate that every ZIP code in ${esc(county)} inherits. For
     address- or ZIP-level detail and your specific serving utility, open the <a href="/?q=${encodeURIComponent(county + ", " + state)}">full Outage Atlas map</a>.</p>
   ${subscribeForm(fips)}
+  <div id="lg" hidden></div>
   <div class="panel">
     <div class="small muted">Nearby & related areas</div>
     <div class="links small" style="margin-top:6px">${nearby || `<a href="/outage/${state.toLowerCase()}/">All ${esc(stName(state))} areas</a>`}</div>
@@ -115,17 +117,20 @@ function areaPage({ fips, county, state }, siblings) {
   </div>
 </main>
 <footer>Outage counts are customers reported out; coverage varies by utility participation. <b>Unofficial — not affiliated with any utility.</b> Data: ODIN (DOE/ORNL) + NWS. <a href="/">Outage Atlas</a>.</footer>
-<script>
-(function(){var FIPS=${JSON.stringify(fips)};
- fetch('${DATA_BASE}',{cache:'no-store'}).then(function(r){return r.json();}).then(function(b){
-   var c=b.counties&&b.counties[FIPS];var el=document.getElementById('status');
-   if(!c||!c.out){el.innerHTML='<div class="big">0</div><div class="muted">No active outages reported in ${esc(county)} right now.</div>';return;}
-   var eta=c.eta&&c.eta.label?'<div class="eta'+(c.eta.kind==='rising'?' bad':'')+'">Recovery estimate: <b>'+c.eta.label+'</b></div>':'';
-   var etr=c.etr?' · earliest ETR '+new Date(c.etr).toLocaleString():'';
-   el.innerHTML='<div class="big">'+c.out.toLocaleString()+'</div><div class="muted">customers without power in ${esc(county)}, ${esc(state)}</div>'
-     +'<div class="small muted" style="margin-top:4px">'+(c.incidents||0)+' active incident(s)'+etr+'</div>'+eta;
- }).catch(function(){document.getElementById('status').innerHTML='<div class="muted">Live data temporarily unavailable — see the <a href="/?q=${encodeURIComponent(county + ", " + state)}">full map</a>.</div>';});
-})();
+<script src="/config.js"></script>
+<script type="module">
+import { renderCTA } from "/web/leadgen.mjs";
+var FIPS=${JSON.stringify(fips)}, NAME=${JSON.stringify(`${county}, ${state}`)};
+fetch('${DATA_BASE}',{cache:'no-store'}).then(function(r){return r.json();}).then(function(b){
+  var c=b.counties&&b.counties[FIPS];var el=document.getElementById('status');
+  if(!c||!c.out){el.innerHTML='<div class="big">0</div><div class="muted">No active outages reported in ${esc(county)} right now.</div>';}
+  else{var eta=c.eta&&c.eta.label?'<div class="eta'+(c.eta.kind==='rising'?' bad':'')+'">Recovery estimate: <b>'+c.eta.label+'</b></div>':'';
+    var etr=c.etr?' · earliest ETR '+new Date(c.etr).toLocaleString():'';
+    el.innerHTML='<div class="big">'+c.out.toLocaleString()+'</div><div class="muted">customers without power in ${esc(county)}, ${esc(state)}</div>'
+      +'<div class="small muted" style="margin-top:4px">'+(c.incidents||0)+' active incident(s)'+etr+'</div>'+eta;}
+  var alerts=(b.alertsByFips&&b.alertsByFips[FIPS])||[];
+  renderCTA(document.getElementById('lg'),{county:c||{out:0},area:NAME,fips:FIPS,alerts:alerts});
+}).catch(function(){document.getElementById('status').innerHTML='<div class="muted">Live data temporarily unavailable — see the <a href="/?q=${encodeURIComponent(county + ", " + state)}">full map</a>.</div>';});
 </script>
 </body></html>`;
   return head({ title, desc, canonical, ogImage: `/og/${state.toLowerCase()}/${slug(county)}.png` }) + body;
