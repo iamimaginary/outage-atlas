@@ -1,0 +1,1 @@
+{"schema":1,"id":"northeastern-remc","name":"Northeastern REMC (IN)","adapter":"milsoft","collectedAt":1782924087840,"official":{"out":1,"served":30000,"nOut":1},"areas":[{"name":"OAA27-000-0-0009-0000-02","out":1,"served":1,"etr":null,"loc":[41.02355329099272,-85.27123879145928],"subs":[],"eta":{"kind":"collecting","label":"estimating… (need another reading)"}}]}
