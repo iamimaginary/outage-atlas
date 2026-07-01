@@ -6,7 +6,7 @@ window.OUTAGE_CONFIG = {
   // --- Web Push alerts ---
   // Public VAPID key (base64url, ~87 chars) from `node scripts/gen_vapid.mjs`. Public by design.
   // Leave "" until you generate it — the "Notify me" control shows "not enabled yet" until then.
-  vapidPublicKey: "",
+  vapidPublicKey: "BBFIv5JkM_-LG8J8e4xzAjxBseas2SSWZS6OeK1A9vdb32RTYucfe7aXju_jcUw9i0n0DPCJTOdrV5VdJxZIn78",
   pushSubscribeEndpoint: "/api/push-subscribe",
 
   // Where the "free backup quote" lead form POSTs. Deploy workers/lead.mjs at this same-origin path.
