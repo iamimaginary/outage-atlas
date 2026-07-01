@@ -11,6 +11,7 @@
     "test:audits": "node scripts/test_audits.mjs",
     "validate:configs": "node scripts/validate_configs.mjs",
     "audit:csp": "node scripts/audit_csp.mjs",
-    "audit:tos": "node scripts/audit_tos.mjs"
+    "audit:tos": "node scripts/audit_tos.mjs",
+    "gen:assets": "node scripts/gen_icons.mjs && node scripts/gen_og_cards.mjs && node scripts/gen_area_pages.mjs"
   }
 }

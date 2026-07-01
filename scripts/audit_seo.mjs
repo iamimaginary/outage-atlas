@@ -44,6 +44,11 @@ for (const p of pages) {
   if (/noindex/i.test(robots)) errs.push(`${rel}: robots is noindex — area pages must be indexable`);
   if (canon !== want) errs.push(`${rel}: canonical "${canon}" != expected "${want}"`);
   if (canon && !locSet.has(canon)) errs.push(`${rel}: canonical not in sitemap.xml (${canon})`);
+
+  // og:image must resolve to a committed local file (per-area cards can't silently go missing)
+  const og = grab(html, /property="og:image"\s+content="([^"]+)"/);
+  if (!og) errs.push(`${rel}: missing og:image`);
+  else if (og.startsWith(SITE)) { const f = og.slice(SITE.length).replace(/^\//, ""); if (!existsSync(join(ROOT, f))) errs.push(`${rel}: og:image file missing (${f})`); }
 }
 
 // every area/state canonical in sitemap should correspond to a generated file (no orphan sitemap URLs)

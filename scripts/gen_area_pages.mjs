@@ -43,7 +43,7 @@ function loadCounties() {
 }
 
 // shared minimal shell (dark brand, no external deps) — no map/leaflet on area pages, so a tight CSP.
-const head = ({ title, desc, canonical, robots = "index,follow" }) => `<!DOCTYPE html><html lang="en"><head>
+const head = ({ title, desc, canonical, robots = "index,follow", ogImage = "/og/og-default.png" }) => `<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://raw.githubusercontent.com https://ornl.opendatasoft.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
 <meta name="robots" content="${robots}">
@@ -54,8 +54,8 @@ const head = ({ title, desc, canonical, robots = "index,follow" }) => `<!DOCTYPE
 <link rel="manifest" href="/manifest.json"><link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Outage Atlas">
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${canonical}"><meta property="og:image" content="${SITE}/og/og-default.png">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:image" content="${SITE}/og/og-default.png">
+<meta property="og:url" content="${canonical}"><meta property="og:image" content="${SITE}${ogImage}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:image" content="${SITE}${ogImage}">
 <style>:root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--fg:#e6edf3;--mut:#9da7b3;--acc:#58a6ff;--ok:#3fb950;--warn:#d29922;--bad:#f85149}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 header{padding:16px;border-bottom:1px solid var(--line)}a{color:var(--acc)}main{max-width:820px;margin:0 auto;padding:16px}
@@ -128,7 +128,7 @@ function areaPage({ fips, county, state }, siblings) {
 })();
 </script>
 </body></html>`;
-  return head({ title, desc, canonical }) + body;
+  return head({ title, desc, canonical, ogImage: `/og/${state.toLowerCase()}/${slug(county)}.png` }) + body;
 }
 
 function stateIndex(state, areas) {
