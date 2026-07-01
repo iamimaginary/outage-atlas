@@ -1,0 +1,15 @@
+{
+  "id": "midwest-energy-mi",
+  "name": "Midwest Energy & Communications (MI)",
+  "adapter": "kiuc",
+  "match": [
+    "MIDWEST ENERGY & COMMUNICATIONS",
+    "MIDWEST ENERGY AND COMMUNICATIONS"
+  ],
+  "config": {
+    "base": "https://outagemap-data.cloud.coop/teammidwest/Hosted_Outage_Map"
+  },
+  "reconciliation": {
+    "tolerancePct": 15
+  }
+}
