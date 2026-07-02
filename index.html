@@ -66,6 +66,13 @@
   .chip.deep { border-color:var(--ok); color:var(--ok); }
   .row { display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
   .row:first-child { border-top:0; }
+  /* deep list row: name + "N out" on one line, recovery estimate beneath — reads cleanly on mobile */
+  .drow { padding:7px 0; border-top:1px solid var(--line); }
+  .drow:first-child { border-top:0; }
+  .drow-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .drow-name { font-weight:600; overflow-wrap:anywhere; }
+  .drow-out { color:var(--mut); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .drow-eta { color:var(--mut); font-size:12px; margin-top:2px; }
   .util { font-weight:600; } .acc { color:var(--acc); }
   .eta { margin-top:8px; font-size:15px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:#0b1f17; }
   .eta.bad { background:#1f0f0b; } .eta b { color:var(--ok); } .eta.bad b { color:var(--bad); }
@@ -241,15 +248,31 @@ const fmt = (n) => (n ?? 0).toLocaleString();
 const setStatus = (s) => { $("status").textContent = s; };
 // ETR strings vary by feed; some aren't Date-parseable (showed "Invalid Date"). Fall back to the raw string.
 const fmtEtr = (v) => { if (!v) return ""; const d = new Date(v); return isNaN(d.getTime()) ? String(v) : d.toLocaleString(); };
-// City/area recovery text: prefer the utility's own published ETR; otherwise the per-area algorithmic
-// estimate (eta) the collector now attaches to every area/sub — so each city shows a recovery time.
-const etaText = (o) => {
-  if (o && o.etr) { const s = fmtEtr(o.etr); if (s) return "ETR " + s; }
-  if (o && o.eta && o.eta.kind && o.eta.kind !== "restored" && o.eta.label) return o.eta.label;
-  return "";
+// Compact ETR: today → time only ("9:30 PM"); other days → "Jul 1, 9:30 PM". Falls back to raw string.
+const fmtEtrShort = (v) => {
+  if (!v) return "";
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return d.toDateString() === new Date().toDateString() ? time : d.toLocaleDateString([], { month: "short", day: "numeric" }) + ", " + time;
 };
-const etaSuffix = (o) => { const t = etaText(o); return t ? " · ⏱ " + t : ""; };
-const etaBr = (o) => { const t = etaText(o); return t ? "<br>⏱ " + t : ""; };
+// Recovery text for a city/area: the utility's own ETR (compact) AND our per-area algorithmic estimate,
+// each clearly labeled — so the algorithmic estimate is visible even when the utility publishes an ETR.
+function recoveryText(o) {
+  const parts = [];
+  if (o && o.etr) { const s = fmtEtrShort(o.etr); if (s) parts.push("ETR " + s); }
+  if (o && o.eta && o.eta.kind && o.eta.kind !== "restored" && o.eta.label)
+    parts.push("est. " + o.eta.label.replace(/\s*to restore$/i, "") + (o.eta.confidence ? " (" + o.eta.confidence + ")" : ""));
+  return parts.join(" · ");
+}
+const etaSuffix = (o) => { const t = recoveryText(o); return t ? " · ⏱ " + t : ""; };
+const etaBr = (o) => { const t = recoveryText(o); return t ? "<br>⏱ " + t : ""; };
+// Stacked deep-list row: "name … N out" on top, "⏱ recovery" beneath. `indent` nests sub-areas.
+const drow = (name, o, indent) =>
+  `<div class="drow"${indent ? ' style="padding-left:16px"' : ""}>`
+  + `<div class="drow-top"><span class="drow-name">${name}</span><span class="drow-out">${fmt(o.out)} out</span></div>`
+  + ((r) => r ? `<div class="drow-eta">⏱ ${r}</div>` : "")(recoveryText(o))
+  + `</div>`;
 let BASELINE = null, INDEX = { deep: {} }, map, locMarker, deepLayer = null, HIST = null, CTX = {};
 
 // Inline-SVG sparkline from a numeric series (oldest→newest). Green when the trend is falling (recovering),
@@ -526,7 +549,7 @@ async function renderDeep(id, county) {
   if (area) {
     html += `<div style="margin-top:10px" class="util">${area.name} — ${fmt(area.out)} out${etaSuffix(area)}</div>`;
     const subs = (area.subs || []).filter((s) => s.out > 0).sort((a, b) => b.out - a.out);
-    if (subs.length) for (const s of subs) html += `<div class="row"><span>${s.name}</span><span>${fmt(s.out)} out${etaSuffix(s)}</span></div>`;
+    if (subs.length) for (const s of subs) html += drow(s.name, s);
     else html += `<div class="small muted" style="margin-top:4px">No active sub-area outages broken out for this county right now.</div>`;
   } else {
     // no county-named area matched (e.g. feeds grouped by city/feeder) -> show the most-affected areas + their sub-areas
@@ -535,9 +558,9 @@ async function renderDeep(id, county) {
       ? `<div class="small muted" style="margin-top:8px">No per-area row for ${county.county} county — most affected areas in ${snap.name}:</div>`
       : `<div class="small muted" style="margin-top:8px">Most affected areas:</div>`;
     if (top.length) for (const a of top) {
-      html += `<div class="row"><span class="util">${a.name}</span><span>${fmt(a.out)} out${etaSuffix(a)}</span></div>`;
+      html += drow(a.name, a);
       for (const s of (a.subs || []).filter((s) => s.out > 0).sort((x, y) => y.out - x.out).slice(0, 4))
-        html += `<div class="row" style="padding-left:16px"><span class="small muted">${s.name}</span><span class="small muted">${fmt(s.out)}${etaSuffix(s)}</span></div>`;
+        html += drow(s.name, s, true);
     } else html += `<div class="small muted" style="margin-top:4px">No active outages in ${snap.name} right now.</div>`;
   }
   host.innerHTML = html;
