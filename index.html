@@ -295,6 +295,67 @@ async function injectCountyTrend(fips) {
   if (host && spark) host.innerHTML = `<div class="trend" style="margin-top:6px">${spark}<span class="small">recent outage trend</span></div>`;
 }
 
+// ---- city-first: when a deep feed covers the location, headline the user's CITY (sub-area), not the
+// county. The deep snapshot already carries per-sub out + a per-city algorithmic ETA (collect_utility). ----
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const canon = (s) => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+function haversineKm(aLat, aLon, bLat, bLon) {
+  const R = 6371, r = Math.PI / 180, dLat = (bLat - aLat) * r, dLon = (bLon - aLon) * r;
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * r) * Math.cos(bLat * r) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+// Find the user's city within a deep snapshot. Returns {kind:'city'|'clear'|'nearest', label, sub?, area?}.
+function findCitySub(snap, county, cityName, lat, lon) {
+  const areas = snap.areas || [];
+  const want = county ? normCounty(county.county) : null;
+  const area = want ? areas.find((a) => normCounty(a.name) === want) : null;
+  const scope = area ? (area.subs || []).map((s) => ({ s, a: area })) : areas.flatMap((a) => (a.subs || []).map((s) => ({ s, a })));
+  // 1) name match to the user's city (the confident "is MY town out" answer)
+  if (cityName) {
+    const cn = canon(cityName);
+    if (cn) {
+      const hit = scope.find(({ s }) => { const sn = canon(s.name); return sn && (sn === cn || sn.includes(cn) || cn.includes(sn)); });
+      if (hit && hit.s.out > 0) return { kind: "city", label: cityName, sub: hit.s, area: hit.a };
+    }
+  }
+  // 2) nearest outaged sub with coordinates (used when there's no city name, e.g. geolocation)
+  if (typeof lat === "number") {
+    let best = null, bd = Infinity;
+    for (const { s, a } of scope) { if (!(Array.isArray(s.loc) && s.out > 0)) continue; const d = haversineKm(lat, lon, s.loc[0], s.loc[1]); if (d < bd) { bd = d; best = { s, a }; } }
+    if (best && bd <= 20) return { kind: "nearest", label: best.s.name, sub: best.s, area: best.a, km: bd };
+  }
+  // 3) the county area exists but the user's city isn't among its outaged subs → their city is clear
+  if (area && cityName) return { kind: "clear", label: cityName, area };
+  return null;
+}
+function cityEtaLine(sub) {
+  const e = sub.eta;
+  if (e && e.label && e.kind !== "restored") {
+    const conf = e.confidence ? ` <span class="conf ${e.confidence === "good" ? "good" : e.confidence === "low" ? "low" : ""}">${e.confidence} confidence</span>` : "";
+    return `<div class="eta${e.kind === "rising" ? " bad" : ""}" style="margin-top:8px">⏱ <b>Est. recovery:</b> ${esc(e.label)}${conf}<div class="small muted" style="margin-top:3px">Algorithmic estimate from this city's outage trend.</div></div>`;
+  }
+  return sub.etr ? `<div class="small muted" style="margin-top:4px">Utility ETR: ${esc(fmtEtr(sub.etr))}</div>` : "";
+}
+// Fetch the deep snapshot + render the city headline into #cityhead (async; county block is the fallback).
+async function showCityHeadline(id, county, cityName, lat, lon) {
+  const host = $("cityhead"); if (!host) return;
+  let snap;
+  try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); } catch { return; }
+  if (!snap || !Array.isArray(snap.areas)) return;
+  const f = findCitySub(snap, county, cityName, lat, lon);
+  if (!f) return; // no city-level signal → the county headline below stands
+  if (f.kind === "clear") {
+    host.innerHTML = `<div class="eta">✓ <b>${esc(f.label)}: power looks on.</b> No active outage reported for your city right now.`
+      + (f.area && f.area.out > 0 ? ` <span class="small muted">(${fmt(f.area.out)} out elsewhere in ${esc(f.area.name)}.)</span>` : "") + `</div>`;
+    return;
+  }
+  const nearNote = f.kind === "nearest" ? ` <span class="small muted">(nearest reported outage to you${f.km != null ? `, ~${Math.round(f.km)} km` : ""})</span>` : "";
+  host.innerHTML = `<div><span class="big">${fmt(f.sub.out)}</span> <span class="muted">customers out in</span> <b>${esc(f.label)}</b>${nearNote}</div>`
+    + `<div class="small muted">${esc(snap.name)} · live deep detail${f.area ? ` · ${esc(f.area.name)}` : ""}</div>`
+    + cityEtaLine(f.sub)
+    + `<div class="small muted" style="margin-top:10px;padding-top:8px;border-top:1px solid var(--line)">County context ↓</div>`;
+}
+
 // ---- data load: prefer the published snapshot; refresh from live ODIN if it's stale or unavailable ----
 const STALE_MIN = 30; // if the collector isn't running, don't show a frozen baseline — ODIN is CORS-open
 async function liveOdin(alertsByFips = {}, alerts = []) {
@@ -442,7 +503,8 @@ async function showLocation(lat, lon, label) {
   if (FLAGS.leadgen === false) { $("leadgen").hidden = true; $("leadgen").innerHTML = ""; }
   else renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
 
-  let html = `<div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
+  const dm = utilities.length ? deepMatch(utilities) : null;
+  let html = `<div id="cityhead"></div><div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
     html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
     if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
@@ -458,7 +520,6 @@ async function showLocation(lat, lon, label) {
   }
 
   if (utilities.length) {
-    const dm = deepMatch(utilities);
     html += `<div style="margin-top:12px" class="small muted">Serving utility (territory):</div>`;
     for (const u of utilities) html += `<div class="row"><span class="util">${u.name}</span><span class="small muted">${u.type || ""}</span></div>`;
     html += dm
@@ -467,13 +528,18 @@ async function showLocation(lat, lon, label) {
   }
   $("result").innerHTML = html;
   if (county) injectCountyTrend(county.fips);
+  // city-first: if a deep feed covers this location, headline the user's city (async; fills #cityhead)
+  if (dm && FLAGS.deepView !== false) {
+    const cityName = (label && label.includes(",") && !/^-?\d+(\.\d+)?\s*,/.test(label.trim())) ? label.split(",")[0].trim() : null;
+    showCityHeadline(dm.id, county, cityName, lat, lon);
+  }
 
   if (locMarker) map.removeLayer(locMarker);
   locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out${c && c.eta && c.eta.label ? "<br>⏱ " + c.eta.label : ""}`).openPopup();
   map.setView([lat, lon], 9);
 
   const dl = $("deeplink");
-  if (dl) { const m = deepMatch(utilities); dl.onclick = (e) => { e.preventDefault(); renderDeep(m.id, county); }; }
+  if (dl && dm) { dl.onclick = (e) => { e.preventDefault(); renderDeep(dm.id, county); }; }
 }
 
 // ---- plot the deep snapshot's affected areas/sub-areas on the map (those that carry coordinates) ----
