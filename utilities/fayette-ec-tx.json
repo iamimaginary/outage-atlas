@@ -1,1 +1,1 @@
-{"schema":1,"id":"fayette-ec-tx","name":"Fayette Electric Cooperative (TX)","adapter":"kiuc","collectedAt":1782956259824,"official":{"out":0,"served":16978,"nOut":0},"areas":[{"name":"FEC Boundary","out":0,"served":16567,"etr":null,"loc":null,"subs":[]}]}
+{"schema":1,"id":"fayette-ec-tx","name":"Fayette Electric Cooperative (TX)","adapter":"kiuc","collectedAt":1782957752168,"official":{"out":0,"served":16978,"nOut":0},"areas":[{"name":"FEC Boundary","out":0,"served":16567,"etr":null,"loc":null,"subs":[]}]}
