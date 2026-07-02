@@ -305,10 +305,19 @@ function haversineKm(aLat, aLon, bLat, bLon) {
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 // Find the user's city within a deep snapshot. Returns {kind:'city'|'clear'|'nearest', label, sub?, area?}.
+// Some utilities group by a unit that isn't the county NAME the resolver returns — most notably NYC,
+// where Con Edison's areas are boroughs. Map the county → the feed's area name so scoping works.
+const NYC_BOROUGH = { "NEW YORK": "MANHATTAN", "KINGS": "BROOKLYN", "RICHMOND": "STATEN ISLAND", "BRONX": "BRONX", "QUEENS": "QUEENS" };
+function matchDeepArea(areas, county) {
+  if (!county || !Array.isArray(areas)) return null;
+  const w = normCounty(county.county);
+  return areas.find((a) => normCounty(a.name) === w)
+    || (NYC_BOROUGH[w] ? areas.find((a) => normCounty(a.name) === NYC_BOROUGH[w]) : null)
+    || null;
+}
 function findCitySub(snap, county, cityName, lat, lon) {
   const areas = snap.areas || [];
-  const want = county ? normCounty(county.county) : null;
-  const area = want ? areas.find((a) => normCounty(a.name) === want) : null;
+  const area = matchDeepArea(areas, county);
   const scope = area ? (area.subs || []).map((s) => ({ s, a: area })) : areas.flatMap((a) => (a.subs || []).map((s) => ({ s, a })));
   // 1) name match to the user's city (the confident "is MY town out" answer)
   if (cityName) {
@@ -344,6 +353,7 @@ async function showCityHeadline(id, county, cityName, lat, lon) {
   if (!snap || !Array.isArray(snap.areas)) return;
   const f = findCitySub(snap, county, cityName, lat, lon);
   if (!f) return; // no city-level signal → the county headline below stands
+  if (f.area) plotDeep(snap, f.area); // show this borough/county's neighborhoods on the map, centered here
   if (f.kind === "clear") {
     host.innerHTML = `<div class="eta">✓ <b>${esc(f.label)}: power looks on.</b> No active outage reported for your city right now.`
       + (f.area && f.area.out > 0 ? ` <span class="small muted">(${fmt(f.area.out)} out elsewhere in ${esc(f.area.name)}.)</span>` : "") + `</div>`;
@@ -544,11 +554,14 @@ async function showLocation(lat, lon, label) {
 
 // ---- plot the deep snapshot's affected areas/sub-areas on the map (those that carry coordinates) ----
 function clearDeep() { if (deepLayer) { map.removeLayer(deepLayer); deepLayer = null; } }
-function plotDeep(snap) {
+// Plot the deep snapshot's affected sub-areas. `focus` (an area) scopes to that borough/county and
+// keeps the map centered there (used on search); omit it to plot the whole utility (the "view" panel).
+function plotDeep(snap, focus) {
   clearDeep();
   const sev = (o) => (o >= 1000 ? "#f85149" : o >= 100 ? "#d29922" : "#58a6ff");
+  const src = focus ? [focus] : (snap.areas || []);
   const pts = [];
-  for (const a of (snap.areas || [])) {
+  for (const a of src) {
     const subs = (a.subs || []).filter((s) => Array.isArray(s.loc) && s.out > 0);
     if (subs.length) for (const s of subs) pts.push({ name: `${a.name} · ${s.name}`, out: s.out, etr: s.etr, eta: s.eta, loc: s.loc });
     else if (Array.isArray(a.loc) && a.out > 0) pts.push({ name: a.name, out: a.out, etr: a.etr, eta: a.eta, loc: a.loc });
@@ -559,11 +572,16 @@ function plotDeep(snap) {
   deepLayer = L.layerGroup();
   for (const p of shown) {
     L.circleMarker(p.loc, { radius: Math.min(18, 4 + Math.sqrt(p.out)), color: "#0d1117", weight: 1, fillColor: sev(p.out), fillOpacity: 0.9 })
-      .bindPopup(`<b>${p.name}</b><br>${fmt(p.out)} out${etaBr(p)}<br><span class="small muted">${snap.name} · deep</span>`)
+      .bindPopup(`<b>${esc(p.name)}</b><br>${fmt(p.out)} out${etaBr(p)}<br><span class="small muted">${esc(snap.name)} · deep</span>`)
       .addTo(deepLayer);
   }
   deepLayer.addTo(map);
-  try { map.fitBounds(L.latLngBounds(shown.map((p) => p.loc)), { padding: [40, 40], maxZoom: 11 }); } catch (e) {}
+  // when focused (on-search), keep the user's pin in view too; otherwise fit to the affected points.
+  try {
+    const b = L.latLngBounds(shown.map((p) => p.loc));
+    if (focus && locMarker) b.extend(locMarker.getLatLng());
+    map.fitBounds(b, { padding: [40, 40], maxZoom: focus ? 12 : 11 });
+  } catch (e) {}
   return shown.length;
 }
 
@@ -581,8 +599,7 @@ async function renderDeep(id, county) {
   catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
   if (!snap || !Array.isArray(snap.areas) || !snap.official) { host.innerHTML = `<div class="small muted">Deep snapshot for ${id} is unavailable right now.</div>`; return; }
   const plotted = plotDeep(snap); // draw the affected areas on the map (when the feed carries coordinates)
-  const want = county ? normCounty(county.county) : null;
-  const area = snap.areas.find((a) => normCounty(a.name) === want) || null;
+  const area = matchDeepArea(snap.areas, county);
   const age = Math.round((Date.now() - snap.collectedAt) / 60000);
   let html = `<div class="small muted">${snap.name} — deep detail · updated ${age} min ago</div>`;
   html += `<div style="margin-top:4px"><span class="big">${fmt(snap.official.out)}</span> <span class="muted">out of ${fmt(snap.official.served)} served (utility-wide)</span></div>`;
