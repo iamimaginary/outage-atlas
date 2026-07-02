@@ -776,6 +776,72 @@ if ("serviceWorker" in navigator) {
     } catch { /* SW is a progressive enhancement — the app works without it */ }
   });
 }
+
+// ---- PWA install: give mobile the same "add to home screen" affordance desktop Safari surfaces itself. ----
+// Android/Chromium fire `beforeinstallprompt` → we stash it and show a one-tap "Install" banner (the real
+// auto-install). iOS Safari has no such API, so we show an "Add to Home Screen" hint with the Share glyph.
+// Built via createElement (no new markup/ids) so the CSP/structure audit stays green; dismissal + install
+// are remembered in localStorage so we don't nag. Desktop is skipped — browsers surface their own install UI.
+(function installBanner() {
+  const standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  if (standalone) return; // already installed — nothing to offer
+  const KEY = "oa-install-dismissed";
+  try { if (localStorage.getItem(KEY)) return; } catch { /* private mode — just show it */ }
+  const ua = navigator.userAgent || "";
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+  const isMobile = isIOS || /android/i.test(ua);
+  if (!isMobile) return; // desktop (incl. the Safari banner in the screenshot) already prompts on its own
+
+  let bar = null, deferred = null;
+  const remember = () => { try { localStorage.setItem(KEY, "1"); } catch {} };
+  const close = () => { if (bar) { bar.remove(); bar = null; } };
+  const SHARE_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" style="vertical-align:-3px" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M6 12H5a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2h-1"/></svg>';
+
+  function build(kind) { // kind: "prompt" (Android/Chromium) | "ios"
+    if (bar) return;
+    bar = document.createElement("div");
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "Install Outage Atlas");
+    bar.style.cssText = "position:fixed;left:12px;right:12px;bottom:12px;z-index:9998;max-width:520px;margin:0 auto;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 28px rgba(0,0,0,.5);font:14px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e6edf3";
+    const icon = document.createElement("img");
+    icon.src = "icons/icon-192.png"; icon.width = 40; icon.height = 40; icon.alt = "";
+    icon.style.cssText = "width:40px;height:40px;border-radius:9px;flex:none";
+    const body = document.createElement("div"); body.style.cssText = "flex:1;min-width:0";
+    const title = document.createElement("div"); title.style.cssText = "font-weight:600"; title.textContent = "Install Outage Atlas";
+    const sub = document.createElement("div"); sub.style.cssText = "font-size:12px;color:#8b949e;margin-top:2px";
+    body.append(title, sub);
+    const x = document.createElement("button"); x.setAttribute("aria-label", "Dismiss"); x.textContent = "✕";
+    x.style.cssText = "flex:none;background:none;border:none;color:#8b949e;font-size:16px;line-height:1;cursor:pointer;padding:4px";
+    x.onclick = () => { remember(); close(); };
+    if (kind === "prompt") {
+      sub.textContent = "Add it to your home screen for one-tap outage checks.";
+      const btn = document.createElement("button"); btn.textContent = "Install";
+      btn.style.cssText = "flex:none;padding:8px 14px;border:1px solid #58a6ff;border-radius:9px;background:#58a6ff;color:#04101f;font-weight:700;cursor:pointer";
+      btn.onclick = async () => {
+        close();
+        if (!deferred) return;
+        deferred.prompt();
+        try { await deferred.userChoice; } catch {}
+        deferred = null; remember(); // don't re-offer regardless of the user's choice
+      };
+      bar.append(icon, body, btn, x);
+    } else { // iOS Safari: no programmatic install — show the manual Share → Add to Home Screen hint
+      sub.innerHTML = "Tap <b>Share</b> " + SHARE_SVG + " then <b>Add to Home Screen</b>.";
+      bar.append(icon, body, x);
+    }
+    document.body.appendChild(bar);
+  }
+
+  // Android/Chromium: capture the real install prompt and offer it behind a one-tap button.
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; build("prompt"); });
+  window.addEventListener("appinstalled", () => { remember(); close(); });
+  // iOS Safari has no beforeinstallprompt — show the manual hint (only in real Safari, not Chrome/Firefox
+  // on iOS or an in-app webview, none of which can add to the home screen).
+  if (isIOS && /safari/i.test(ua) && !/crios|fxios|edgios/i.test(ua)) {
+    const start = () => setTimeout(() => build("ios"), 1200);
+    if (document.readyState === "complete") start(); else window.addEventListener("load", start);
+  }
+})();
 </script>
 </body>
 </html>
