@@ -345,15 +345,22 @@ function cityEtaLine(sub) {
   }
   return sub.etr ? `<div class="small muted" style="margin-top:4px">Utility ETR: ${esc(fmtEtr(sub.etr))}</div>` : "";
 }
-// Fetch the deep snapshot + render the city headline into #cityhead (async; county block is the fallback).
-async function showCityHeadline(id, county, cityName, lat, lon) {
-  const host = $("cityhead"); if (!host) return;
-  let snap;
-  try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); } catch { return; }
-  if (!snap || !Array.isArray(snap.areas)) return;
-  const f = findCitySub(snap, county, cityName, lat, lon);
-  if (!f) return; // no city-level signal → the county headline below stands
-  if (f.area) plotDeep(snap, f.area); // show this borough/county's neighborhoods on the map, centered here
+// Render the city-first headline into #cityhead from an already-fetched deep snapshot + the resolved
+// city match (findCitySub). Also RECONCILES the map pin popup to the city (falls back to the county pin
+// set by the caller when no city could be resolved) and focuses the deep dots on this area. Pure render,
+// no fetch — the caller fetches the snapshot once and shares it across every surface so numbers agree.
+function renderCityHeadline(snap, f, label, county) {
+  const host = $("cityhead");
+  if (f && f.area) plotDeep(snap, f.area); // show this borough/county's neighborhoods on the map, centered here
+  // map pin ↔ tabulated data: show the CITY when we resolved one, else leave the county pin the caller set.
+  if (locMarker && f && (f.kind === "city" || f.kind === "nearest")) {
+    const etaBit = f.sub.eta && f.sub.eta.label && f.sub.eta.kind !== "restored" ? `<br>⏱ ${esc(f.sub.eta.label)}` : "";
+    const near = f.kind === "nearest" ? ` <span class="small">(nearest reported outage)</span>` : "";
+    locMarker.setPopupContent(`<b>${esc(label || "Your location")}</b><br>${esc(f.label)}${county ? ", " + esc(county.state) : ""}${near}<br>${fmt(f.sub.out)} out${etaBit}`);
+  } else if (locMarker && f && f.kind === "clear") {
+    locMarker.setPopupContent(`<b>${esc(label || "Your location")}</b><br>${esc(f.label)}<br>✓ power looks on`);
+  }
+  if (!host || !f) return; // no city-level signal → the county headline below stands
   if (f.kind === "clear") {
     host.innerHTML = `<div class="eta">✓ <b>${esc(f.label)}: power looks on.</b> No active outage reported for your city right now.`
       + (f.area && f.area.out > 0 ? ` <span class="small muted">(${fmt(f.area.out)} out elsewhere in ${esc(f.area.name)}.)</span>` : "") + `</div>`;
@@ -461,18 +468,35 @@ function popupHtml(c, dm) {
     + `<br><a href="#" data-deep-btn class="small">${dm ? "View " + dm.name + " breakdown ›" : "More detail ›"}</a>`;
 }
 // ---- click-through from a map marker: county detail (+ auto-load the deep breakdown if available) ----
-function showCounty(c, dm) {
+async function showCounty(c, dm) {
   $("result").classList.remove("hide");
   CTX = { view: "map", county: `${c.county}, ${c.state}`, fips: c.fips, out: c.out, deep: dm ? dm.id : null };
+  // if the serving utility has a deep feed, fetch it once so the county total + per-utility row show the
+  // utility's own LIVE count — reconciled with the deep panel below (fetched once, shared via preSnap).
+  let deepSnap = null, deepArea = null;
+  if (dm && FLAGS.deepView !== false) {
+    try { deepSnap = await (await fetch(DEEP_URL(dm.id), { cache: "no-store" })).json(); } catch {}
+    if (!deepSnap || !Array.isArray(deepSnap.areas)) deepSnap = null;
+    if (deepSnap) deepArea = matchDeepArea(deepSnap.areas, { county: c.county });
+  }
+  let countyOut = c.out, blended = false;
+  if (deepArea && c.utilities && c.utilities.length) {
+    let rest = 0, matched = false;
+    for (const u of c.utilities) { if (utilNameMatchesDeep(u.name, dm)) matched = true; else rest += u.out; }
+    if (matched) { countyOut = rest + deepArea.out; blended = true; }
+  }
   let html = `<div class="small muted">From the map</div>`;
-  html += `<div style="margin-top:6px"><span class="big">${fmt(c.out)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
-  html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
+  html += `<div style="margin-top:6px"><span class="big">${fmt(countyOut)}</span> <span class="muted">customers out in</span> <b>${c.county}, ${c.state}</b></div>`;
+  html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}${blended ? " · live utility feed applied" : ""}</div>`;
   html += etaBlock(c, c.fips);
   const alerts = (c.fips && BASELINE.alertsByFips && BASELINE.alertsByFips[c.fips]) || [];
   if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
   if (c.utilities && c.utilities.length) {
     html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
-    for (const u of c.utilities) html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(u.out)} out</span></div>`;
+    for (const u of c.utilities) {
+      const isDeep = deepArea && utilNameMatchesDeep(u.name, dm);
+      html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(isDeep ? deepArea.out : u.out)} out${isDeep ? ` <span class="chip deep" title="the utility's own live feed">live</span>` : ""}</span></div>`;
+    }
   }
   html += dm
     ? `<div style="margin-top:8px"><span class="chip deep">✓ deep detail — ${dm.name}</span></div>`
@@ -480,7 +504,7 @@ function showCounty(c, dm) {
   $("result").innerHTML = html;
   injectCountyTrend(c.fips);
   const old = $("deepbox"); if (old) old.remove();
-  if (dm) renderDeep(dm.id, { county: c.county, state: c.state }); else clearDeep();
+  if (dm) renderDeep(dm.id, { county: c.county, state: c.state }, deepSnap); else clearDeep();
   $("result").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -495,6 +519,13 @@ function deepMatch(utilities) {
       return { id, ...d };
   }
   return null;
+}
+// Does an ODIN utility name correspond to the matched deep feed? (Same name-includes test deepMatch
+// uses.) Lets a county's per-utility row show that utility's own LIVE count instead of the ODIN estimate.
+function utilNameMatchesDeep(name, dm) {
+  if (!dm) return false;
+  const U = (name || "").toUpperCase();
+  return [dm.name, ...(dm.match || [])].filter(Boolean).some((n) => U.includes(String(n).toUpperCase()));
 }
 
 // ---- resolve + render a location ----
@@ -514,16 +545,43 @@ async function showLocation(lat, lon, label) {
   else renderCTA($("leadgen"), county ? { county: c || { out }, area: `${county.county}, ${county.state}`, fips: county.fips, zip: /^\d{5}$/.test((CTX.query || "").trim()) ? CTX.query.trim() : "", alerts } : {});
 
   const dm = utilities.length ? deepMatch(utilities) : null;
+  // When a deep feed covers the serving utility, fetch it ONCE up front and use it for EVERY number on
+  // this result — the city headline, the per-utility county row, the county total, the map pin, and the
+  // deep panel — so nothing contradicts. The utility's own live feed supersedes the coarser ODIN estimate
+  // for that utility; other utilities in the county keep their ODIN number (the same per-source "blend"
+  // the national headline already uses).
+  let deepSnap = null, cityMatch = null, deepArea = null;
+  if (dm && FLAGS.deepView !== false) {
+    try { deepSnap = await (await fetch(DEEP_URL(dm.id), { cache: "no-store" })).json(); } catch {}
+    if (!deepSnap || !Array.isArray(deepSnap.areas)) deepSnap = null;
+    if (deepSnap) {
+      const cityName = (label && label.includes(",") && !/^-?\d+(\.\d+)?\s*,/.test(label.trim())) ? label.split(",")[0].trim() : null;
+      cityMatch = findCitySub(deepSnap, county, cityName, lat, lon);
+      deepArea = matchDeepArea(deepSnap.areas, county);
+    }
+  }
+
   let html = `<div id="cityhead"></div><div class="small muted">${label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`}</div>`;
   if (county) {
-    html += `<div style="margin-top:6px"><span class="big">${fmt(out)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
-    if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}</div>`;
+    // county total: use the utility's live count where we have it, ODIN for the rest (a per-county blend);
+    // falls back to the plain ODIN total when no ODIN row matches the deep utility.
+    let countyOut = out, blended = false;
+    if (deepArea && c && c.utilities && c.utilities.length) {
+      let rest = 0, matched = false;
+      for (const u of c.utilities) { if (utilNameMatchesDeep(u.name, dm)) matched = true; else rest += u.out; }
+      if (matched) { countyOut = rest + deepArea.out; blended = true; }
+    }
+    html += `<div style="margin-top:6px"><span class="big">${fmt(countyOut)}</span> <span class="muted">customers out in</span> <b>${county.county}, ${county.state}</b></div>`;
+    if (c) html += `<div class="small muted">${c.incidents} active incident(s)${c.etr ? " · earliest ETR " + fmtEtr(c.etr) : ""}${blended ? " · live utility feed applied" : ""}</div>`;
     else html += `<div class="eta" style="margin-top:8px">✓ <b>Power looks on.</b> No active outages reported in ${county.county} County right now.</div>`;
     if (c) html += etaBlock(c, county.fips);
     if (alerts.length) html += `<div style="margin-top:6px">${[...new Set(alerts)].map((a) => `<span class="chip alert">⚠ ${a}</span>`).join("")}</div>`;
     if (c && c.utilities.length) {
       html += `<div style="margin-top:10px" class="small muted">Out, by utility in this county:</div>`;
-      for (const u of c.utilities) html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(u.out)} out</span></div>`;
+      for (const u of c.utilities) {
+        const isDeep = deepArea && utilNameMatchesDeep(u.name, dm);
+        html += `<div class="row"><span class="util">${u.name}</span><span>${fmt(isDeep ? deepArea.out : u.out)} out${isDeep ? ` <span class="chip deep" title="the utility's own live feed">live</span>` : ""}</span></div>`;
+      }
     }
   } else {
     html += `<div class="muted" style="margin-top:6px">Couldn't resolve a US county for that point.</div>`;
@@ -538,15 +596,13 @@ async function showLocation(lat, lon, label) {
   }
   $("result").innerHTML = html;
   if (county) injectCountyTrend(county.fips);
-  // city-first: if a deep feed covers this location, headline the user's city (async; fills #cityhead)
-  if (dm && FLAGS.deepView !== false) {
-    const cityName = (label && label.includes(",") && !/^-?\d+(\.\d+)?\s*,/.test(label.trim())) ? label.split(",")[0].trim() : null;
-    showCityHeadline(dm.id, county, cityName, lat, lon);
-  }
 
   if (locMarker) map.removeLayer(locMarker);
-  locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out${c && c.eta && c.eta.label ? "<br>⏱ " + c.eta.label : ""}`).openPopup();
+  // default the pin to the county (the safe fallback); renderCityHeadline upgrades it to the city below.
+  locMarker = L.marker([lat, lon]).addTo(map).bindPopup(`<b>${label || "Your location"}</b><br>${county ? county.county + ", " + county.state : ""}<br>${fmt(out)} out${c && c.eta && c.eta.label && c.eta.kind !== "restored" ? "<br>⏱ " + c.eta.label : ""}`).openPopup();
   map.setView([lat, lon], 9);
+  // city-first: headline the user's city + reconcile the map pin to it (shared snapshot → numbers agree)
+  if (deepSnap) renderCityHeadline(deepSnap, cityMatch, label, county);
 
   const dl = $("deeplink");
   if (dl && dm) { dl.onclick = (e) => { e.preventDefault(); renderDeep(dm.id, county); }; }
@@ -586,7 +642,7 @@ function plotDeep(snap, focus) {
 }
 
 // ---- deep per-utility detail: published canonical snapshot -> the user's county breakdown ----
-async function renderDeep(id, county) {
+async function renderDeep(id, county, preSnap) {
   CTX.deep = id;
   track("deep", id);
   let host = $("deepbox");
@@ -594,8 +650,9 @@ async function renderDeep(id, county) {
   // areas are plotted on the map directly above this panel (matches the "mapped above" copy below).
   if (!host) { host = document.createElement("div"); host.id = "deepbox"; host.className = "panel"; $("map").after(host); }
   host.innerHTML = `<div class="muted">Loading deep detail…</div>`;
-  let snap;
-  try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
+  // reuse the caller's snapshot when supplied (same fetch that reconciled the numbers above) — one source.
+  let snap = preSnap && Array.isArray(preSnap.areas) ? preSnap : null;
+  if (!snap) try { snap = await (await fetch(DEEP_URL(id), { cache: "no-store" })).json(); }
   catch { host.innerHTML = `<div class="small muted">Deep snapshot not published yet — the collector publishes ${id} every ~15 min.</div>`; return; }
   if (!snap || !Array.isArray(snap.areas) || !snap.official) { host.innerHTML = `<div class="small muted">Deep snapshot for ${id} is unavailable right now.</div>`; return; }
   const plotted = plotDeep(snap); // draw the affected areas on the map (when the feed carries coordinates)
